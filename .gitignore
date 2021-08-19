@@ -102,3 +102,19 @@ dist
 
 # TernJS port file
 .tern-port
+
+# Expo specific
+.expo/
+*.jks
+*.p8
+*.p12
+*.key
+*.mobileprovision
+*.orig.*
+web-build/
+
+# macOS
+.DS_Store
+
+# Intelli
+.idea
