@@ -23,9 +23,9 @@ const CurrentRole = (): JSX.Element => {
 
 	useEffect(() => {
 		const getRole = async () => {
-			const role = await AsyncStorage.getItem("@role");
+			const role: string | null = await AsyncStorage.getItem("@role");
 			setRoleState(role);
-			console.log(roleState);
+
 			setShowLoader(false);
 		};
 		getRole();
@@ -43,7 +43,12 @@ const CurrentRole = (): JSX.Element => {
 				</>
 				):(
 					<>
-						<Stack.Screen name="Home" component={Home} />
+						<Stack.Screen name="Home"
+							component={Home}
+							options={{
+								title: "Patient Dashboard",
+								headerTitleAlign: "center"
+							}} />
 						<Stack.Screen name="Details" component={Details} />
 					</>)}
 			</Stack.Navigator>
