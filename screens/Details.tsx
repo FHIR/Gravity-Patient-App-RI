@@ -4,14 +4,11 @@ import { View, Text } from "react-native";
 
 const Tab = createMaterialTopTabNavigator();
 
-const New = (): JSX.Element => {
-
-	return (
-		<View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
-			<Text>New</Text>
-		</View>
-	);
-};
+const New = (): JSX.Element => (
+	<View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
+		<Text>New</Text>
+	</View>
+);
 
 const InProgress = (): JSX.Element => (
 	<View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>

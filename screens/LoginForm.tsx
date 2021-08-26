@@ -1,12 +1,10 @@
 import React from "react";
 import { Icon, Button, VStack, FormControl, Image, Heading, Text, Input, Checkbox, KeyboardAvoidingView } from "native-base";
 import { Path, Line } from "react-native-svg";
-import { NativeStackScreenProps } from "@react-navigation/native-stack";
-import { RootStackParamList } from "./Navigation";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Caregiver, Patient } from "../utils/constants";
 
-const LoginForm = ({ navigation }: NativeStackScreenProps<RootStackParamList, "LoginForm">): JSX.Element => {
+const LoginForm = (): JSX.Element => {
 	type IformData = {
 		name: string,
 		password: string
@@ -101,7 +99,7 @@ const LoginForm = ({ navigation }: NativeStackScreenProps<RootStackParamList, "L
 								fontSize="xs"
 								color="#7b7f87"
 								marginTop="10"
-						>
+							>
 								Password
 							</Text>
 						</FormControl.Label>

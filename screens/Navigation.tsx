@@ -29,10 +29,10 @@ const Navigation = (): JSX.Element => {
 			setShowLoader(false);
 		};
 		getRole();
-	}, []);
+	}, [setRoleState]);
 
 	if (showLoader) {
-		return	<Spinner style={{ alignSelf: "center", flex: 1 }} />;
+		return	(<Spinner style={{ alignSelf: "center", flex: 1 }} />);
 	}
 
 	return (
