@@ -15,7 +15,10 @@
 		"@react-navigation/native": "^6.0.2",
 		"@react-navigation/native-stack": "^6.1.0",
 		"expo": "~42.0.1",
+		"expo-auth-session": "~3.3.1",
+		"expo-random": "~11.2.0",
 		"expo-status-bar": "~1.0.4",
+		"fhir-kit-client": "^1.6.8",
 		"native-base": "^3.0.7",
 		"react": "16.13.1",
 		"react-dom": "16.13.1",
@@ -28,12 +31,11 @@
 		"react-native-web": "~0.13.12",
 		"recoil": "^0.4.0",
 		"styled-components": "^5.3.0",
-		"styled-system": "^5.1.5",
-		"expo-auth-session": "~3.3.1",
-		"expo-random": "~11.2.0"
+		"styled-system": "^5.1.5"
 	},
 	"devDependencies": {
 		"@babel/core": "^7.9.0",
+		"@types/fhir": "0.0.34",
 		"@types/react": "~16.9.35",
 		"@types/react-native": "~0.63.2",
 		"@typescript-eslint/eslint-plugin": "^4.29.2",
