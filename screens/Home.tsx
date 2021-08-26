@@ -9,49 +9,47 @@ import InsurancesCard from "../components/home/InsurancesCard";
 import ReferralsCard from "../components/home/ReferralsCard";
 import AssessmentsCard from "../components/home/AssessmentsCard";
 
-const Home = (): JSX.Element => {
-	return (
-		<ScrollView
-			pt={2}
-			pb={2}
-		>
-			<HStack>
-				<SyncInfo />
+const Home = (): JSX.Element => (
+	<ScrollView
+		pt={2}
+		pb={2}
+	>
+		<HStack>
+			<SyncInfo />
+		</HStack>
+
+		<View p={5}>
+			<HStack pb={5}>
+				<UserCard />
 			</HStack>
 
-			<View p={5}>
-				<HStack pb={5}>
-					<UserCard />
-				</HStack>
+			<HStack
+				space={5}
+				pb={5}
+			>
+				<ClinicalStaffCard />
 
-				<HStack
-					space={5}
-					pb={5}
-				>
-					<ClinicalStaffCard />
+				<CaregiversCard />
+			</HStack>
 
-					<CaregiversCard />
-				</HStack>
+			<HStack
+				space={5}
+				pb={5}
+			>
+				<OrganizationsCard />
 
-				<HStack
-					space={5}
-					pb={5}
-				>
-					<OrganizationsCard />
+				<InsurancesCard />
+			</HStack>
 
-					<InsurancesCard />
-				</HStack>
+			<HStack pb={5}>
+				<ReferralsCard />
+			</HStack>
 
-				<HStack pb={5}>
-					<ReferralsCard />
-				</HStack>
-
-				<HStack>
-					<AssessmentsCard />
-				</HStack>
-			</View>
-		</ScrollView>
-	);
-};
+			<HStack>
+				<AssessmentsCard />
+			</HStack>
+		</View>
+	</ScrollView>
+);
 
 export default Home;
