@@ -23,6 +23,7 @@ const SyncInfo = ():JSX.Element => (
 		</Text>
 		<IconButton
 			variant="ghost"
+			p="0"
 			icon={
 				<Icon
 					size={10}
