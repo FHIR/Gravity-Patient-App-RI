@@ -21,9 +21,9 @@ const Home = (): JSX.Element => {
 		Object.keys(servers).forEach(key => {
 			const server = servers[key];
 
-			server && getPatient(server.fhirUri, server.session?.token.access, server.session?.patientId);
+			server && server.session && getPatient(server.fhirUri, server.session.token.access, server.session.patientId);
 		});
-	},[])
+	},[servers])
 
 	const getPatient = async (serverURI, token, id) => {
 		const client = new Client({ baseUrl: serverURI });
@@ -31,6 +31,7 @@ const Home = (): JSX.Element => {
 
 		try {
 			const patient = await client.read({ resourceType: "Patient", id });
+			console.log("got patient", patient);
 			setPatient([...patients, patient]);
 		} catch (e) {
 			console.log(e);
