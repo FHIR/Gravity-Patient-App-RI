@@ -6,7 +6,7 @@ import Home from "./Home";
 import Details from "./Details";
 import LoginForm from "./LoginForm";
 import { useRecoilState } from "recoil";
-import role from "../recoil/someState";
+import role from "../recoil/roleState";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export type RootStackParamList = {
@@ -17,7 +17,7 @@ export type RootStackParamList = {
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
-const CurrentRole = (): JSX.Element => {
+const Navigation = (): JSX.Element => {
 	const [roleState, setRoleState] = useRecoilState(role);
 	const [showLoader, setShowLoader] = useState(true);
 
@@ -56,4 +56,4 @@ const CurrentRole = (): JSX.Element => {
 	);
 };
 
-export default CurrentRole;
+export default Navigation;

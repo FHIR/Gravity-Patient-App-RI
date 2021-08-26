@@ -1,9 +1,8 @@
 import React from "react";
 import { Icon, Button, VStack, FormControl, Image, Heading, Text, Input, Checkbox, KeyboardAvoidingView } from "native-base";
-import { StyleSheet } from "react-native";
 import { Path, Line } from "react-native-svg";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
-import { RootStackParamList } from "../screens/CurrentRole";
+import { RootStackParamList } from "./Navigation";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Caregiver, Patient } from "../utils/constants";
 
@@ -55,15 +54,40 @@ const LoginForm = ({ navigation }: NativeStackScreenProps<RootStackParamList, "L
 
 	return (
 		<KeyboardAvoidingView
-			style={{ backgroundColor: "white", flex: 1, flexDirection: "column",justifyContent: "center" }} behavior="position" keyboardVerticalOffset={-77}
+			bg="white"
+			flex={1}
+			flexDirection="column"
+			justifyContent="center"
+			behavior="position"
+			keyboardVerticalOffset={-77}
 		>
-			<Image style={{ width: 126, height: 83, alignSelf: "center" }} alt="logo" source={require("../assets/images/gravity-logo.jpg")} />
+			<Image
+				width="126px"
+				height="83px"
+				alignSelf="center"
+				alt="logo"
+				source={require("../assets/images/gravity-logo.jpg")}
+			/>
 			<VStack space={3} pl={5} pr={5}>
-				<Heading style={ styles.header }>Welcome to Your Health App</Heading>
-				<Text style={ styles.subHeader}>Login into the app</Text>
+				<Heading
+					fontSize="2xl"
+					fontWeight="500"
+					mt="37px"
+				>
+					Welcome to Your Health App
+				</Heading>
+				<Text color="#333333">Login into the app</Text>
 				<FormControl isRequired isInvalid={"name" in errors}>
 					<FormControl>
-						<FormControl.Label><Text style={ styles.label}>Username</Text></FormControl.Label>
+						<FormControl.Label>
+							<Text
+								fontSize="xs"
+								color="#7b7f87"
+								marginTop="10"
+							>
+								Username
+							</Text>
+						</FormControl.Label>
 						<Input
 							onChangeText={ value => setData({ ...formData, name: value })}
 							_focus={{ borderColor: "#0069ff" }}
@@ -72,7 +96,15 @@ const LoginForm = ({ navigation }: NativeStackScreenProps<RootStackParamList, "L
 						/>
 					</FormControl>
 					<FormControl>
-						<FormControl.Label><Text style={ styles.label }>Password</Text></FormControl.Label>
+						<FormControl.Label>
+							<Text
+								fontSize="xs"
+								color="#7b7f87"
+								marginTop="10"
+						>
+								Password
+							</Text>
+						</FormControl.Label>
 						<Input
 							onChangeText={ value => setData({ ...formData, password: value })}
 							isFullWidth={true}
@@ -80,9 +112,9 @@ const LoginForm = ({ navigation }: NativeStackScreenProps<RootStackParamList, "L
 							_focus={{ borderColor: "#0069ff" }}
 							_hover={{ borderColor: "#0069ff" }}
 							InputRightElement={
-								<Button variant="unstyled" style={{ paddingLeft: 0, paddingRight: 0 ,paddingBottom: 0, paddingTop: 0 }} onPress={toggleShowPassword}>
+								<Button variant="unstyled" padding="0" onPress={toggleShowPassword}>
 									{ showPassword ?
-										<Icon style={{ marginTop: 2 }} width="42" height="42" viewBox="0 0 42 42" fill="none">
+										<Icon mt="2px" width="42" height="42" viewBox="0 0 42 42" fill="none">
 											<Path d="M31.8666 19.6056C31.679 19.3578 27.2089 14 21.4999 14C15.7909 14 11.3207 19.3578 11.1333 19.6054C10.9556 19.8405 10.9556 20.1593 11.1333 20.3944C11.3207 20.6422 15.7909 26 21.4999 26C27.2089 26 31.679 20.6421 31.8666 20.3946C32.0445 20.1595 32.0445 19.8405 31.8666 19.6056ZM21.4999 25.1247C17.2946 25.1247 13.6524 21.2622 12.5742 19.9995C13.651 18.7357 17.2856 15.3846 21.4999 15.3846C25.705 15.3846 29.347 18.7371 30.4256 20.0005C29.3488 21.2642 25.7142 25.1247 21.4999 25.1247Z" fill="#0069FF"/>
 											<Path d="M21.5 15C18.4674 15 16 17.2431 16 20C16 22.7569 18.4674 25 21.5 25C24.5326 25 27 22.7569 27 20C27 17.2431 24.5326 15 21.5 15ZM21.5 23.3333C19.4781 23.3333 17.8334 21.838 17.8334 20C17.8334 18.162 19.4782 16.6667 21.5 16.6667C23.5218 16.6667 25.1666 18.162 25.1666 20C25.1666 21.838 23.5219 23.3333 21.5 23.3333Z" fill="#0069FF"/>
 										</Icon> :
@@ -105,14 +137,14 @@ const LoginForm = ({ navigation }: NativeStackScreenProps<RootStackParamList, "L
 					colorScheme="blue"
 					accessibilityLabel="I agree with terms and conditions for using this app"
 					size="md"
-					value="two"> <Text style={{ color: "grey" }}>I agree with terms and conditions for using this app</Text>
+					value="two"> <Text color="grey">I agree with terms and conditions for using this app</Text>
 				</Checkbox>
 				<Button
 					isDisabled={formData.name.length <= 0 ||
 					formData.password.length <= 0 ||
-					checkboxValue === false}
+					!checkboxValue}
 					onPress={ onSubmit }
-					style={styles.loginButton}
+					mt="60px"
 					colorScheme="blue"
 					w={"100%"}
 				>
@@ -122,27 +154,3 @@ const LoginForm = ({ navigation }: NativeStackScreenProps<RootStackParamList, "L
 		</KeyboardAvoidingView>
 	);};
 export default LoginForm;
-
-const styles = StyleSheet.create({
-	logo: {
-		width: "126px",
-		height: "83px",
-		alignSelf: "center"
-	},
-	header: {
-		fontSize: 24,
-		fontWeight: "500",
-		marginTop: 37
-	},
-	subHeader: {
-		color:"#333333"
-	},
-	label: {
-		fontSize: 14,
-		color: "#7B7F87",
-		marginTop: 10
-	},
-	loginButton: {
-		marginTop: 60
-	}
-});

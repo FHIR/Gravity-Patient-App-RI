@@ -1,17 +1,13 @@
 import React from "react";
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
 import { View, Text } from "react-native";
-import { useRecoilValue } from "recoil";
-import { withBrackets } from "../recoil/someState";
 
 const Tab = createMaterialTopTabNavigator();
 
 const New = (): JSX.Element => {
-	const someStateBrackets = useRecoilValue(withBrackets);
 
 	return (
 		<View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
-			<Text>{ someStateBrackets }</Text>
 			<Text>New</Text>
 		</View>
 	);
