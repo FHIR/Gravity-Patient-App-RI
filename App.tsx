@@ -8,6 +8,7 @@ import { RecoilRoot, useRecoilState } from "recoil";
 import { Button, LogBox } from "react-native";
 import { Server, serversState } from "./recoil/servers";
 import { discoverAuthEndpoints } from "./utils/auth";
+import { NativeBaseProvider } from "native-base";
 
 // todo: temporary recoil fix, should be fixed in expo sdk that support react-native 0.64+, probably sdk 43
 // https://github.com/facebookexperimental/Recoil/issues/1030
@@ -17,7 +18,9 @@ LogBox.ignoreLogs(["Setting a timer", "Can't perform a React state update on an 
 
 const App = (): JSX.Element =>
 	(<RecoilRoot>
-		<MainContainer />
+		<NativeBaseProvider>
+			<MainContainer />
+		</NativeBaseProvider>
 	</RecoilRoot>);
 
 
