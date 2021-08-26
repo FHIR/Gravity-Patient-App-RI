@@ -1,4 +1,5 @@
 import React from "react";
+import { Platform } from "react-native";
 import { Icon, Button, VStack, FormControl, Image, Heading, Text, Input, Checkbox, KeyboardAvoidingView } from "native-base";
 import { Path, Line } from "react-native-svg";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -60,7 +61,7 @@ const LoginForm = (): JSX.Element => {
 			flex={1}
 			flexDirection="column"
 			justifyContent="center"
-			behavior="position"
+			behavior={Platform.OS === "ios" ? "position" : "height"}
 			keyboardVerticalOffset={-77}
 		>
 			<Image
