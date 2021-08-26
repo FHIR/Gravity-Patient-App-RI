@@ -3,6 +3,8 @@ import { Icon, Button, VStack, FormControl, Image, Heading, Text, Input, Checkbo
 import { Path, Line } from "react-native-svg";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Caregiver, Patient } from "../utils/constants";
+import { useRecoilState } from "recoil";
+import role from "../recoil/roleState";
 
 const LoginForm = (): JSX.Element => {
 	type IformData = {
@@ -14,10 +16,12 @@ const LoginForm = (): JSX.Element => {
 	const [formData, setData] = React.useState<IformData>({ name: "", password: "" });
 	const [errors, setErrors] = React.useState({});
 	const [checkboxValue, setCheckboxValue] = React.useState(false);
+	const [roleState, setRoleState] = useRecoilState(role);
 
 	const storeRole = async (value: string) => {
 		try {
 			await AsyncStorage.setItem("@role", value);
+			setRoleState(value);
 		} catch (e) {
 			console.log("Saving Error");
 		}
