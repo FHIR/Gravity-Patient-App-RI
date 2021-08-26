@@ -3,6 +3,8 @@ import { Icon, Button, VStack, FormControl, Image, Heading, Text, Input, Checkbo
 import { Path, Line } from "react-native-svg";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Caregiver, Patient } from "../utils/constants";
+import { useRecoilState } from "recoil";
+import role from "../recoil/roleState";
 
 const LoginForm = (): JSX.Element => {
 	type IformData = {
@@ -14,10 +16,12 @@ const LoginForm = (): JSX.Element => {
 	const [formData, setData] = React.useState<IformData>({ name: "", password: "" });
 	const [errors, setErrors] = React.useState({});
 	const [checkboxValue, setCheckboxValue] = React.useState(false);
+	const [roleState, setRoleState] = useRecoilState(role);
 
 	const storeRole = async (value: string) => {
 		try {
 			await AsyncStorage.setItem("@role", value);
+			setRoleState(value);
 		} catch (e) {
 			console.log("Saving Error");
 		}
@@ -110,7 +114,7 @@ const LoginForm = (): JSX.Element => {
 							_focus={{ borderColor: "#0069ff" }}
 							_hover={{ borderColor: "#0069ff" }}
 							InputRightElement={
-								<Button variant="unstyled" p="0" onPress={toggleShowPassword}>
+								<Button variant="unstyled" padding={0} onPress={toggleShowPassword}>
 									{ showPassword ?
 										<Icon mt="2px" width="42" height="42" viewBox="0 0 42 42" fill="none">
 											<Path d="M31.8666 19.6056C31.679 19.3578 27.2089 14 21.4999 14C15.7909 14 11.3207 19.3578 11.1333 19.6054C10.9556 19.8405 10.9556 20.1593 11.1333 20.3944C11.3207 20.6422 15.7909 26 21.4999 26C27.2089 26 31.679 20.6421 31.8666 20.3946C32.0445 20.1595 32.0445 19.8405 31.8666 19.6056ZM21.4999 25.1247C17.2946 25.1247 13.6524 21.2622 12.5742 19.9995C13.651 18.7357 17.2856 15.3846 21.4999 15.3846C25.705 15.3846 29.347 18.7371 30.4256 20.0005C29.3488 21.2642 25.7142 25.1247 21.4999 25.1247Z" fill="#0069FF"/>

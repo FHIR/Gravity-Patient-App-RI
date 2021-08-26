@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { NavigationContainer, createNavigationContainerRef } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import Home from "./screens/Home";
@@ -8,7 +8,12 @@ import { RecoilRoot, useRecoilState } from "recoil";
 import { Button, LogBox } from "react-native";
 import { Server, serversState } from "./recoil/servers";
 import { discoverAuthEndpoints } from "./utils/auth";
-import { NativeBaseProvider } from "native-base";
+import { NativeBaseProvider, Spinner } from "native-base";
+import LoginForm from "./screens/LoginForm";
+import role from "./recoil/roleState/atom";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import * as Linking from "expo-linking";
+
 
 // todo: temporary recoil fix, should be fixed in expo sdk that support react-native 0.64+, probably sdk 43
 // https://github.com/facebookexperimental/Recoil/issues/1030
@@ -27,7 +32,8 @@ const App = (): JSX.Element =>
 export type RootStackParamList = {
 	Home: undefined;
 	Details: undefined;
-	Auth: { serverId: string }
+	Auth: { serverId: string },
+	LoginForm: undefined
 };
 const Stack = createNativeStackNavigator<RootStackParamList>();
 const navigationRef = createNavigationContainerRef<RootStackParamList>();
@@ -44,8 +50,42 @@ const logicaParams = {
 	fhirUri: "https://api.logicahealth.org/deezsandbox/data",
 	clientId: "2ecabb44-200b-4975-a8d1-dc2a6e4f90a7",
 };
+const linkingUrl = Linking.createURL("import-server", { queryParams: logicaParams });
+console.log("linking url:", linkingUrl);
+
 
 const MainContainer = () => {
+	useEffect(() => {
+		Linking.addEventListener("url", ({ url }) => {
+			const { path, queryParams } = Linking.parse(url);
+			console.log("got linked", { path, queryParams });
+			onImportServerInvokedFromOutside(queryParams as ParamsFromOutside);
+		})
+	}, []);
+
+	useEffect(() => {
+		Linking.getInitialURL().then(url => {
+			if(url) {
+				const { path, queryParams } = Linking.parse(url);
+				console.log("got started by linking", { path, queryParams });
+			}
+		});
+	}, []);
+
+	const [roleState, setRoleState] = useRecoilState(role);
+	const [showLoader, setShowLoader] = useState(true);
+
+	useEffect(() => {
+		const getRole = async () => {
+			// await AsyncStorage.removeItem("@role");
+			const role: string | null = await AsyncStorage.getItem("@role");
+			setRoleState(role);
+
+			setShowLoader(false);
+		};
+		getRole();
+	}, [setRoleState]);
+
 	const [servers, setServers] = useRecoilState(serversState);
 
 	const onImportServerInvokedFromOutside = (params: ParamsFromOutside) => {
@@ -73,23 +113,23 @@ const MainContainer = () => {
 			})
 	};
 
+
+	if (showLoader) {
+		return	(<Spinner style={{ alignSelf: "center", flex: 1 }} />);
+	}
+
 	return (
 		<NavigationContainer ref={navigationRef}>
 			<Stack.Navigator initialRouteName="Home">
-				<Stack.Screen
-					name="Home"
-					component={Home}
-					options={{
-						headerRight: () => (
-							<Button
-								title="click"
-								onPress={() => onImportServerInvokedFromOutside(logicaParams)}
-							/>
-						)
-					}}
-				/>
-				<Stack.Screen name="Details" component={Details} />
-				<Stack.Screen name="Auth" component={Auth} />
+				{ roleState === null ? (
+					<Stack.Screen options={{ headerShown: false }} name="LoginForm" component={LoginForm} />
+				) : (
+					<>
+						<Stack.Screen name="Home" component={Home} />
+						<Stack.Screen name="Details" component={Details} />
+						<Stack.Screen name="Auth" component={Auth} />
+					</>
+				)}
 			</Stack.Navigator>
 		</NavigationContainer>
 	);

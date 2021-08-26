@@ -6,7 +6,6 @@ import patientState from "../../recoil/patient";
 
 const UserCard = ():JSX.Element => {
 	const [patient] = useRecoilState(patientState);
-	console.log(patient);
 	const name = patient[0]?.name[0].given.join(" ");
 	const email = patient[0]?.telecom?.find(tele => tele.system === "email").value;
 
