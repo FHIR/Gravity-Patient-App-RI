@@ -1,5 +1,5 @@
 import React, {useEffect} from "react";
-import { HStack, ScrollView, View, Text } from "native-base";
+import { HStack, ScrollView, View, Text, Pressable } from "native-base";
 import SyncInfo from "../components/home/SyncInfo";
 import UserCard from "../components/home/UserCard";
 import ClinicalStaffCard from "../components/home/ClinicalStaffCard";
@@ -12,8 +12,10 @@ import { useRecoilState } from "recoil";
 import { serversState } from "../recoil/servers";
 import patientState from "../recoil/patient";
 import Client from "fhir-kit-client";
+import { NativeStackScreenProps } from "@react-navigation/native-stack";
+import { RootStackParamList } from "../App";
 
-const Home = (): JSX.Element => {
+const Home = ({ navigation }: NativeStackScreenProps<RootStackParamList, "Home">): JSX.Element => {
 	const [servers] = useRecoilState(serversState);
 	const [patients, setPatient] = useRecoilState(patientState);
 
@@ -64,18 +66,42 @@ const Home = (): JSX.Element => {
 					space={5}
 					pb={5}
 				>
-					<ClinicalStaffCard/>
+					<Pressable
+						flex={1}
+						flexDirection="row"
+						onPress={() => navigation.navigate('ClinicalStaff')}
+					>
+						<ClinicalStaffCard />
+					</Pressable>
 
-					<CaregiversCard/>
+					<Pressable
+						flex={1}
+						flexDirection="row"
+						onPress={() => navigation.navigate('Caregivers')}
+					>
+						<CaregiversCard />
+					</Pressable>
 				</HStack>
 
 				<HStack
 					space={5}
 					pb={5}
 				>
-					<OrganizationsCard/>
+					<Pressable
+						flex={1}
+						flexDirection="row"
+						onPress={() => navigation.navigate('Organizations')}
+					>
+						<OrganizationsCard />
+					</Pressable>
 
-					<InsurancesCard/>
+					<Pressable
+						flex={1}
+						flexDirection="row"
+						onPress={() => navigation.navigate('Insurances')}
+					>
+						<InsurancesCard />
+					</Pressable>
 				</HStack>
 
 				<HStack pb={5}>

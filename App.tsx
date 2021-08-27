@@ -13,12 +13,16 @@ import LoginForm from "./screens/LoginForm";
 import role from "./recoil/roleState/atom";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as Linking from "expo-linking";
+import ClinicalStaff from "./screens/ClinicalStaff";
+import Caregivers from "./screens/Caregivers";
+import Organizations from "./screens/Organizations";
+import Insurances from "./screens/Insurances";
 
 
 // todo: temporary recoil fix, should be fixed in expo sdk that support react-native 0.64+, probably sdk 43
 // https://github.com/facebookexperimental/Recoil/issues/1030
 // https://github.com/facebookexperimental/Recoil/issues/951
-LogBox.ignoreLogs(["Setting a timer", "Can't perform a React state update on an unmounted component"]);
+LogBox && LogBox.ignoreLogs(["Setting a timer", "Can't perform a React state update on an unmounted component"]);
 
 
 const App = (): JSX.Element =>
@@ -33,7 +37,11 @@ export type RootStackParamList = {
 	Home: undefined;
 	Details: undefined;
 	Auth: { serverId: string },
-	LoginForm: undefined
+	LoginForm: undefined,
+	Caregivers: undefined,
+	ClinicalStaff: undefined,
+	Organizations: undefined,
+	Insurances: undefined
 };
 const Stack = createNativeStackNavigator<RootStackParamList>();
 const navigationRef = createNavigationContainerRef<RootStackParamList>();
@@ -125,7 +133,43 @@ const MainContainer = () => {
 					<Stack.Screen options={{ headerShown: false }} name="LoginForm" component={LoginForm} />
 				) : (
 					<>
-						<Stack.Screen name="Home" component={Home} />
+						<Stack.Screen
+							name="Home"
+							component={Home}
+							options={{
+								title: "Patient Dashboard",
+								headerTitleAlign: "center"
+							}}
+						/>
+						<Stack.Screen
+							name="ClinicalStaff"
+							component={ClinicalStaff}
+							options={{
+								title: "Clinical Staff",
+								headerTitleAlign: "center"
+							}}
+						/>
+						<Stack.Screen
+							name="Caregivers"
+							component={Caregivers}
+							options={{
+								headerTitleAlign: "center"
+							}}
+						/>
+						<Stack.Screen
+							name="Organizations"
+							component={Organizations}
+							options={{
+								headerTitleAlign: "center"
+							}}
+						/>
+						<Stack.Screen
+							name="Insurances"
+							component={Insurances}
+							options={{
+								headerTitleAlign: "center"
+							}}
+						/>
 						<Stack.Screen name="Details" component={Details} />
 						<Stack.Screen name="Auth" component={Auth} />
 					</>
