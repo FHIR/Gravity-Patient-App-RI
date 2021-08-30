@@ -41,7 +41,7 @@ const OrganizationsCard = ():JSX.Element => (
 					fontSize="md"
 					fontWeight="medium"
 				>
-					3
+					2
 				</Text>
 			</VStack>
 
@@ -58,7 +58,7 @@ const OrganizationsCard = ():JSX.Element => (
 					fontSize="md"
 					fontWeight="medium"
 				>
-					6
+					4
 				</Text>
 			</VStack>
 		</HStack>
