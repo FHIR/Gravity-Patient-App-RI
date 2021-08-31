@@ -20,12 +20,7 @@ const LoginForm = (): JSX.Element => {
 	const [roleState, setRoleState] = useRecoilState(role);
 
 	const storeRole = async (value: string) => {
-		try {
-			await AsyncStorage.setItem("@role", value);
-			setRoleState(value);
-		} catch (e) {
-			console.log("Saving Error");
-		}
+		setRoleState(value);
 	};
 
 	const validate = () => {
