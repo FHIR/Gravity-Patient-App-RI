@@ -1,5 +1,5 @@
-import React, {useEffect} from "react";
-import {HStack, ScrollView, View, Text, Pressable, Button, Box} from "native-base";
+import React, { useEffect } from "react";
+import { HStack, ScrollView, View, Text, Pressable } from "native-base";
 import SyncInfo from "../components/home/SyncInfo";
 import UserCard from "../components/home/UserCard";
 import ClinicalStaffCard from "../components/home/ClinicalStaffCard";
@@ -14,7 +14,6 @@ import patientState from "../recoil/patient";
 import Client from "fhir-kit-client";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { RootStackParamList } from "../App";
-import PatientInfo from "./PatientInfo";
 
 const Home = ({ navigation }: NativeStackScreenProps<RootStackParamList, "Home">): JSX.Element => {
 	const [servers] = useRecoilState(serversState);
@@ -26,7 +25,7 @@ const Home = ({ navigation }: NativeStackScreenProps<RootStackParamList, "Home">
 
 			server && server.session && getPatient(server.fhirUri, server.session.token.access, server.session.patientId);
 		});
-	},[servers])
+	},[servers]);
 
 	const getPatient = async (serverURI, token, id) => {
 		const client = new Client({ baseUrl: serverURI });
@@ -63,7 +62,7 @@ const Home = ({ navigation }: NativeStackScreenProps<RootStackParamList, "Home">
 					<Pressable
 						flex={1}
 						flexDirection="column"
-						onPress={() => navigation.navigate('PatientInfo')}
+						onPress={() => navigation.navigate("PatientInfo")}
 					>
 						<UserCard/>
 					</Pressable>
@@ -76,7 +75,7 @@ const Home = ({ navigation }: NativeStackScreenProps<RootStackParamList, "Home">
 					<Pressable
 						flex={1}
 						flexDirection="row"
-						onPress={() => navigation.navigate('ClinicalStaff')}
+						onPress={() => navigation.navigate("ClinicalStaff")}
 					>
 						<ClinicalStaffCard />
 					</Pressable>
@@ -84,7 +83,7 @@ const Home = ({ navigation }: NativeStackScreenProps<RootStackParamList, "Home">
 					<Pressable
 						flex={1}
 						flexDirection="row"
-						onPress={() => navigation.navigate('Caregivers')}
+						onPress={() => navigation.navigate("Caregivers")}
 					>
 						<CaregiversCard />
 					</Pressable>
@@ -97,7 +96,7 @@ const Home = ({ navigation }: NativeStackScreenProps<RootStackParamList, "Home">
 					<Pressable
 						flex={1}
 						flexDirection="row"
-						onPress={() => navigation.navigate('Organizations')}
+						onPress={() => navigation.navigate("Organizations")}
 					>
 						<OrganizationsCard />
 					</Pressable>
@@ -105,7 +104,7 @@ const Home = ({ navigation }: NativeStackScreenProps<RootStackParamList, "Home">
 					<Pressable
 						flex={1}
 						flexDirection="row"
-						onPress={() => navigation.navigate('Insurances')}
+						onPress={() => navigation.navigate("Insurances")}
 					>
 						<InsurancesCard />
 					</Pressable>
@@ -121,6 +120,6 @@ const Home = ({ navigation }: NativeStackScreenProps<RootStackParamList, "Home">
 			</View>
 		</ScrollView>
 	);
-}
+};
 
 export default Home;

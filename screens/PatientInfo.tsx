@@ -1,10 +1,10 @@
 import React from "react";
-import {Avatar, HStack, Text, VStack, View, Heading, ScrollView } from "native-base";
+import { Avatar, HStack, Text, VStack, View, Heading, ScrollView } from "native-base";
 import Card from "../components/Card";
 import { useRecoilValue } from "recoil";
 import currentPatientInfoState from "../recoil/patient/patientInfo";
 
-const PatientInfo = ():JSX.Element => {
+const PatientInfo = (): JSX.Element => {
 	const currentPatientInfo = useRecoilValue(currentPatientInfoState);
 
 	return (
@@ -119,174 +119,174 @@ const PatientInfo = ():JSX.Element => {
 					</Card>
 					<Card>
 						<VStack>
-								<Heading
-									fontWeight="500"
-									fontSize="lg"
-									mb={15}
-								>
-									Contact Information
-								</Heading>
-								<HStack space={5} pb={5}>
-									<View
-										flex={1}
-										flexDirection="row">
-										<Text
-											color="#7b7f87"
-											fontSize="sm"
-										>
-											Home Address:
-										</Text>
-									</View>
-									<View
-										flex={1}
-										flexDirection="row">
-										<Text fontSize="sm">{currentPatientInfo.address}</Text>
-									</View>
-								</HStack>
+							<Heading
+								fontWeight="500"
+								fontSize="lg"
+								mb={15}
+							>
+								Contact Information
+							</Heading>
+							<HStack space={5} pb={5}>
+								<View
+									flex={1}
+									flexDirection="row">
+									<Text
+										color="#7b7f87"
+										fontSize="sm"
+									>
+										Home Address:
+									</Text>
+								</View>
+								<View
+									flex={1}
+									flexDirection="row">
+									<Text fontSize="sm">{currentPatientInfo.address}</Text>
+								</View>
+							</HStack>
 
-								<HStack space={5} pb={5}>
-									<View
-										flex={1}
-										flexDirection="row">
-										<Text
-											color="#7b7f87"
-											fontSize="sm"
-										>
-											Phone Number:
-										</Text>
-									</View>
-									<View
-										flex={1}
-										flexDirection="row">
-										<Text fontSize="sm">{currentPatientInfo.phone}</Text>
-									</View>
-								</HStack>
+							<HStack space={5} pb={5}>
+								<View
+									flex={1}
+									flexDirection="row">
+									<Text
+										color="#7b7f87"
+										fontSize="sm"
+									>
+										Phone Number:
+									</Text>
+								</View>
+								<View
+									flex={1}
+									flexDirection="row">
+									<Text fontSize="sm">{currentPatientInfo.phone}</Text>
+								</View>
+							</HStack>
 
-								<HStack space={5} pb={5}>
-									<View
-										flex={1}
-										flexDirection="row">
-										<Text
-											color="#7b7f87"
-											fontSize="sm"
-										>
-											Email Address:
-										</Text>
-									</View>
-									<View
-										flex={1}
-										flexDirection="row">
-										<Text fontSize="sm">{currentPatientInfo.email}</Text>
-									</View>
-								</HStack>
+							<HStack space={5} pb={5}>
+								<View
+									flex={1}
+									flexDirection="row">
+									<Text
+										color="#7b7f87"
+										fontSize="sm"
+									>
+										Email Address:
+									</Text>
+								</View>
+								<View
+									flex={1}
+									flexDirection="row">
+									<Text fontSize="sm">{currentPatientInfo.email}</Text>
+								</View>
+							</HStack>
 
-								<HStack space={5}>
-									<View
-										flex={1}
-										flexDirection="row">
-										<Text
-											color="#7b7f87"
-											fontSize="sm"
-										>
-											Employment Status:
-										</Text>
-									</View>
-									<View
-										flex={1}
-										flexDirection="row">
-										<Text fontSize="sm">N/A</Text>
-									</View>
-								</HStack>
-							</VStack>
+							<HStack space={5}>
+								<View
+									flex={1}
+									flexDirection="row">
+									<Text
+										color="#7b7f87"
+										fontSize="sm"
+									>
+										Employment Status:
+									</Text>
+								</View>
+								<View
+									flex={1}
+									flexDirection="row">
+									<Text fontSize="sm">N/A</Text>
+								</View>
+							</HStack>
+						</VStack>
 					</Card>
 					<Card>
 						<VStack>
-								<Heading
-									fontWeight="500"
-									fontSize="lg"
-									mb={15}
+							<Heading
+								fontWeight="500"
+								fontSize="lg"
+								mb={15}
+							>
+								Other Information
+							</Heading>
+							<HStack space={5} pb={5}>
+								<View
+									flex={1}
+									flexDirection="row">
+									<Text
+										color="#7b7f87"
+										fontSize="sm"
+									>
+										Race:
+									</Text>
+								</View>
+								<View
+									flex={1}
+									flexDirection="row"
 								>
-									Other Information
-								</Heading>
-								<HStack space={5} pb={5}>
-									<View
-										flex={1}
-										flexDirection="row">
-										<Text
-											color="#7b7f87"
-											fontSize="sm"
-										>
-											Race:
-										</Text>
-									</View>
-									<View
-										flex={1}
-										flexDirection="row"
+									<Text fontSize="sm"
 									>
-										<Text fontSize="sm"
-										>
-											N/A
-										</Text>
-									</View>
-								</HStack>
+										N/A
+									</Text>
+								</View>
+							</HStack>
 
-								<HStack space={5} pb={5}>
-									<View
-										flex={1}
-										flexDirection="row">
-										<Text
-											color="#7b7f87"
-											fontSize="sm"
-										>
-											Ethnicity:
-										</Text>
-									</View>
-									<View
-										flex={1}
-										flexDirection="row"
+							<HStack space={5} pb={5}>
+								<View
+									flex={1}
+									flexDirection="row">
+									<Text
+										color="#7b7f87"
+										fontSize="sm"
 									>
-										<Text fontSize="sm">N/A</Text>
-									</View>
-								</HStack>
+										Ethnicity:
+									</Text>
+								</View>
+								<View
+									flex={1}
+									flexDirection="row"
+								>
+									<Text fontSize="sm">N/A</Text>
+								</View>
+							</HStack>
 
-								<HStack space={5} pb={5}>
-									<View
-										flex={1}
-										flexDirection="row">
-										<Text
-											color="#7b7f87"
-											fontSize="sm"
-										>
-											Education Level:
-										</Text>
-									</View>
-									<View
-										flex={1}
-										flexDirection="row"
+							<HStack space={5} pb={5}>
+								<View
+									flex={1}
+									flexDirection="row">
+									<Text
+										color="#7b7f87"
+										fontSize="sm"
 									>
-										<Text fontSize="sm">N/A</Text>
-									</View>
-								</HStack>
+										Education Level:
+									</Text>
+								</View>
+								<View
+									flex={1}
+									flexDirection="row"
+								>
+									<Text fontSize="sm">N/A</Text>
+								</View>
+							</HStack>
 
-								<HStack space={5}>
-									<View
-										flex={1}
-										flexDirection="row">
-										<Text
-											color="#7b7f87"
-											fontSize="sm"
-										>
-											Marital Status:
-										</Text>
-									</View>
-									<View
-										flex={1}
-										flexDirection="row"
+							<HStack space={5}>
+								<View
+									flex={1}
+									flexDirection="row">
+									<Text
+										color="#7b7f87"
+										fontSize="sm"
 									>
-										<Text fontSize="sm">{currentPatientInfo.maritalStatus}</Text>
-									</View>
-								</HStack>
-							</VStack>
+										Marital Status:
+									</Text>
+								</View>
+								<View
+									flex={1}
+									flexDirection="row"
+								>
+									<Text fontSize="sm">{currentPatientInfo.maritalStatus}</Text>
+								</View>
+							</HStack>
+						</VStack>
 					</Card>
 				</VStack>
 			</View>

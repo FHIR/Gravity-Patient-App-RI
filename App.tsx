@@ -5,7 +5,7 @@ import Home from "./screens/Home";
 import Details from "./screens/Details";
 import Auth from "./screens/Auth";
 import { RecoilRoot, useRecoilState } from "recoil";
-import { Button, LogBox } from "react-native";
+import { LogBox } from "react-native";
 import { Server, serversState } from "./recoil/servers";
 import { discoverAuthEndpoints } from "./utils/auth";
 import { NativeBaseProvider, Spinner } from "native-base";
@@ -57,8 +57,8 @@ type ParamsFromOutside = {
 
 const logicaParams = {
 	title: "Logica",
-	fhirUri: "https://api.logicahealth.org/Gravity/data",
-	clientId: "fa89d177-2f32-40e0-a497-01ab557334a2",
+	hirUri: "https://api.logicahealth.org/deezsandbox/data",
+	clientId: "2ecabb44-200b-4975-a8d1-dc2a6e4f90a7"
 };
 const linkingUrl = Linking.createURL("import-server", { queryParams: logicaParams });
 console.log("linking url:", linkingUrl);
@@ -70,7 +70,7 @@ const MainContainer = () => {
 			const { path, queryParams } = Linking.parse(url);
 			console.log("got linked", { path, queryParams });
 			onImportServerInvokedFromOutside(queryParams as ParamsFromOutside);
-		})
+		});
 	}, []);
 
 	useEffect(() => {
@@ -120,7 +120,7 @@ const MainContainer = () => {
 			})
 			.then(() => {
 				navigationRef.navigate("Auth", { serverId: id });
-			})
+			});
 	};
 
 
