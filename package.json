@@ -20,6 +20,7 @@
 		"expo-status-bar": "~1.0.4",
 		"expo-linking": "~2.3.1",
 		"fhir-kit-client": "^1.6.8",
+		"moment": "^2.29.1",
 		"native-base": "^3.0.7",
 		"react": "16.13.1",
 		"react-dom": "16.13.1",

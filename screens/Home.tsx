@@ -1,5 +1,5 @@
 import React, {useEffect} from "react";
-import { HStack, ScrollView, View, Text, Pressable } from "native-base";
+import {HStack, ScrollView, View, Text, Pressable, Button, Box} from "native-base";
 import SyncInfo from "../components/home/SyncInfo";
 import UserCard from "../components/home/UserCard";
 import ClinicalStaffCard from "../components/home/ClinicalStaffCard";
@@ -11,17 +11,25 @@ import AssessmentsCard from "../components/home/AssessmentsCard";
 import { useRecoilState } from "recoil";
 import { serversState } from "../recoil/servers";
 import patientState from "../recoil/patient";
+import url from "../recoil/delete";
 import Client from "fhir-kit-client";
+import {Linking} from "react-native";
+import role from "../recoil/roleState";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { RootStackParamList } from "../App";
+import PatientInfo from "./PatientInfo";
 
 const Home = ({ navigation }: NativeStackScreenProps<RootStackParamList, "Home">): JSX.Element => {
 	const [servers] = useRecoilState(serversState);
 	const [patients, setPatient] = useRecoilState(patientState);
+	const [roleState, setRoleState] = useRecoilState(role);
+	const [urlState, setUrlState] = useRecoilState(url);
+	let href =  urlState.toString();
 
 	useEffect(() => {
 		Object.keys(servers).forEach(key => {
 			const server = servers[key];
+			href = urlState.toString();
 
 			server && server.session && getPatient(server.fhirUri, server.session.token.access, server.session.patientId);
 		});
@@ -40,10 +48,14 @@ const Home = ({ navigation }: NativeStackScreenProps<RootStackParamList, "Home">
 		}
 	};
 
+	const fo = () => {
+		Linking.openURL(href);
+	}
 	if (!Object.keys(servers).length) {
 		return (
 			<View flex={1} alignItems="center" justifyContent="center">
 				<Text>No Data Yet</Text>
+				<Button onPress={fo}>dwdwqdwqd</Button>
 			</View>
 		);
 	}
@@ -59,7 +71,13 @@ const Home = ({ navigation }: NativeStackScreenProps<RootStackParamList, "Home">
 
 			<View p={5}>
 				<HStack pb={5}>
-					<UserCard/>
+					<Pressable
+						flex={1}
+						flexDirection="column"
+						onPress={() => navigation.navigate('PatientInfo')}
+					>
+						<UserCard/>
+					</Pressable>
 				</HStack>
 
 				<HStack
