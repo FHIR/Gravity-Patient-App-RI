@@ -14,6 +14,7 @@ import patientState from "../recoil/patient";
 import Client from "fhir-kit-client";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { RootStackParamList } from "../App";
+import { Patient } from "fhir/r4";
 
 const Home = ({ navigation }: NativeStackScreenProps<RootStackParamList, "Home">): JSX.Element => {
 	const [servers] = useRecoilState(serversState);
@@ -27,13 +28,12 @@ const Home = ({ navigation }: NativeStackScreenProps<RootStackParamList, "Home">
 		});
 	},[servers])
 
-	const getPatient = async (serverURI, token, id) => {
+	const getPatient = async (serverURI: string, token: string | null, id: string) => {
 		const client = new Client({ baseUrl: serverURI });
-		client.bearerToken = token;
+		client.bearerToken = token ? token : undefined;
 
 		try {
-			const patient = await client.read({ resourceType: "Patient", id });
-			console.log("got patient", patient);
+			const patient = await client.read({ resourceType: "Patient", id }) as Patient;
 			setPatient([...patients, patient]);
 		} catch (e) {
 			console.log(e);
