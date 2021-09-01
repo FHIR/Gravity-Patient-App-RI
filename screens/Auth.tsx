@@ -70,7 +70,7 @@ const ServerAuth = (server: Server, onDone: (s: Server) => unknown) => {
 					...server,
 					session: {
 						patientId: resp.patient,
-						oken: {
+						token: {
 							access: resp.access_token
 						}
 					}

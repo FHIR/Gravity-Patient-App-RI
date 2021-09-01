@@ -3,22 +3,26 @@ import { selector } from "recoil";
 import moment from "moment";
 import { Patient } from "fhir/r4";
 
-const currentPatientInfoState = selector({
-	key: "currentPatientInfoState",
+const patientState = selector({
+	key: "patientState",
 	get: ({ get }) => {
 		// TODO: Find out where to get "Employment Status, Race, Ethnicity, Education Level" fields.
 
-		const currentPatientInfo = get(patient);
-		const name: string = currentPatientInfo[0]?.name[0].given.join(" ");
-		const email: string = currentPatientInfo[0]?.telecom?.find((tele: Patient["telecom"]) => tele?.system === "email").value;
-		const phone: Patient["telecom"] = currentPatientInfo[0]?.telecom?.find((tele: Patient["telecom"]) => tele?.system === "phone").value;
-		const id: Patient["id"] = currentPatientInfo[0]?.id;
-		const patientYears: number = moment().diff(new Date(currentPatientInfo[0]?.birthDate), "years");
-		const birthDate: Patient["birthDate"] = `${moment(currentPatientInfo[0]?.birthDate,"YYYY-MM-DD").format("MMM DD, YYYY")} (${patientYears} yrs)`;
-		const gender: Patient["gender"] = currentPatientInfo[0]?.gender;
-		const address = `${currentPatientInfo[0]?.address[0].line} , ${currentPatientInfo[0]?.address[0].city}, ${currentPatientInfo[0]?.address[0].state}, ${currentPatientInfo[0]?.address[0].postalCode}`;
-		const language: Patient["communication"] = currentPatientInfo[0]?.communication ? currentPatientInfo[0]?.communication[0].language.coding[0].display : "N/A";
-		const maritalStatus: Patient["maritalStatus"] =  currentPatientInfo[0]?.maritalStatus ? currentPatientInfo[0]?.maritalStatus.coding[0].display : "N/A";
+		const patientInfoState: Patient | undefined = get(patient)[0];
+		const name: string | undefined = patientInfoState?.name[0].given.join(" ");
+		const email: string | undefined = patientInfoState?.telecom?.find((tele: Patient["telecom"]) => tele?.system === "email").value;
+		const phone: string | undefined = patientInfoState?.telecom?.find((tele: Patient["telecom"]) => tele?.system === "phone").value;
+		const id: string | undefined = patientInfoState?.id;
+		const patientYears: number = moment().diff(new Date(patientInfoState?.birthDate), "years");
+		const birthDate: string = `${moment(patientInfoState?.birthDate,"YYYY-MM-DD").format("MMM DD, YYYY")} (${patientYears} yrs)`;
+		const gender: string | undefined = patientInfoState?.gender;
+		const address: string | undefined = `${patientInfoState?.address[0].line} , ${patientInfoState?.address[0].city}, ${patientInfoState?.address[0].state}, ${patientInfoState?.address[0].postalCode}`;
+		const language: string | undefined = patientInfoState?.communication ? patientInfoState?.communication[0].language.coding[0].display : "N/A";
+		const maritalStatus: string | undefined =  patientInfoState?.maritalStatus ? patientInfoState?.maritalStatus.coding[0].display : "N/A";
+		const race : string | undefined = patientInfoState?.extension ? patientInfoState?.extension.find(extension => extension?.url === "http://hl7.org/fhir/us/core/StructureDefinition/us-core-race").valueCode : "N/A";
+		const ethnicity : string | undefined = patientInfoState?.extension ? patientInfoState?.extension.find(extension => extension?.url === "http://hl7.org/fhir/us/core/StructureDefinition/us-core-ethnicity").valueCode : "N/A";
+		const educationLevel : string | undefined = patientInfoState?.extension ? patientInfoState?.extension.find(extension => extension?.url === "http://terminology.hl7.org/CodeSystem/v3-EducationLevel").valueCode : "N/A";
+		const employmentStatus : string | undefined = patientInfoState?.extension ? patientInfoState?.extension.find(extension => extension?.url === "http://hl7.org/fhir/us/odh/StructureDefinition/odh-EmploymentStatus").valueCode : "N/A";
 
 		return {
 			name,
@@ -29,9 +33,13 @@ const currentPatientInfoState = selector({
 			gender,
 			address,
 			language,
-			maritalStatus
+			maritalStatus,
+			race,
+			ethnicity,
+			educationLevel,
+			employmentStatus
 		};
 	}
 });
 
-export default currentPatientInfoState;
+export default patientState;
