@@ -1,32 +1,45 @@
 import React from "react";
-import { HStack, ScrollView } from "native-base";
+import { HStack, ScrollView, View, Text } from "native-base";
 import ResourceCard from "../components/ResourceCard";
 import ResourceCardItem from "../components/ResourceCardItem";
+import { useRecoilValue } from "recoil";
+import { requesterCaregiverState } from "../recoil/requester";
 
 
-//todo: loop through actual data
-const Caregivers = (): JSX.Element => (
-	<ScrollView p={5}>
-		<HStack mb={5}>
-			<ResourceCard
-				title="Reeza Shah"
-				badge="Primary"
-			>
-				<ResourceCardItem label="Relationship">
-					Nurse
-				</ResourceCardItem>
-				<ResourceCardItem label="Organization">
-					Sanchez Family Practice
-				</ResourceCardItem>
-				<ResourceCardItem label="Location">
-					San Francisco
-				</ResourceCardItem>
-				<ResourceCardItem label="Phone">
-					(213) 639-3913
-				</ResourceCardItem>
-			</ResourceCard>
-		</HStack>
-	</ScrollView>
-);
+const Caregivers = (): JSX.Element => {
+	const caregivers = useRecoilValue(requesterCaregiverState);
+
+	return (
+		<ScrollView p={5}>
+			{
+				caregivers.length ?
+				caregivers.map(c => (
+					<HStack mb={5}>
+						<ResourceCard title={c.name || "N/A"}>
+							<ResourceCardItem label="Relationship">
+								{ c.relationship || "N/A" }
+							</ResourceCardItem>
+							<ResourceCardItem label="Organization">
+								{ c.organization || "N/A" }
+							</ResourceCardItem>
+							<ResourceCardItem label="Location">
+								{ c.location || "N/A" }
+							</ResourceCardItem>
+							<ResourceCardItem label="Phone">
+								{ c.phone || "N/A" }
+							</ResourceCardItem>
+						</ResourceCard>
+					</HStack>
+				)) :
+				<View
+					flex={1}
+					alignItems="center"
+				>
+					<Text>No Data Yet</Text>
+				</View>
+			}
+		</ScrollView>
+	);
+};
 
 export default Caregivers;

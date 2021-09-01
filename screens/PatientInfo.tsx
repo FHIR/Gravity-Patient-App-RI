@@ -1,13 +1,13 @@
 import React from "react";
 import { HStack, VStack, View, ScrollView } from "native-base";
 import { useRecoilValue } from "recoil";
-import patientState from "../recoil/patient/patientInfo";
+import { patientInfoState } from "../recoil/patient";
 import UserCard from "../components/home/UserCard";
 import ResourceCard from "../components/ResourceCard";
 import ResourceCardItem from "../components/ResourceCardItem";
 
 const PatientInfo = (): JSX.Element => {
-	const patientInfo = useRecoilValue(patientState);
+	const patientInfo = useRecoilValue(patientInfoState);
 
 	return (
 		<ScrollView
@@ -18,7 +18,7 @@ const PatientInfo = (): JSX.Element => {
 				<HStack pb={5}>
 					<UserCard />
 				</HStack>
-					<VStack space={5}>
+				<VStack space={5}>
 					<ResourceCard title="Primary Information">
 						<ResourceCardItem label="Patient ID" width={"135px"}>{ patientInfo.id }</ResourceCardItem>
 						<ResourceCardItem label="Date of Birthday" width={"135px"}>{ patientInfo.birthDate }</ResourceCardItem>

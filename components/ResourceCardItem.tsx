@@ -2,7 +2,7 @@ import React, { ReactNode } from "react";
 import { HStack, Text } from "native-base";
 
 
-const ResourceCardItem = (props: { children: ReactNode, label: string, width: string }): JSX.Element => (
+const ResourceCardItem = (props: { children: ReactNode, label: string, width?: string }): JSX.Element => (
 	<HStack>
 		<Text
 			fontSize="sm"

@@ -1,13 +1,11 @@
 import React from "react";
 import { Avatar, HStack, Text, VStack } from "native-base";
 import Card from "../Card";
-import { useRecoilState } from "recoil";
-import patientState from "../../recoil/patient";
+import { useRecoilValue } from "recoil";
+import { patientInfoState } from "../../recoil/patient";
 
 const UserCard = ():JSX.Element => {
-	const [patient] = useRecoilState(patientState);
-	const name = patient[0]?.name[0].given.join(" ");
-	const email = patient[0]?.telecom?.find(tele => tele.system === "email").value;
+	const { name, email } = useRecoilValue(patientInfoState);
 
 	return (
 		<Card>

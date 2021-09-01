@@ -8,37 +8,38 @@ import OrganizationsCard from "../components/home/OrganizationsCard";
 import InsurancesCard from "../components/home/InsurancesCard";
 import ReferralsCard from "../components/home/ReferralsCard";
 import AssessmentsCard from "../components/home/AssessmentsCard";
-import { useRecoilState } from "recoil";
+import { useRecoilState, useRecoilValue } from "recoil";
 import { serversState } from "../recoil/servers";
 import patientState from "../recoil/patient";
-import Client from "fhir-kit-client";
+import coverageState from "../recoil/coverage";
+import payorState from "../recoil/payor";
+import requesterState from "../recoil/requester";
+import taskState from "../recoil/task";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { RootStackParamList } from "../App";
-import { Patient } from "fhir/r4";
+import { fetchFhirData } from "../utils/api";
 
 const Home = ({ navigation }: NativeStackScreenProps<RootStackParamList, "Home">): JSX.Element => {
-	const [servers] = useRecoilState(serversState);
+	const servers = useRecoilValue(serversState);
 	const [patients, setPatient] = useRecoilState(patientState);
+	const [coverages, setCoverage] = useRecoilState(coverageState);
+	const [payors, setPayor] = useRecoilState(payorState);
+	const [requesters, setRequester] = useRecoilState(requesterState);
+	const [tasks, setTask] = useRecoilState(taskState);
 
 	useEffect(() => {
 		Object.keys(servers).forEach(key => {
 			const server = servers[key];
 
-			server && server.session && getPatient(server.fhirUri, server.session.token.access, server.session.patientId);
+			server && server.session && fetchFhirData(server.fhirUri, server.session.token.access, server.session.patientId).then(({ patient, coverage, payor, requester, task })  => {
+				patient && setPatient([...patients, patient]);
+				coverage && setCoverage([...coverages, ...coverage]);
+				payor && setPayor([...payors, ...payor]);
+				requester && setRequester([...requesters, ...requester]);
+				task && setTask([...tasks, ...task]);
+			})
 		});
-	},[servers]);
-
-	const getPatient = async (serverURI: string, token: string | null, id: string) => {
-		const client = new Client({ baseUrl: serverURI });
-		client.bearerToken = token ? token : undefined;
-
-		try {
-			const patient = await client.read({ resourceType: "Patient", id }) as Patient;
-			setPatient([...patients, patient]);
-		} catch (e) {
-			console.log(e);
-		}
-	};
+	}, [servers]);
 
 	if (!Object.keys(servers).length) {
 		return (
