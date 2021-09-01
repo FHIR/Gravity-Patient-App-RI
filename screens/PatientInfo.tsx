@@ -20,22 +20,22 @@ const PatientInfo = (): JSX.Element => {
 				</HStack>
 					<VStack space={5}>
 					<ResourceCard title="Primary Information">
-						<ResourceCardItem label="Patient ID" isPatientInfoComponent={true}>{ patientInfo.id }</ResourceCardItem>
-						<ResourceCardItem label="Date of Birthday" isPatientInfoComponent={true}>{ patientInfo.birthDate }</ResourceCardItem>
-						<ResourceCardItem label="Gender Identity" isPatientInfoComponent={true}>{ patientInfo.gender }</ResourceCardItem>
-						<ResourceCardItem label="Primary Language" isPatientInfoComponent={true}>{ patientInfo.language }</ResourceCardItem>
+						<ResourceCardItem label="Patient ID" width={"135px"}>{ patientInfo.id }</ResourceCardItem>
+						<ResourceCardItem label="Date of Birthday" width={"135px"}>{ patientInfo.birthDate }</ResourceCardItem>
+						<ResourceCardItem label="Gender Identity" width={"135px"}>{ patientInfo.gender }</ResourceCardItem>
+						<ResourceCardItem label="Primary Language" width={"135px"}>{ patientInfo.language }</ResourceCardItem>
 					</ResourceCard>
 					<ResourceCard title="Contact Information">
-						<ResourceCardItem label="Home Address" isPatientInfoComponent={true}>{ patientInfo.address }</ResourceCardItem>
-						<ResourceCardItem label="Phone Number" isPatientInfoComponent={true}>{ patientInfo.phone }</ResourceCardItem>
-						<ResourceCardItem label="Email Address" isPatientInfoComponent={true}>{ patientInfo.email }</ResourceCardItem>
-						<ResourceCardItem label="Employment Status" isPatientInfoComponent={true}>{ patientInfo.employmentStatus }</ResourceCardItem>
+						<ResourceCardItem label="Home Address" width={"135px"}>{ patientInfo.address }</ResourceCardItem>
+						<ResourceCardItem label="Phone Number" width={"135px"}>{ patientInfo.phone }</ResourceCardItem>
+						<ResourceCardItem label="Email Address" width={"135px"}>{ patientInfo.email }</ResourceCardItem>
+						<ResourceCardItem label="Employment Status" width={"135px"}>{ patientInfo.employmentStatus }</ResourceCardItem>
 					</ResourceCard>
 					<ResourceCard title="Other Information">
-						<ResourceCardItem label="Race" isPatientInfoComponent={true}>{ patientInfo.race }</ResourceCardItem>
-						<ResourceCardItem label="Ethnicity" isPatientInfoComponent={true}>{ patientInfo.ethnicity }</ResourceCardItem>
-						<ResourceCardItem label="Education Level" isPatientInfoComponent={true}>{ patientInfo.educationLevel }</ResourceCardItem>
-						<ResourceCardItem label="Marital Status" isPatientInfoComponent={true}>{ patientInfo.maritalStatus }</ResourceCardItem>
+						<ResourceCardItem label="Race" width={"135px"}>{ patientInfo.race }</ResourceCardItem>
+						<ResourceCardItem label="Ethnicity" width={"135px"}>{ patientInfo.ethnicity }</ResourceCardItem>
+						<ResourceCardItem label="Education Level" width={"135px"}>{ patientInfo.educationLevel }</ResourceCardItem>
+						<ResourceCardItem label="Marital Status" width={"135px"}>{ patientInfo.maritalStatus }</ResourceCardItem>
 					</ResourceCard>
 				</VStack>
 			</View>

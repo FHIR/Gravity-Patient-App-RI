@@ -57,7 +57,7 @@ type ParamsFromOutside = {
 
 const logicaParams = {
 	title: "Logica",
-	hirUri: "https://api.logicahealth.org/deezsandbox/data",
+	fhirUri: "https://api.logicahealth.org/deezsandbox/data",
 	clientId: "2ecabb44-200b-4975-a8d1-dc2a6e4f90a7"
 };
 const linkingUrl = Linking.createURL("import-server", { queryParams: logicaParams });
