@@ -19,8 +19,6 @@ const requesterOrganizationState = selector<Organization[]>({
 	get: ({ get }) => {
 		const requesters = get(requester);
 
-		console.log(requesters);
-
 		return requesters
 			.filter(isOrganizationGuard)
 			.map(r => ({
