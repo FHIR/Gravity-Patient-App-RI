@@ -17,7 +17,7 @@ export type Server = {
 	} | null
 }
 
-type Servers = { [id: string]: Server | undefined }
+export type Servers = { [id: string]: Server | undefined }
 
 
 export const serversState = atom<Servers>({
