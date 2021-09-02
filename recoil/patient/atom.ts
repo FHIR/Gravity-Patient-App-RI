@@ -1,7 +1,8 @@
 import { atom } from "recoil";
+import { Patient } from "fhir/r4";
 
-const patient = atom({
-	key: "patient",
+const patient = atom<Patient[]>({
+	key: "patientState",
 	default: []
 });
 

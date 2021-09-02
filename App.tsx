@@ -19,6 +19,7 @@ import Organizations from "./screens/Organizations";
 import Insurances from "./screens/Insurances";
 import { RecoilRootWithPersisance } from "./recoil";
 import ServerList from "./components/ServerList";
+import PatientInfo from "./screens/PatientInfo";
 
 
 // todo: temporary recoil fix, should be fixed in expo sdk that support react-native 0.64+, probably sdk 43
@@ -47,7 +48,8 @@ export type RootStackParamList = {
 	Organizations: undefined,
 	Insurances: undefined,
 	Hub: undefined,
-	ServerList: undefined
+	ServerList: undefined,
+	PatientInfo: undefined
 };
 const Stack = createNativeStackNavigator<RootStackParamList>();
 const navigationRef = createNavigationContainerRef<RootStackParamList>();
@@ -62,7 +64,7 @@ type ParamsFromOutside = {
 const logicaParams = {
 	title: "Logica",
 	fhirUri: "https://api.logicahealth.org/deezsandbox/data",
-	clientId: "2ecabb44-200b-4975-a8d1-dc2a6e4f90a7",
+	clientId: "2ecabb44-200b-4975-a8d1-dc2a6e4f90a7"
 };
 const linkingUrl = Linking.createURL("import-server", { queryParams: logicaParams });
 console.log("linking url:", linkingUrl);
@@ -75,7 +77,7 @@ const MainContainer = () => {
 			const { path, queryParams } = Linking.parse(url);
 			console.log("got linked", { path, queryParams });
 			onImportServerInvokedFromOutside(queryParams as ParamsFromOutside);
-		})
+		});
 	}, []);
 
 	useEffect(() => {
@@ -113,7 +115,7 @@ const MainContainer = () => {
 			})
 			.then(() => {
 				navigationRef.navigate("Auth", { serverId: id });
-			})
+			});
 	};
 
 
@@ -134,6 +136,7 @@ const MainContainer = () => {
 						<Stack.Screen name="Caregivers" component={Caregivers} />
 						<Stack.Screen name="Organizations" component={Organizations} />
 						<Stack.Screen name="Insurances" component={Insurances} />
+						<Stack.Screen name="PatientInfo" component={PatientInfo} options={{ title: "Patient Information" }} />
 						<Stack.Screen name="Details" component={Details} />
 						<Stack.Screen name="Auth" component={Auth} options={{ headerShown: false }} />
 

@@ -1,49 +1,45 @@
 import React from "react";
-import { HStack, ScrollView } from "native-base";
+import {HStack, ScrollView, Text, View} from "native-base";
 import ResourceCard from "../components/ResourceCard";
 import ResourceCardItem from "../components/ResourceCardItem";
+import { useRecoilValue } from "recoil";
+import { requesterClinicalStaff } from "../recoil/requester";
 
 
-//todo: loop through actual data
-const ClinicalStaff = (): JSX.Element => (
-	<ScrollView p={5}>
-		<HStack mb={5}>
-			<ResourceCard
-				title="Carla Sanchez"
-				badge="Primary"
-			>
-				<ResourceCardItem label="Organization">
-					Sanchez Family Practice
-				</ResourceCardItem>
-				<ResourceCardItem label="Role">
-					Primary Care Physician
-				</ResourceCardItem>
-				<ResourceCardItem label="Location">
-					San Francisco
-				</ResourceCardItem>
-				<ResourceCardItem label="Phone">
-					(213) 639-3911
-				</ResourceCardItem>
-			</ResourceCard>
-		</HStack>
+const ClinicalStaff = (): JSX.Element => {
+	const clinicalStaffs = useRecoilValue(requesterClinicalStaff);
 
-		<HStack>
-			<ResourceCard title="Samir Patel">
-				<ResourceCardItem label="Organization">
-					Sanchez Family Practice
-				</ResourceCardItem>
-				<ResourceCardItem label="Role">
-					Clinical Staff Member
-				</ResourceCardItem>
-				<ResourceCardItem label="Location">
-					San Francisco
-				</ResourceCardItem>
-				<ResourceCardItem label="Phone">
-					(213) 639-3912
-				</ResourceCardItem>
-			</ResourceCard>
-		</HStack>
-	</ScrollView>
-);
+	return (
+		<ScrollView p={5}>
+			{
+				clinicalStaffs.length ?
+				clinicalStaffs.map(c => (
+					<HStack mb={5}>
+						<ResourceCard title={c.name || "N/A"}>
+							<ResourceCardItem label="Organization">
+								{ c.organization || "N/A" }
+							</ResourceCardItem>
+							<ResourceCardItem label="Role">
+								{ c.role || "N/A" }
+							</ResourceCardItem>
+							<ResourceCardItem label="Location">
+								{ c.location || "N/A" }
+							</ResourceCardItem>
+							<ResourceCardItem label="Phone">
+								{ c.phone || "N/A" }
+							</ResourceCardItem>
+						</ResourceCard>
+					</HStack>
+				)) :
+				<View
+					flex={1}
+					alignItems="center"
+				>
+					<Text>No Data Yet</Text>
+				</View>
+			}
+		</ScrollView>
+	);
+}
 
 export default ClinicalStaff;

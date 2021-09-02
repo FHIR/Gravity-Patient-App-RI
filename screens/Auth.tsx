@@ -58,7 +58,7 @@ const ServerAuth = (server: Server, onDone: (s: Server) => unknown) => {
 		const prompt = (clicks < 7 ? promptAsync : promptAsyncUnstuck);
 		setPhase("prompt");
 		const result = await prompt({ useProxy });
-		if (result.type === "success") {
+		if (result.type === "success" && result.params.code) {
 			setPhase("exchange");
 			const tokenResp = await exchangeAuthCode(result.params.code);
 			setPhase("done");
@@ -121,7 +121,6 @@ const ServerAuth = (server: Server, onDone: (s: Server) => unknown) => {
 			{clicks => (
 				<View style={{
 					flex: 1,
-					// alignItems: "center",
 					justifyContent: "center",
 					padding: 20
 				}}>
