@@ -51,6 +51,6 @@ const ClinicalStaffCard = ():JSX.Element => {
 			</VStack>
 		</Card>
 	);
-}
+};
 
 export default ClinicalStaffCard;

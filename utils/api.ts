@@ -13,7 +13,9 @@ export type fetchFhirType = {
 
 export const fetchFhirData = async (serverURI: string, token: string | null, patientId: string): Promise<fetchFhirType> => {
 	const client = new Client({ baseUrl: serverURI });
-	client.bearerToken = token ? token : undefined;
+	if (token) {
+		client.bearerToken = token;
+	}
 
 	const patient = await client.read({ resourceType: "Patient", id: patientId });
 	const coverageBundle = await client.search({ resourceType: "Coverage", searchParams: { "_patient": patientId, "_include": "Coverage:payor" } }) as Bundle;

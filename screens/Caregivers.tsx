@@ -13,30 +13,33 @@ const Caregivers = (): JSX.Element => {
 		<ScrollView p={5}>
 			{
 				caregivers.length ?
-				caregivers.map(c => (
-					<HStack mb={5}>
-						<ResourceCard title={c.name || "N/A"}>
-							<ResourceCardItem label="Relationship">
-								{ c.relationship || "N/A" }
-							</ResourceCardItem>
-							<ResourceCardItem label="Organization">
-								{ c.organization || "N/A" }
-							</ResourceCardItem>
-							<ResourceCardItem label="Location">
-								{ c.location || "N/A" }
-							</ResourceCardItem>
-							<ResourceCardItem label="Phone">
-								{ c.phone || "N/A" }
-							</ResourceCardItem>
-						</ResourceCard>
-					</HStack>
-				)) :
-				<View
-					flex={1}
-					alignItems="center"
-				>
-					<Text>No Data Yet</Text>
-				</View>
+					caregivers.map((c, i) => (
+						<HStack
+							mb={5}
+							key={i}
+						>
+							<ResourceCard title={c.name || "N/A"}>
+								<ResourceCardItem label="Relationship">
+									{ c.relationship || "N/A" }
+								</ResourceCardItem>
+								<ResourceCardItem label="Organization">
+									{ c.organization || "N/A" }
+								</ResourceCardItem>
+								<ResourceCardItem label="Location">
+									{ c.location || "N/A" }
+								</ResourceCardItem>
+								<ResourceCardItem label="Phone">
+									{ c.phone || "N/A" }
+								</ResourceCardItem>
+							</ResourceCard>
+						</HStack>
+					)) :
+					<View
+						flex={1}
+						alignItems="center"
+					>
+						<Text>No Data Yet</Text>
+					</View>
 			}
 		</ScrollView>
 	);

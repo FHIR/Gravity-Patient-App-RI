@@ -24,14 +24,14 @@ const requesterClinicalStaff = selector<ClinicalStaff[]>({
 			organization: undefined,
 			role: undefined,
 			location: r.address?.[0].city,
-			phone: r.telecom?.find(t => t.system === "phone")?.value,
+			phone: r.telecom?.find(t => t.system === "phone")?.value
 		}));
 		const practitionerRoles = requesters.filter(isPractitionerRoleGuard).map(r => ({
 			name: r.practitioner?.display,
 			organization: r.organization?.display,
 			role: r.code?.[0].text,
 			location: r.location?.[0].display,
-			phone: r.telecom?.find(t => t.system === "phone")?.value,
+			phone: r.telecom?.find(t => t.system === "phone")?.value
 		}));
 
 		return [...practitioners, ...practitionerRoles];

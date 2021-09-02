@@ -25,7 +25,7 @@ const requesterCaregiverState = selector<Caregiver[]>({
 				//todo: where to get org for caregiver?
 				organization: undefined,
 				location: r.address?.[0].city,
-				phone: r.telecom?.find(t => t.system === "phone")?.value,
+				phone: r.telecom?.find(t => t.system === "phone")?.value
 			}));
 	}
 });
