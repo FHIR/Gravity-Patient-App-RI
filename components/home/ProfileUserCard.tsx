@@ -1,5 +1,5 @@
 import React from "react";
-import { Avatar, Link, Text, VStack } from "native-base";
+import { Avatar, Button, Text, VStack } from "native-base";
 import Card from "../Card";
 import { useRecoilValue } from "recoil";
 import { patientInfoState } from "../../recoil/patient";
@@ -27,15 +27,18 @@ const ProfileUserCard = (): JSX.Element => {
 				>
 					{ patientInfo.email }
 				</Text>
-				<Link
+				<Button
+					variant="link"
 					_text={{
-						color: "#0069FF"
+						color: "#0069FF",
+						textDecoration: "none",
+						fontSize: "sm",
+						fontWeight: "400"
 					}}
 					onPress={() => navigation.navigate("PatientInfo")}
-					isExternal
 				>
 					View Patient Information
-				</Link>
+				</Button>
 			</VStack>
 		</Card>
 	);
