@@ -18,7 +18,6 @@ import taskState from "../recoil/task";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { RootStackParamList } from "../App";
 import { fetchFhirData } from "../utils/api";
-import PatientProfile from "../screens/PatientProfile";
 
 const Home = ({ navigation }: NativeStackScreenProps<RootStackParamList, "Home">): JSX.Element => {
 	const servers = useRecoilValue(serversState);

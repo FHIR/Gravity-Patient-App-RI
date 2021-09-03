@@ -1,10 +1,10 @@
 import React, {useEffect, useState} from "react";
-import {HStack, View, ScrollView, Text, Modal, Button, Icon} from "native-base";
-import ProfileUserCard from "../components/home/ProfileUserCard";
-import {useNavigation} from "@react-navigation/native";
-import {Path} from "react-native-svg";
-import {useRecoilState} from "recoil";
-import role from "../recoil/roleState";
+import {HStack, View, ScrollView, Modal, Button, Icon} from "native-base";
+import ProfileUserCard from "./ProfileUserCard";
+import { useNavigation } from "@react-navigation/native";
+import { Path } from "react-native-svg";
+import { useRecoilState } from "recoil";
+import role from "../../recoil/roleState";
 
 const PatientProfile = (): JSX.Element => {
 	const navigation = useNavigation();

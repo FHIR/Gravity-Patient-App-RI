@@ -1,12 +1,14 @@
 import React from "react";
 import { Avatar, Button, Text, VStack } from "native-base";
-import Card from "../Card";
+import Card from "../../components/Card";
 import { useRecoilValue } from "recoil";
 import { patientInfoState } from "../../recoil/patient";
 import { useNavigation } from "@react-navigation/native";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { RootStackParamList } from "../../App";
 
 const ProfileUserCard = (): JSX.Element => {
-	const navigation = useNavigation();
+	const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
 	const patientInfo = useRecoilValue(patientInfoState);
 
 	return (

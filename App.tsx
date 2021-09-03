@@ -88,7 +88,7 @@ const MainContainer = () => {
 		});
 	}, []);
 
-	const [roleState, setRoleState] = useRecoilState(role);
+	const [roleState] = useRecoilState(role);
 
 	const [servers, setServers] = useRecoilState(serversState);
 
