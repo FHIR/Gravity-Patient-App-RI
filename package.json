@@ -7,7 +7,8 @@
 		"web": "expo start --web",
 		"eject": "expo eject",
 		"lint": "eslint . --ext .ts,.tsx,.js,.jsx",
-		"lint-fix": "eslint . --ext .ts,.tsx,.js,.jsx --fix"
+		"lint-fix": "eslint . --ext .ts,.tsx,.js,.jsx --fix",
+		"create-test-data": "npx ts-node --skip-project scripts/createTestResources.ts"
 	},
 	"dependencies": {
 		"@react-native-async-storage/async-storage": "^1.15.6",
