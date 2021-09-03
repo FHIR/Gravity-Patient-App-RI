@@ -58,13 +58,12 @@ const Home = ({ navigation }: NativeStackScreenProps<RootStackParamList, "Home">
 			<HStack>
 				<SyncInfo/>
 			</HStack>
-
 			<View p={5}>
 				<HStack pb={5}>
 					<Pressable
 						flex={1}
 						flexDirection="column"
-						onPress={() => navigation.navigate("PatientInfo")}
+						onPress={() => navigation.navigate("PatientProfile")}
 					>
 						<UserCard/>
 					</Pressable>

@@ -5,10 +5,10 @@ import Home from "./screens/Home";
 import Details from "./screens/Details";
 import Auth from "./screens/Auth";
 import { useRecoilState } from "recoil";
-import { Button, LogBox, View } from "react-native";
+import {Button, LogBox, View} from "react-native";
 import { Server, serversState } from "./recoil/servers";
 import { discoverAuthEndpoints } from "./utils/auth";
-import { NativeBaseProvider, Spinner } from "native-base";
+import { Icon, NativeBaseProvider, Link } from "native-base";
 import LoginForm from "./screens/LoginForm";
 import role from "./recoil/roleState/atom";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -20,7 +20,7 @@ import Insurances from "./screens/Insurances";
 import { RecoilRootWithPersisance } from "./recoil";
 import ServerList from "./components/ServerList";
 import PatientInfo from "./screens/PatientInfo";
-
+import PatientProfile from "./screens/PatientProfile";
 
 // todo: temporary recoil fix, should be fixed in expo sdk that support react-native 0.64+, probably sdk 43
 // https://github.com/facebookexperimental/Recoil/issues/1030
@@ -36,8 +36,6 @@ const App = () => (
 	</NativeBaseProvider>
 );
 
-
-
 export type RootStackParamList = {
 	Home: undefined,
 	Details: undefined,
@@ -49,7 +47,8 @@ export type RootStackParamList = {
 	Insurances: undefined,
 	Hub: undefined,
 	ServerList: undefined,
-	PatientInfo: undefined
+	PatientInfo: undefined,
+	PatientProfile: undefined
 };
 const Stack = createNativeStackNavigator<RootStackParamList>();
 const navigationRef = createNavigationContainerRef<RootStackParamList>();
@@ -118,7 +117,6 @@ const MainContainer = () => {
 			});
 	};
 
-
 	return (
 		<NavigationContainer ref={navigationRef}>
 			<Stack.Navigator
@@ -137,6 +135,7 @@ const MainContainer = () => {
 						<Stack.Screen name="Organizations" component={Organizations} />
 						<Stack.Screen name="Insurances" component={Insurances} />
 						<Stack.Screen name="PatientInfo" component={PatientInfo} options={{ title: "Patient Information" }} />
+						<Stack.Screen name="PatientProfile" component={PatientProfile} options={{ title: "Patient Profile" }} />
 						<Stack.Screen name="Details" component={Details} />
 						<Stack.Screen name="Auth" component={Auth} options={{ headerShown: false }} />
 
