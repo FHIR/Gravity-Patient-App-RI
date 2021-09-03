@@ -18,6 +18,7 @@ import taskState from "../recoil/task";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { RootStackParamList } from "../App";
 import { fetchFhirData } from "../utils/api";
+import PatientProfile from "../screens/PatientProfile";
 
 const Home = ({ navigation }: NativeStackScreenProps<RootStackParamList, "Home">): JSX.Element => {
 	const servers = useRecoilValue(serversState);
@@ -57,13 +58,12 @@ const Home = ({ navigation }: NativeStackScreenProps<RootStackParamList, "Home">
 			<HStack>
 				<SyncInfo/>
 			</HStack>
-
 			<View p={5}>
 				<HStack pb={5}>
 					<Pressable
 						flex={1}
 						flexDirection="column"
-						onPress={() => navigation.navigate("PatientInfo")}
+						onPress={() => navigation.navigate("PatientProfile")}
 					>
 						<UserCard/>
 					</Pressable>

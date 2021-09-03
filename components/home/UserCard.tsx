@@ -5,7 +5,7 @@ import { useRecoilValue } from "recoil";
 import { patientInfoState } from "../../recoil/patient";
 
 const UserCard = ():JSX.Element => {
-	const { name, email } = useRecoilValue(patientInfoState);
+	const patientInfo = useRecoilValue(patientInfoState);
 
 	return (
 		<Card>
@@ -16,13 +16,13 @@ const UserCard = ():JSX.Element => {
 						color="#333"
 						fontSize="lg"
 					>
-						{ name }
+						{ patientInfo.name }
 					</Text>
 					<Text
 						color="#7b7f87"
 						fontSize="sm"
 					>
-						{ email }
+						{ patientInfo.email }
 					</Text>
 				</VStack>
 			</HStack>
