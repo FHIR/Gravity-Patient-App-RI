@@ -3,11 +3,11 @@ import { HStack, ScrollView, View, Text } from "native-base";
 import ResourceCard from "../components/ResourceCard";
 import ResourceCardItem from "../components/ResourceCardItem";
 import { useRecoilValue } from "recoil";
-import { requesterCaregiverState } from "../recoil/requester";
+import { ownerCaregiverState } from "../recoil/owner";
 
 
 const Caregivers = (): JSX.Element => {
-	const caregivers = useRecoilValue(requesterCaregiverState);
+	const caregivers = useRecoilValue(ownerCaregiverState);
 
 	return (
 		<ScrollView p={5}>

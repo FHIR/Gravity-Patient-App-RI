@@ -1,4 +1,4 @@
-import requester from "./atom";
+import owner from "./atom";
 import { selector } from "recoil";
 import { PractitionerRole, Practitioner, Resource } from "fhir/r4";
 
@@ -13,12 +13,12 @@ type ClinicalStaff = {
 const isPractitionerGuard = (resource: Resource): resource is Practitioner => resource.resourceType === "Practitioner";
 const isPractitionerRoleGuard = (resource: Resource): resource is PractitionerRole => resource.resourceType === "PractitionerRole";
 
-const requesterClinicalStaff = selector<ClinicalStaff[]>({
-	key: "requesterClinicalStaff",
+const ownerClinicalStaff = selector<ClinicalStaff[]>({
+	key: "ownerClinicalStaff",
 	get: ({ get }) => {
-		const requesters = get(requester);
+		const owners = get(owner);
 
-		const practitioners = requesters.filter(isPractitionerGuard).map(r => ({
+		const practitioners = owners.filter(isPractitionerGuard).map(r => ({
 			name: r.name?.[0]?.text,
 			//todo: where to get those for practitioner resource?
 			organization: undefined,
@@ -26,7 +26,7 @@ const requesterClinicalStaff = selector<ClinicalStaff[]>({
 			location: r.address?.[0].city,
 			phone: r.telecom?.find(t => t.system === "phone")?.value
 		}));
-		const practitionerRoles = requesters.filter(isPractitionerRoleGuard).map(r => ({
+		const practitionerRoles = owners.filter(isPractitionerRoleGuard).map(r => ({
 			name: r.practitioner?.display,
 			organization: r.organization?.display,
 			role: r.code?.[0].text,
@@ -38,4 +38,4 @@ const requesterClinicalStaff = selector<ClinicalStaff[]>({
 	}
 });
 
-export default requesterClinicalStaff;
+export default ownerClinicalStaff;

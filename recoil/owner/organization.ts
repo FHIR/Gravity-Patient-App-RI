@@ -1,4 +1,4 @@
-import requester from "./atom";
+import owner from "./atom";
 import { selector } from "recoil";
 import { Organization as FhirOrganization, Resource } from "fhir/r4";
 
@@ -14,12 +14,12 @@ type Organization = {
 
 const isOrganizationGuard = (resource: Resource): resource is FhirOrganization => resource.resourceType === "Organization";
 
-const requesterOrganizationState = selector<Organization[]>({
-	key: "requesterOrganizationState",
+const ownerOrganizationState = selector<Organization[]>({
+	key: "ownerOrganizationState",
 	get: ({ get }) => {
-		const requesters = get(requester);
+		const owners = get(owner);
 
-		return requesters
+		return owners
 			.filter(isOrganizationGuard)
 			.map(r => ({
 				name: r.name,
@@ -33,4 +33,4 @@ const requesterOrganizationState = selector<Organization[]>({
 	}
 });
 
-export default requesterOrganizationState;
+export default ownerOrganizationState;

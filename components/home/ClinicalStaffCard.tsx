@@ -3,11 +3,11 @@ import { HStack, Icon, Text, VStack } from "native-base";
 import { Path } from "react-native-svg";
 import Card from "../Card";
 import { useRecoilValue } from "recoil";
-import { requesterClinicalStaff } from "../../recoil/requester";
+import { ownerClinicalStaff } from "../../recoil/owner";
 
 
 const ClinicalStaffCard = ():JSX.Element => {
-	const [primaryStaff] = useRecoilValue(requesterClinicalStaff);
+	const [primaryStaff] = useRecoilValue(ownerClinicalStaff);
 
 	return (
 		<Card>

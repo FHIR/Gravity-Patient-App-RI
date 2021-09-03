@@ -3,11 +3,11 @@ import { Divider, HStack, Icon, Text, VStack } from "native-base";
 import { Path } from "react-native-svg";
 import Card from "../Card";
 import { useRecoilValue } from "recoil";
-import { requesterOrganizationState } from "../../recoil/requester";
+import { ownerOrganizationState } from "../../recoil/owner";
 
 
 const OrganizationsCard = ():JSX.Element => {
-	const organizations = useRecoilValue(requesterOrganizationState);
+	const organizations = useRecoilValue(ownerOrganizationState);
 	const active: number = organizations.filter(o => o.active).length;
 	const total: number = organizations.length;
 

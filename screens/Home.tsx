@@ -13,7 +13,7 @@ import { serversState } from "../recoil/servers";
 import patientState from "../recoil/patient";
 import coverageState from "../recoil/coverage";
 import payorState from "../recoil/payor";
-import requesterState from "../recoil/requester";
+import ownerState from "../recoil/owner";
 import taskState from "../recoil/task";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { RootStackParamList } from "../App";
@@ -24,20 +24,21 @@ const Home = ({ navigation }: NativeStackScreenProps<RootStackParamList, "Home">
 	const [patients, setPatient] = useRecoilState(patientState);
 	const [coverages, setCoverage] = useRecoilState(coverageState);
 	const [payors, setPayor] = useRecoilState(payorState);
-	const [requesters, setRequester] = useRecoilState(requesterState);
+	const [owners, setOwner] = useRecoilState(ownerState);
 	const [tasks, setTask] = useRecoilState(taskState);
 
 	useEffect(() => {
 		Object.keys(servers).forEach(key => {
 			const server = servers[key];
 
-			server && server.session && fetchFhirData(server.fhirUri, server.session.token.access, server.session.patientId).then(({ patient, coverage, payor, requester, task })  => {
-				patient && setPatient([...patients, patient]);
-				coverage && setCoverage([...coverages, ...coverage]);
-				payor && setPayor([...payors, ...payor]);
-				requester && setRequester([...requesters, ...requester]);
-				task && setTask([...tasks, ...task]);
-			})
+			server && server.session && fetchFhirData(server.fhirUri, server.session.token.access, server.session.patientId)
+				.then(({ patient, coverage, payor, owner, task })  => {
+					patient && setPatient([...patients, patient]);
+					coverage && setCoverage([...coverages, ...coverage]);
+					payor && setPayor([...payors, ...payor]);
+					owner && setOwner([...owners, ...owner]);
+					task && setTask([...tasks, ...task]);
+				})
 		});
 	}, [servers]);
 

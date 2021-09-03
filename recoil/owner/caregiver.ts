@@ -1,4 +1,4 @@
-import requester from "./atom";
+import owner from "./atom";
 import { selector } from "recoil";
 import { RelatedPerson, Resource } from "fhir/r4";
 
@@ -12,12 +12,12 @@ type Caregiver = {
 
 const isRelatedPersonGuard = (resource: Resource): resource is RelatedPerson => resource.resourceType === "RelatedPerson";
 
-const requesterCaregiverState = selector<Caregiver[]>({
-	key: "requesterCaregiverState",
+const ownerCaregiverState = selector<Caregiver[]>({
+	key: "ownerCaregiverState",
 	get: ({ get }) => {
-		const requesters = get(requester);
+		const owners = get(owner);
 
-		return requesters
+		return owners
 			.filter(isRelatedPersonGuard)
 			.map(r => ({
 				name: r.name?.[0].text,
@@ -30,4 +30,4 @@ const requesterCaregiverState = selector<Caregiver[]>({
 	}
 });
 
-export default requesterCaregiverState;
+export default ownerCaregiverState;
