@@ -23,7 +23,8 @@ export type fetchFhirType = {
 	coverage: Coverage[] | null,
 	task: Task[] | null,
 	payor: Payor[] | null,
-	owner: Owner[] | null
+	owner: Owner[] | null,
+	focus: Focus[] | null
 };
 
 export const fetchFhirData = async (serverURI: string, token: string | null, patientId: string): Promise<fetchFhirType> => {
@@ -33,17 +34,20 @@ export const fetchFhirData = async (serverURI: string, token: string | null, pat
 	}
 
 	const patient = await client.read({ resourceType: "Patient", id: patientId });
-	const coverageBundle = await client.search({ resourceType: "Coverage", searchParams: { "_patient": patientId, "_include": "Coverage:payor" } }) as Bundle;
+	const coverageBundle = await client.search({ resourceType: "Coverage", searchParams: { patient: patientId, _include: "Coverage:payor" } }) as Bundle;
 	const [coverage, payor] = splitInclude<Coverage[], Payor[]>(coverageBundle);
-	const taskBundle = await client.search({ resourceType: "Task", searchParams: { "_patient": patientId, "_include": "Task:owner" } }) as Bundle;
+	let taskBundle = await client.search({ resourceType: "Task", searchParams: { patient: patientId, _include: "Task:owner" } }) as Bundle;
 	const [task, owner] = splitInclude<Task[], Owner[]>(taskBundle);
+	taskBundle = await client.search({ resourceType: "Task", searchParams: { patient: patientId, _include: "Task:focus" } }) as Bundle;
+	const [_, focus] = splitInclude<Task[], Focus[]>(taskBundle);
 
 	return {
 		patient: patient.resourceType === "Patient" ? patient as Patient : null,
 		coverage,
 		payor,
 		task,
-		owner
+		owner,
+		focus
 	};
 };
 

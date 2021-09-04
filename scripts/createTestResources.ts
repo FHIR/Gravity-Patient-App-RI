@@ -231,6 +231,9 @@ const makeSRTask = (patientId: string, serviceRequestId: string) => ({
 	"status": "ready",
 	"intent": "proposal",
 	"priority": "routine",
+	"for": {
+		"reference": `Patient/${patientId}`
+	},
 	"code": {
 		"text": "Acknowledge receiving of a service request"
 	},
@@ -247,6 +250,9 @@ const makeQTask = (patientId: string, questionnaireId: string) => ({
 	"status": "ready",
 	"intent": "proposal",
 	"priority": "routine",
+	"for": {
+		"reference": `Patient/${patientId}`
+	},
 	"code": {
 		"text": "Complete a questionnaire"
 	},

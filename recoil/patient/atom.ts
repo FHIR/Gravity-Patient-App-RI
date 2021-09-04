@@ -1,9 +1,9 @@
 import { atom } from "recoil";
 import { Patient } from "fhir/r4";
 
-const patient = atom<Patient[]>({
+const patientState = atom<{ [serverId: string]: Patient }>({
 	key: "patientState",
-	default: []
+	default: {}
 });
 
-export default patient;
+export default patientState;

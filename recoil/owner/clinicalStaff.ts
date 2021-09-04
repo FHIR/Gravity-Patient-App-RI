@@ -1,4 +1,4 @@
-import owner from "./atom";
+import ownerState from "./atom";
 import { selector } from "recoil";
 import { PractitionerRole, Practitioner, Resource } from "fhir/r4";
 
@@ -16,7 +16,7 @@ const isPractitionerRoleGuard = (resource: Resource): resource is PractitionerRo
 const ownerClinicalStaff = selector<ClinicalStaff[]>({
 	key: "ownerClinicalStaff",
 	get: ({ get }) => {
-		const owners = get(owner);
+		const owners = Object.values(get(ownerState)).flatMap(v => v);
 
 		const practitioners = owners.filter(isPractitionerGuard).map(r => ({
 			name: r.name?.[0]?.text,

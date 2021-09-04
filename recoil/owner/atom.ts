@@ -1,9 +1,9 @@
 import { atom } from "recoil";
 import { Owner } from "../../utils/api";
 
-const owner = atom<Owner[]>({
+const ownerState = atom<{ [serverId: string]: Owner[] }>({
 	key: "ownerState",
-	default: []
+	default: {}
 });
 
-export default owner;
+export default ownerState;

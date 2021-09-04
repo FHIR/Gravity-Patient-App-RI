@@ -1,9 +1,9 @@
 import { atom } from "recoil";
 import { Coverage } from "fhir/r4";
 
-const coverage = atom<Coverage[]>({
+const coverageState = atom<{ [serverId: string]: Coverage[] }>({
 	key: "coverageState",
-	default: []
+	default: {}
 });
 
-export default coverage;
+export default coverageState;

@@ -1,9 +1,9 @@
 import { atom } from "recoil";
 import { Payor } from "../../utils/api";
 
-const payor = atom<Payor[]>({
+const payorState = atom<{ [serverId: string]: Payor[] }>({
 	key: "payorState",
-	default: []
+	default: {}
 });
 
-export default payor;
+export default payorState;

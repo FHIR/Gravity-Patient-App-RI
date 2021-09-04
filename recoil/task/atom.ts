@@ -1,9 +1,9 @@
 import { atom } from "recoil";
 import { Task } from "fhir/r4";
 
-const task = atom<Task[]>({
+const taskState = atom<{ [serverId: string]: Task[] }>({
 	key: "taskState",
-	default: []
+	default: {}
 });
 
-export default task;
+export default taskState;

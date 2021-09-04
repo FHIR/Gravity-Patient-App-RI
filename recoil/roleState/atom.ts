@@ -1,8 +1,8 @@
 import { atom } from "recoil";
 
-const role = atom<string | null>({
-	key: "role",
+const roleState = atom<string | null>({
+	key: "roleState",
 	default: null
 });
 
-export default role;
+export default roleState;

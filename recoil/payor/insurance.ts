@@ -1,4 +1,4 @@
-import payor from "./atom";
+import payorState from "./atom";
 import { selector } from "recoil";
 import { Organization, Resource } from "fhir/r4";
 
@@ -14,7 +14,7 @@ const isOrganizationGuard = (resource: Resource): resource is Organization => re
 const payorInsuranceState = selector<Insurance[]>({
 	key: "payorInsuranceState",
 	get: ({ get }) => {
-		const payors = get(payor);
+		const payors = Object.values(get(payorState)).flatMap(v => v);
 
 		return payors
 			.map(r => ({

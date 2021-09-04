@@ -1,4 +1,4 @@
-import owner from "./atom";
+import ownerState from "./atom";
 import { selector } from "recoil";
 import { Organization as FhirOrganization, Resource } from "fhir/r4";
 
@@ -17,7 +17,7 @@ const isOrganizationGuard = (resource: Resource): resource is FhirOrganization =
 const ownerOrganizationState = selector<Organization[]>({
 	key: "ownerOrganizationState",
 	get: ({ get }) => {
-		const owners = get(owner);
+		const owners = Object.values(get(ownerState)).flatMap(v => v);
 
 		return owners
 			.filter(isOrganizationGuard)
