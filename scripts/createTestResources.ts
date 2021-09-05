@@ -1,5 +1,5 @@
 import Client from "fhir-kit-client";
-import { Bundle, Patient, ServiceRequest, Task } from "fhir/r4";
+import { Bundle, Patient, ServiceRequest, Task, Organization, RelatedPerson, PractitionerRole, Practitioner } from "fhir/r4";
 
 
 const openFhirUrl: string = null;
@@ -8,6 +8,9 @@ const patientGiven: string[] = ["Supers"];
 const patientGender: "male" | "female" | "other" | "unknown" = "male";
 const refferalsN = 3;
 const assessmentsN = 3;
+const needOrganization = true;
+const needCaregiver = true;
+const needClinicalStaff = true;
 
 const cl = new Client({ baseUrl: openFhirUrl });
 
@@ -25,17 +28,42 @@ const go = async () => {
 		// Create new patient
 		const p = (await cl.create({ resourceType: "Patient", body: PATIENT })) as Patient;
 
-		// Create refferals
-		for (let i=0; i<refferalsN; i++) {
+		// Create Coverage/Payor resources for insurance
+		const payorOrg = await cl.create({ resourceType: "Organization", body: makePayorOrganization() }) as Organization;
+		await cl.create({ resourceType: "Coverage", body: makeCoverage(p.id!, payorOrg.id!) });
+
+		// Create referrals
+		for (let i = 0; i < refferalsN; i++) {
 			const sr = (await cl.create({ resourceType: "ServiceRequest", body: mkServiceRequest(p.id!) })) as ServiceRequest;
-			const t = (await cl.create({ resourceType: "Task", body: makeSRTask(p.id!, sr.id!) })) as Task;
+			const t = (await cl.create({ resourceType: "Task", body: makeSRTask(p.id!, sr.id!, "Patient", p.id!) })) as Task;
+		}
+
+		// Create task where owner is Organization
+		if (needOrganization) {
+			const sr = (await cl.create({ resourceType: "ServiceRequest", body: mkServiceRequest(p.id!) })) as ServiceRequest;
+			await cl.create({ resourceType: "Task", body: makeSRTask(p.id!, sr.id!, "Organization", payorOrg.id!) });
+		}
+
+		// Create task where owner is RelatedPerson
+		if (needCaregiver) {
+			const rp = await cl.create({ resourceType: "RelatedPerson", body: makeRelatedPerson(p.id!) }) as RelatedPerson;
+			const sr = (await cl.create({ resourceType: "ServiceRequest", body: mkServiceRequest(p.id!) })) as ServiceRequest;
+			await cl.create({ resourceType: "Task", body: makeSRTask(p.id!, sr.id!, "RelatedPerson", rp.id!) });
+		}
+
+		// Create task where owner is Practitioner or PractitionerRole
+		if (needClinicalStaff) {
+			const prac = await cl.create({ resourceType: "Practitioner", body: makePractitioner() }) as Practitioner;
+			const pr = await cl.create({ resourceType: "PractitionerRole", body: makePractitionerRole(payorOrg.id!, prac.id!) }) as PractitionerRole;
+			const sr = (await cl.create({ resourceType: "ServiceRequest", body: mkServiceRequest(p.id!) })) as ServiceRequest;
+			await cl.create({ resourceType: "Task", body: makeSRTask(p.id!, sr.id!, "PractitionerRole", pr.id!) });
 		}
 
 		// Push HVS questionnaire
 		await cl.update({ resourceType: "Questionnaire", id: HVS.id, body: HVS });
 
 		// Create assessments
-		for (let i=0; i<assessmentsN; i++) {
+		for (let i = 0; i < assessmentsN; i++) {
 			await cl.create({ resourceType: "Task", body: makeQTask(p.id!, HVS.id) });
 		}
 
@@ -196,6 +224,256 @@ const PATIENT = {
 	]
 }
 
+const makePayorOrganization = () => ({
+	"resourceType": "Organization",
+	"text": {
+		"status": "generated",
+		"div": "<div xmlns=\"http://www.w3.org/1999/xhtml\">\n      \n      <p>Blue Insurance</p>\n    \n    </div>"
+	},
+	"identifier": [
+		{
+			"system": "urn:oid:2.16.840.1.113883.3.19.2.3",
+			"value": "666666"
+		}
+	],
+	"name": "Blue Insurance",
+	"alias": [
+		"ABC Insurance"
+	],
+	"telecom": [
+		{
+			"system": "phone",
+			"value": "(+1) 734-677-7777"
+		},
+		{
+			"system": "fax",
+			"value": "(+1) 734-677-6622"
+		},
+		{
+			"system": "email",
+			"value": "hq@HL7.org"
+		}
+	],
+	"address": [
+		{
+			"line": [
+				"3300 Washtenaw Avenue, Suite 227"
+			],
+			"city": "Ann Arbor",
+			"state": "MI",
+			"postalCode": "48104",
+			"country": "USA"
+		}
+	],
+	"active": true,
+	"type": [
+		{
+			"coding": [
+				{
+					"system": "http://terminology.hl7.org/CodeSystem/organization-type",
+					"code": "dept",
+					"display": "Hospital Department"
+				}
+			]
+		}
+	],
+});
+
+const makeCoverage = (patientId: string, orgId: string) => ({
+	"resourceType": "Coverage",
+	"status": "active",
+	"beneficiary": {
+		"reference": `Patient/${patientId}`
+	},
+	"payor": [
+		{
+			"reference": `Organization/${orgId}`
+		}
+	]
+});
+
+const makeRelatedPerson = (patientId: string) => ({
+	"resourceType": "RelatedPerson",
+	"text": {
+		"status": "generated",
+		"div": "<div xmlns=\"http://www.w3.org/1999/xhtml\"><p><b>Generated Narrative with Details</b></p><p><b>id</b>: newborn-mom</p><p><b>identifier</b>: Social Security number = 444222222</p><p><b>active</b>: true</p><p><b>patient</b>: <a>Patient/newborn</a></p><p><b>relationship</b>: Natural Mother <span>(Details : {http://terminology.hl7.org/CodeSystem/v3-RoleCode code 'NMTH' = 'natural mother', given as 'natural mother'})</span></p><p><b>name</b>: Eve Everywoman (OFFICIAL)</p><p><b>telecom</b>: ph: 555-555-2003(WORK)</p><p><b>gender</b>: female</p><p><b>birthDate</b>: 31/05/1973</p><p><b>address</b>: 2222 Home Street (HOME)</p></div>"
+	},
+	"identifier": [
+		{
+			"type": {
+				"coding": [
+					{
+						"system": "http://terminology.hl7.org/CodeSystem/v2-0203",
+						"code": "SS"
+					}
+				]
+			},
+			"system": "http://hl7.org/fhir/sid/us-ssn",
+			"value": "444222222"
+		}
+	],
+	"active": true,
+	"patient": {
+		"reference": `Patient/${patientId}`
+	},
+	"address": [
+		{
+			"line": [
+				"43, Place du Marché Sainte Catherine"
+			],
+			"city": "Paris",
+			"postalCode": "75004",
+			"country": "FRA"
+		}
+	],
+	"relationship": [
+		{
+			"coding": [
+				{
+					"system": "http://terminology.hl7.org/CodeSystem/v3-RoleCode",
+					"code": "NMTH",
+					"display": "natural mother"
+				}
+			],
+			"text": "Natural Mother"
+		}
+	],
+	"name": [
+		{
+			"use": "official",
+			"family": "Everywoman",
+			"given": [
+				"Eve"
+			],
+			"text": "Eve Everywoman"
+		}
+	],
+	"telecom": [
+		{
+			"system": "phone",
+			"value": "555-555-2003",
+			"use": "work"
+		}
+	],
+	"gender": "female",
+	"birthDate": "1973-05-31"
+});
+
+const makePractitioner = () => ({
+	"resourceType": "Practitioner",
+	"text": {
+		"status": "generated",
+		"div": "<div xmlns=\"http://www.w3.org/1999/xhtml\">\n      <p>Dr Adam Careful is a Referring Practitioner for Acme Hospital from 1-Jan 2012 to 31-Mar\n        2012</p>\n    </div>"
+	},
+	"identifier": [
+		{
+			"system": "http://www.acme.org/practitioners",
+			"value": "23"
+		}
+	],
+	"active": true,
+	"name": [
+		{
+			"family": "Careful",
+			"given": [
+				"Adam"
+			],
+			"prefix": [
+				"Dr"
+			]
+		}
+	],
+	"address": [
+		{
+			"use": "home",
+			"line": [
+				"534 Erewhon St"
+			],
+			"city": "PleasantVille",
+			"state": "Vic",
+			"postalCode": "3999"
+		}
+	],
+	"qualification": [
+		{
+			"identifier": [
+				{
+					"system": "http://example.org/UniversityIdentifier",
+					"value": "12345"
+				}
+			],
+			"code": {
+				"coding": [
+					{
+						"system": "http://terminology.hl7.org/CodeSystem/v2-0360/2.7",
+						"code": "BS",
+						"display": "Bachelor of Science"
+					}
+				],
+				"text": "Bachelor of Science"
+			},
+			"period": {
+				"start": "1995"
+			},
+			"issuer": {
+				"display": "Example University"
+			}
+		}
+	]
+});
+
+const makePractitionerRole = (orgId: string, pracId: string) => ({
+	"resourceType": "PractitionerRole",
+	"text": {
+		"status": "generated",
+		"div": "<div xmlns=\"http://www.w3.org/1999/xhtml\">\n            <span style=\"color: gray;\">practitioner:</span> Ronald Briet<br/><span style=\"color: gray;\">organization:</span> BMC<br/><span style=\"color: gray;\">role:</span> Care role\n          </div>"
+	},
+	"organization": {
+		"reference": `Organization/${orgId}`,
+		"display": "BMC"
+	},
+	"practitioner": {
+		"reference": `Practitioner/${pracId}`,
+		"display": "Dr. Careful"
+	},
+	"code": [
+		{
+			"coding": [
+				{
+					"system": "urn:oid:2.16.840.1.113883.2.4.15.111",
+					"code": "01.000",
+					"display": "Arts"
+				}
+			],
+			"text": "Care role"
+		}
+	],
+	"specialty": [
+		{
+			"coding": [
+				{
+					"system": "urn:oid:2.16.840.1.113883.2.4.15.111",
+					"code": "01.018",
+					"display": "Ear-, Nose and Throat"
+				}
+			],
+			"text": "specialization"
+		}
+	],
+	"location": [
+		{
+			"display": "South Wing, second floor"
+		}
+	],
+	"telecom": [
+		{
+			"system": "phone",
+			"value": "555 123456",
+			"use": "mobile"
+		}
+	]
+});
+
 const mkServiceRequest = (patientId: string) => ({
 	"resourceType": "ServiceRequest",
 	"status": "active",
@@ -226,7 +504,7 @@ const mkServiceRequest = (patientId: string) => ({
 	}
 });
 
-const makeSRTask = (patientId: string, serviceRequestId: string) => ({
+const makeSRTask = (patientId: string, serviceRequestId: string, ownerResourceType: "Patient" | "Organization" | "RelatedPerson" | "PractitionerRole", ownerId: string) => ({
 	"resourceType": "Task",
 	"status": "ready",
 	"intent": "proposal",
@@ -241,7 +519,7 @@ const makeSRTask = (patientId: string, serviceRequestId: string) => ({
 		"reference": `ServiceRequest/${serviceRequestId}`
 	},
 	"owner": {
-		"reference": `Patient/${patientId}`,
+		"reference": `${ownerResourceType}/${ownerId}`,
 	}
 });
 

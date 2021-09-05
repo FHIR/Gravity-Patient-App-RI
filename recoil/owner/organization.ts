@@ -24,7 +24,7 @@ const ownerOrganizationState = selector<Organization[]>({
 			.map(r => ({
 				name: r.name,
 				active: r.active,
-				type: r.type?.[0].text,
+				type: r.type?.[0].text || r.type?.[0].coding?.[0].display,
 				location: r.address ? `${r.address[0].line}, ${r.address[0].city}, ${r.address[0].state} ${r.address[0].postalCode}, ${r.address[0].country}` : undefined,
 				phone: r.telecom?.find(t => t.system === "phone")?.value,
 				website: r.telecom?.find(t => t.system === "url")?.value,
