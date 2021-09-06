@@ -4,10 +4,14 @@ import { Path } from "react-native-svg";
 import Card from "../Card";
 import { useRecoilValue } from "recoil";
 import { taskReferralState } from "../../recoil/task";
+import { filterNewTasks, filterInProgressTasks, filterSubmittedTasks } from "../../utils";
 
 
 const ReferralsCard = (): JSX.Element => {
 	const referrals = useRecoilValue(taskReferralState);
+	const newTasks: number = filterNewTasks(referrals).length;
+	const inProgressTasks: number = filterInProgressTasks(referrals).length;
+	const submittedTasks: number = filterSubmittedTasks(referrals).length;
 
 	return (
 		<Card>
@@ -19,7 +23,6 @@ const ReferralsCard = (): JSX.Element => {
 			>
 				Referrals
 			</Text>
-			<Text>{ JSON.stringify(referrals, null, 2) }</Text>
 			<HStack justifyContent="space-evenly">
 				<VStack>
 					<Text
@@ -44,7 +47,7 @@ const ReferralsCard = (): JSX.Element => {
 							fontWeight="medium"
 							ml={1}
 						>
-							0
+							{ newTasks }
 						</Text>
 					</HStack>
 				</VStack>
@@ -74,7 +77,7 @@ const ReferralsCard = (): JSX.Element => {
 							fontWeight="medium"
 							ml={1}
 						>
-							0
+							{ inProgressTasks }
 						</Text>
 					</HStack>
 				</VStack>
@@ -104,7 +107,7 @@ const ReferralsCard = (): JSX.Element => {
 							fontWeight="medium"
 							ml={1}
 						>
-							0
+							{ submittedTasks }
 						</Text>
 					</HStack>
 				</VStack>

@@ -4,10 +4,14 @@ import { Path } from "react-native-svg";
 import Card from "../Card";
 import { useRecoilValue } from "recoil";
 import { taskAssessmentState } from "../../recoil/task";
+import { filterNewTasks, filterInProgressTasks, filterSubmittedTasks } from "../../utils";
 
 
 const AssessmentsCard = (): JSX.Element => {
 	const assessments = useRecoilValue(taskAssessmentState);
+	const newTasks: number = filterNewTasks(assessments).length;
+	const inProgressTasks: number = filterInProgressTasks(assessments).length;
+	const submittedTasks: number = filterSubmittedTasks(assessments).length;
 
 	return (
 		<Card>
@@ -19,7 +23,6 @@ const AssessmentsCard = (): JSX.Element => {
 			>
 				Assessments
 			</Text>
-			<Text>{ JSON.stringify(assessments, null, 2) }</Text>
 			<HStack justifyContent="space-evenly">
 				<VStack>
 					<Text
@@ -44,7 +47,7 @@ const AssessmentsCard = (): JSX.Element => {
 							fontWeight="medium"
 							ml={1}
 						>
-							0
+							{ newTasks }
 						</Text>
 					</HStack>
 				</VStack>
@@ -74,7 +77,7 @@ const AssessmentsCard = (): JSX.Element => {
 							fontWeight="medium"
 							ml={1}
 						>
-							0
+							{ inProgressTasks }
 						</Text>
 					</HStack>
 				</VStack>
@@ -104,7 +107,7 @@ const AssessmentsCard = (): JSX.Element => {
 							fontWeight="medium"
 							ml={1}
 						>
-							0
+							{ submittedTasks }
 						</Text>
 					</HStack>
 				</VStack>
