@@ -133,11 +133,23 @@ const Home = ({ navigation }: NativeStackScreenProps<RootStackParamList, "Home">
 				</HStack>
 
 				<HStack pb={5}>
-					<ReferralsCard/>
+					<Pressable
+						flex={1}
+						flexDirection="column"
+						onPress={() => navigation.navigate("Referrals")}
+					>
+						<ReferralsCard />
+					</Pressable>
 				</HStack>
 
 				<HStack>
-					<AssessmentsCard/>
+					<Pressable
+						flex={1}
+						flexDirection="column"
+						onPress={() => navigation.navigate("Assessments")}
+					>
+						<AssessmentsCard/>
+					</Pressable>
 				</HStack>
 			</View>
 		</ScrollView>

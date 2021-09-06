@@ -2,7 +2,8 @@ import React, { useEffect } from "react";
 import { NavigationContainer, createNavigationContainerRef } from "@react-navigation/native";
 import { createNativeStackNavigator, NativeStackScreenProps } from "@react-navigation/native-stack";
 import Home from "./screens/Home";
-import Details from "./screens/Details";
+import Referrals from "./screens/Referrals";
+import Assessments from "./screens/Assessments";
 import Auth from "./screens/Auth";
 import { useRecoilState } from "recoil";
 import {Button, LogBox, View} from "react-native";
@@ -38,7 +39,6 @@ const App = () => (
 
 export type RootStackParamList = {
 	Home: undefined,
-	Details: undefined,
 	Auth: { serverId: string },
 	LoginForm: undefined,
 	Caregivers: undefined,
@@ -48,7 +48,9 @@ export type RootStackParamList = {
 	Hub: undefined,
 	ServerList: undefined,
 	PatientInfo: undefined,
-	PatientProfile: undefined
+	PatientProfile: undefined,
+	Referrals: undefined,
+	Assessments: undefined
 };
 const Stack = createNativeStackNavigator<RootStackParamList>();
 const navigationRef = createNavigationContainerRef<RootStackParamList>();
@@ -136,11 +138,11 @@ const MainContainer = () => {
 						<Stack.Screen name="Insurances" component={Insurances} />
 						<Stack.Screen name="PatientInfo" component={PatientInfo} options={{ title: "Patient Information" }} />
 						<Stack.Screen name="PatientProfile" component={PatientProfile} options={{ title: "Patient Profile" }} />
-						<Stack.Screen name="Details" component={Details} />
 						<Stack.Screen name="Auth" component={Auth} options={{ headerShown: false }} />
-
 						<Stack.Screen name="ServerList" component={ServerList} />
 						<Stack.Screen name="Hub" component={Hub} />
+						<Stack.Screen name="Referrals" component={Referrals} />
+						<Stack.Screen name="Assessments" component={Assessments} />
 					</>
 				)}
 			</Stack.Navigator>
