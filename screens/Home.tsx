@@ -1,5 +1,5 @@
-import React, { useEffect } from "react";
-import { HStack, ScrollView, View, Text, Pressable } from "native-base";
+import React, { useEffect, useState } from "react";
+import { HStack, ScrollView, View, Text, Pressable, Spinner } from "native-base";
 import SyncInfo from "../components/home/SyncInfo";
 import UserCard from "../components/home/UserCard";
 import ClinicalStaffCard from "../components/home/ClinicalStaffCard";
@@ -28,11 +28,13 @@ const Home = ({ navigation }: NativeStackScreenProps<RootStackParamList, "Home">
 	const [owners, setOwner] = useRecoilState(ownerState);
 	const [tasks, setTask] = useRecoilState(taskState);
 	const [focuses, setFocus] = useRecoilState(focusState);
+	const [isLoading, setIsLoading] = useState(false);
 
 	useEffect(() => {
 		Object.keys(servers).forEach(serverId => {
 			const server = servers[serverId];
 
+			setIsLoading(true);
 			server && server.session && fetchFhirData(server.fhirUri, server.session.access.token, server.session.patientId)
 				.then(({ patient, coverage, payor, owner, task, focus })  => {
 					patient && setPatient({
@@ -60,6 +62,7 @@ const Home = ({ navigation }: NativeStackScreenProps<RootStackParamList, "Home">
 						[serverId]: focus
 					});
 				})
+				.finally(() => setIsLoading(false));
 		});
 	}, [servers]);
 
@@ -67,6 +70,14 @@ const Home = ({ navigation }: NativeStackScreenProps<RootStackParamList, "Home">
 		return (
 			<View flex={1} alignItems="center" justifyContent="center">
 				<Text>No Data Yet</Text>
+			</View>
+		);
+	}
+
+	if (isLoading) {
+		return (
+			<View flex={1} alignItems="center" justifyContent="center">
+				<Spinner />
 			</View>
 		);
 	}

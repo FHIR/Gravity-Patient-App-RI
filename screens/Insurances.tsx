@@ -1,5 +1,5 @@
 import React from "react";
-import { ScrollView, HStack, View, Text } from "native-base";
+import { ScrollView, View, Text } from "native-base";
 import ResourceCard from "../components/ResourceCard";
 import ResourceCardItem from "../components/ResourceCardItem";
 import { useRecoilValue } from "recoil";
@@ -14,7 +14,7 @@ const Insurances = (): JSX.Element => {
 			{
 				insurances.length ?
 					insurances.map((o, i) => (
-						<HStack
+						<View
 							mb={5}
 							key={i}
 						>
@@ -29,7 +29,7 @@ const Insurances = (): JSX.Element => {
 									{ o.email || "N/A" }
 								</ResourceCardItem>
 							</ResourceCard>
-						</HStack>
+						</View>
 					)) :
 					<View
 						flex={1}

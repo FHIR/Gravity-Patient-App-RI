@@ -8,7 +8,7 @@ const UserCard = ():JSX.Element => {
 	const patientInfo = useRecoilValue(patientInfoState);
 
 	return (
-		<Card>
+		<Card flex={1}>
 			<HStack alignItems="center">
 				<Avatar size="55px">User</Avatar>
 				<VStack ml={4}>

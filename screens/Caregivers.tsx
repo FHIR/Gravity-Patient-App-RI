@@ -1,5 +1,5 @@
 import React from "react";
-import { HStack, ScrollView, View, Text } from "native-base";
+import { ScrollView, View, Text } from "native-base";
 import ResourceCard from "../components/ResourceCard";
 import ResourceCardItem from "../components/ResourceCardItem";
 import { useRecoilValue } from "recoil";
@@ -14,7 +14,7 @@ const Caregivers = (): JSX.Element => {
 			{
 				caregivers.length ?
 					caregivers.map((c, i) => (
-						<HStack
+						<View
 							mb={5}
 							key={i}
 						>
@@ -32,7 +32,7 @@ const Caregivers = (): JSX.Element => {
 									{ c.phone || "N/A" }
 								</ResourceCardItem>
 							</ResourceCard>
-						</HStack>
+						</View>
 					)) :
 					<View
 						flex={1}
