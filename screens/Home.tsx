@@ -33,7 +33,7 @@ const Home = ({ navigation }: NativeStackScreenProps<RootStackParamList, "Home">
 		Object.keys(servers).forEach(serverId => {
 			const server = servers[serverId];
 
-			server && server.session && fetchFhirData(server.fhirUri, server.session.token.access, server.session.patientId)
+			server && server.session && fetchFhirData(server.fhirUri, server.session.access.token, server.session.patientId)
 				.then(({ patient, coverage, payor, owner, task, focus })  => {
 					patient && setPatient({
 						...patients,

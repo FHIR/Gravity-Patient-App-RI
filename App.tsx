@@ -22,6 +22,8 @@ import { RecoilRootWithPersisance } from "./recoil";
 import ServerList from "./components/ServerList";
 import PatientInfo from "./screens/PatientInfo";
 import PatientProfile from "./screens/PatientProfile";
+import ServerView from "./screens/ServerView";
+
 
 // todo: temporary recoil fix, should be fixed in expo sdk that support react-native 0.64+, probably sdk 43
 // https://github.com/facebookexperimental/Recoil/issues/1030
@@ -50,7 +52,8 @@ export type RootStackParamList = {
 	PatientInfo: undefined,
 	PatientProfile: undefined,
 	Referrals: undefined,
-	Assessments: undefined
+	Assessments: undefined,
+	ServerView: { serverId: string },
 };
 const Stack = createNativeStackNavigator<RootStackParamList>();
 const navigationRef = createNavigationContainerRef<RootStackParamList>();
@@ -100,6 +103,7 @@ const MainContainer = () => {
 		discoverAuthEndpoints(fhirUri)
 			.then(({ authUri, tokenUri }) => {
 				const newServer: Server = {
+					id,
 					title,
 					fhirUri,
 					authConfig: {
@@ -107,7 +111,7 @@ const MainContainer = () => {
 						tokenUri,
 						clientId
 					},
-					session: null
+					session: undefined
 				};
 				setServers(oldServers => ({
 					...oldServers,
@@ -139,6 +143,8 @@ const MainContainer = () => {
 						<Stack.Screen name="PatientInfo" component={PatientInfo} options={{ title: "Patient Information" }} />
 						<Stack.Screen name="PatientProfile" component={PatientProfile} options={{ title: "Patient Profile" }} />
 						<Stack.Screen name="Auth" component={Auth} options={{ headerShown: false }} />
+						<Stack.Screen name="ServerView" component={ServerView} options={{ title: "" }} />
+
 						<Stack.Screen name="ServerList" component={ServerList} />
 						<Stack.Screen name="Hub" component={Hub} />
 						<Stack.Screen name="Referrals" component={Referrals} />
@@ -168,6 +174,10 @@ const Hub =  ({ navigation }: NativeStackScreenProps<RootStackParamList, "Hub">)
 			<Button
 				title="Servers"
 				onPress={() => navigation.navigate("ServerList")}
+			/>
+			<Button
+				title="Assessments"
+				onPress={() => navigation.navigate("Assessments")}
 			/>
 			<Button
 				title="clear async store"

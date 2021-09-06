@@ -10,7 +10,7 @@ const CaregiversCard = ():JSX.Element => {
 	const [primaryCaregiver] = useRecoilValue(ownerCaregiverState);
 
 	return (
-		<Card>
+		<Card flex={1}>
 			<HStack
 				space={1}
 				alignItems="center"

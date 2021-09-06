@@ -10,7 +10,7 @@ const InsurancesCard = ():JSX.Element => {
 	const [primaryInsurance] = useRecoilValue(payorInsuranceState);
 
 	return (
-		<Card>
+		<Card flex={1}>
 			<HStack
 				space={1}
 				alignItems="center"

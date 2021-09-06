@@ -10,7 +10,7 @@ const ClinicalStaffCard = ():JSX.Element => {
 	const [primaryStaff] = useRecoilValue(ownerClinicalStaff);
 
 	return (
-		<Card>
+		<Card flex={1}>
 			<HStack
 				space={1}
 				alignItems="center"

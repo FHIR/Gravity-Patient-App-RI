@@ -1,7 +1,9 @@
 import { atom } from "recoil";
+import { Session } from "../utils/auth";
 
 
 export type Server = {
+	id: string,
 	title: string,
 	fhirUri: string,
 	authConfig: {
@@ -9,15 +11,10 @@ export type Server = {
 		tokenUri: string,
 		clientId: string
 	},
-	session: {
-		patientId: string,
-		token: {
-			access: string | null
-		}
-	} | null
+	session?: Session
 }
 
-export type Servers = { [id: string]: Server | undefined }
+export type Servers = { [id: string]: Server }
 
 
 export const serversState = atom<Servers>({
