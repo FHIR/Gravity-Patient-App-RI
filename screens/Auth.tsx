@@ -5,7 +5,7 @@ import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { RootStackParamList } from "../App";
 import { useRecoilState } from "recoil";
 import { Server, serversState } from "../recoil/servers";
-import { makeURLEncodedBody } from "../utils/auth";
+import { exchangeAuthCode } from "../utils/auth";
 import { timeout } from "../utils";
 import { ClusterWithArrows, Success } from "../components/Icons";
 
@@ -13,7 +13,7 @@ import { ClusterWithArrows, Success } from "../components/Icons";
 const useProxy = true;
 const redirectUri = makeRedirectUri({ useProxy });
 
-const scopes = ["openid", "fhirUser", "launch/patient", "patient/*.*"];
+const scopes = ["launch/patient", "patient/*.*", "offline_access"];
 const unstuckScopes = scopes.filter(s => s !== "launch/patient");
 
 
@@ -60,39 +60,23 @@ const ServerAuth = (server: Server, onDone: (s: Server) => unknown) => {
 		const result = await prompt({ useProxy });
 		if (result.type === "success" && result.params.code) {
 			setPhase("exchange");
-			const tokenResp = await exchangeAuthCode(result.params.code);
+			const session = await exchangeAuthCode({
+				clientId: server.authConfig.clientId,
+				tokenUri: server.authConfig.tokenUri,
+				redirectUri,
+				codeVerifier: request?.codeVerifier,
+				code: result.params.code
+			});
 			setPhase("done");
 			await timeout(500);
 			const newServerState: Server = {
 				...server,
-				session: {
-					patientId: tokenResp.patient,
-					token: {
-						access: tokenResp.access_token
-					}
-				}
+				session
 			};
 			onDone(newServerState);
 		} else {
 			setPhase("init");
 		}
-	}
-
-	const exchangeAuthCode = async (code: string) => {
-		const resp = await fetch(server.authConfig.tokenUri, {
-			method: "POST",
-			headers: {
-				"content-type": "application/x-www-form-urlencoded"
-			},
-			body: makeURLEncodedBody({
-				grant_type: "authorization_code",
-				client_id: server.authConfig.clientId,
-				redirect_uri: redirectUri,
-				code,
-				code_verifier: request?.codeVerifier
-			})
-		});
-		return resp.json()
 	}
 
 

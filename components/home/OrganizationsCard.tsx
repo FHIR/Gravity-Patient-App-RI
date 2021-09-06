@@ -12,7 +12,7 @@ const OrganizationsCard = ():JSX.Element => {
 	const total: number = organizations.length;
 
 	return (
-		<Card>
+		<Card flex={1}>
 			<HStack
 				space={1}
 				alignItems="center"
