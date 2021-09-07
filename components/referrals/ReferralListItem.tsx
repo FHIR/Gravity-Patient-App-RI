@@ -40,4 +40,4 @@ const ReferralListItem = ({ referral, status }: { referral: Referral, status: "n
 	);
 };
 
-export default ReferralListItem
+export default ReferralListItem;

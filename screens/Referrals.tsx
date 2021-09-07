@@ -12,7 +12,7 @@ const New = (): JSX.Element => {
 	const referrals = useRecoilValue(taskReferralState);
 	const newReferrals = filterNewTasks(referrals) as Referral[];
 
-	return <ReferralList referrals={newReferrals} status="new" />
+	return <ReferralList referrals={newReferrals} status="new" />;
 };
 
 const InProgress = (): JSX.Element => {
