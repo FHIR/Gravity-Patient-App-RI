@@ -1,4 +1,4 @@
-import React, { ReactNode } from "react";
+import React  from "react";
 import { Box, IBoxProps } from "native-base";
 
 const Card = (props: IBoxProps): JSX.Element => (

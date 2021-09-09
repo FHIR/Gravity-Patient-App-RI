@@ -3,7 +3,10 @@ import { RootStackParamList } from "../App";
 import { useRecoilValue } from "recoil";
 import { taskReferralState } from "../recoil/task";
 import React, { useEffect } from "react";
-import { ScrollView, Text } from "native-base";
+import { ScrollView } from "native-base";
+import ReferralInfoCard from "../components/referrals/ReferralInfoCard";
+import ReferralOutcome from "../components/referrals/ReferralOutcome";
+
 
 const ReferralView = ({ navigation, route }: NativeStackScreenProps<RootStackParamList, "ReferralView">): JSX.Element => {
 	const referrals = useRecoilValue(taskReferralState);
@@ -17,8 +20,9 @@ const ReferralView = ({ navigation, route }: NativeStackScreenProps<RootStackPar
 	return (
 		referral
 			?
-			<ScrollView>
-				<Text>{ JSON.stringify(referral, null, 4) }</Text>
+			<ScrollView p={5}>
+				<ReferralInfoCard referral={referral} />
+				<ReferralOutcome referral={referral} />
 			</ScrollView>
 			:
 			<></>

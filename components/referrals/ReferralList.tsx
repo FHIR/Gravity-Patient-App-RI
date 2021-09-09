@@ -7,7 +7,7 @@ import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { RootStackParamList } from "../../App";
 
 
-const ReferralList = ({ referrals, status } : { referrals: Referral[], status: "new" | "in-progress" | "submitted" }): JSX.Element => {
+const ReferralList = ({ referrals } : { referrals: Referral[] }): JSX.Element => {
 	const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
 
 	return (
@@ -19,10 +19,7 @@ const ReferralList = ({ referrals, status } : { referrals: Referral[], status: "
 							onPress={() => navigation.navigate("ReferralView", { referralId: r.id })}
 							key={i}
 						>
-							<ReferralListItem
-								referral={r}
-								status={status}
-							/>
+							<ReferralListItem referral={r} />
 						</Pressable>
 					)) :
 					<View

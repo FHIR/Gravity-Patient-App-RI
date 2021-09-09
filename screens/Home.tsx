@@ -77,7 +77,7 @@ const Home = ({ navigation }: NativeStackScreenProps<RootStackParamList, "Home">
 	if (isLoading) {
 		return (
 			<View flex={1} alignItems="center" justifyContent="center">
-				<Spinner />
+				<Spinner color="blue.500" />
 			</View>
 		);
 	}
