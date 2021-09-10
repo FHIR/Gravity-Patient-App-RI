@@ -1,66 +1,32 @@
 import React from "react";
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
-import { Task } from "fhir/r4";
-import ResourceCard from "../components/ResourceCard";
-import ResourceCardItem from "../components/ResourceCardItem";
 import { filterNewTasks, filterInProgressTasks, filterSubmittedTasks } from "../utils";
-import { HStack, ScrollView, View, Text } from "native-base";
 import { useRecoilValue } from "recoil";
 import { taskReferralState } from "../recoil/task";
+import ReferralList from "../components/referrals/ReferralList";
+import { Referral } from "../recoil/task/referral";
 
 const Tab = createMaterialTopTabNavigator();
 
-const TaskList = (tasks: Task[]): JSX.Element => (
-	<ScrollView p={5}>
-		{
-			tasks.length ?
-				tasks.map((t, i) => (
-					<HStack
-						mb={5}
-						key={i}
-					>
-						<ResourceCard title={t.code?.text || "N/A"}>
-							<ResourceCardItem label="Occurrence">
-								{ "N/A" }
-							</ResourceCardItem>
-							<ResourceCardItem label="Request Date">
-								{ "N/A" }
-							</ResourceCardItem>
-							<ResourceCardItem label="Sent By">
-								{ "N/A" }
-							</ResourceCardItem>
-						</ResourceCard>
-					</HStack>
-				)) :
-				<View
-					flex={1}
-					alignItems="center"
-				>
-					<Text>No Data Yet</Text>
-				</View>
-		}
-	</ScrollView>
-);
-
 const New = (): JSX.Element => {
 	const referrals = useRecoilValue(taskReferralState);
-	const newTasks = filterNewTasks(referrals);
+	const newReferrals = filterNewTasks(referrals) as Referral[];
 
-	return TaskList(newTasks);
+	return <ReferralList referrals={newReferrals} />;
 };
 
 const InProgress = (): JSX.Element => {
 	const referrals = useRecoilValue(taskReferralState);
-	const inProgressTasks = filterInProgressTasks(referrals);
+	const inProgressReferrals = filterInProgressTasks(referrals) as Referral[];
 
-	return TaskList(inProgressTasks);
+	return <ReferralList referrals={inProgressReferrals} />;
 };
 
 const Submitted = (): JSX.Element => {
 	const referrals = useRecoilValue(taskReferralState);
-	const submittedTasks = filterSubmittedTasks(referrals);
+	const submittedReferrals = filterSubmittedTasks(referrals) as Referral[];
 
-	return TaskList(submittedTasks);
+	return <ReferralList referrals={submittedReferrals} />;
 };
 
 const Referrals = (): JSX.Element => (

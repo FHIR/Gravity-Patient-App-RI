@@ -7,7 +7,6 @@ const ResourceCard = (props: { children: ReactNode, title: string, badge?: strin
 	<Card>
 		<HStack
 			mb={5}
-			flex={1}
 			justifyContent="space-between"
 		>
 			<Text
@@ -28,6 +27,7 @@ const ResourceCard = (props: { children: ReactNode, title: string, badge?: strin
 						color="#464953"
 						fontSize="xs"
 						fontWeight="medium"
+						textTransform="capitalize"
 					>
 						{ props.badge }
 					</Text>

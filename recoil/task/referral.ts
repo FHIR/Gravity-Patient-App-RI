@@ -1,13 +1,23 @@
 import { selector } from "recoil";
 import ownedByPatient from "./ownedByPatient";
-import { Task } from "fhir/r4";
+import { focusServiceRequestState } from "../focus";
+import { ServiceRequest, Task } from "fhir/r4";
 
-const taskReferralState = selector<Task[]>({
+export type Referral = Task & { serviceRequest: ServiceRequest | undefined }
+
+const taskReferralState = selector<Referral[]>({
 	key: "taskReferralState",
 	get: ({ get }) => {
 		const taskOwnedByPatient = get(ownedByPatient);
+		const serviceRequests = get(focusServiceRequestState);
+		const referrals = taskOwnedByPatient.filter(r => r.focus?.reference?.includes("ServiceRequest"));
 
-		return taskOwnedByPatient.filter(r => r.focus?.reference?.includes("ServiceRequest") );
+		return referrals.map(r => {
+			const serviceRequestId = r.focus?.reference?.split("/")[1] || "";
+			const serviceRequest = serviceRequests.find(sr => sr.id === serviceRequestId);
+
+			return { ...r, serviceRequest };
+		});
 	}
 });
 

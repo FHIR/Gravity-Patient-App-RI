@@ -24,6 +24,7 @@ import PatientInfo from "./screens/PatientInfo";
 import PatientProfile from "./screens/PatientProfile";
 import ServerView from "./screens/ServerView";
 import AddServer from "./screens/AddServer";
+import ReferralView from "./screens/ReferralView";
 
 
 // todo: temporary recoil fix, should be fixed in expo sdk that support react-native 0.64+, probably sdk 43
@@ -56,6 +57,7 @@ export type RootStackParamList = {
 	Assessments: undefined,
 	ServerView: { serverId: string },
 	AddServer: undefined
+	ReferralView: { referralId: string | undefined }
 };
 const Stack = createNativeStackNavigator<RootStackParamList>();
 const navigationRef = createNavigationContainerRef<RootStackParamList>();
@@ -69,8 +71,8 @@ type ParamsFromOutside = {
 
 const logicaParams = {
 	title: "Logica",
-	fhirUri: "https://api.logicahealth.org/Gravity/data",
-	clientId: "fa89d177-2f32-40e0-a497-01ab557334a2"
+	fhirUri: "https://api.logicahealth.org/deezsandbox/data",
+	clientId: "2ecabb44-200b-4975-a8d1-dc2a6e4f90a7"
 };
 const linkingUrl = Linking.createURL("import-server", { queryParams: logicaParams });
 console.log("linking url:", linkingUrl);
@@ -151,6 +153,7 @@ const MainContainer = () => {
 						<Stack.Screen name="ServerList" component={ServerList} />
 						<Stack.Screen name="Hub" component={Hub} />
 						<Stack.Screen name="Referrals" component={Referrals} />
+						<Stack.Screen name="ReferralView" component={ReferralView} />
 						<Stack.Screen name="Assessments" component={Assessments} />
 					</>
 				)}

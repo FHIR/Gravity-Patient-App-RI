@@ -4,7 +4,7 @@ import { Task } from "fhir/r4";
 import ResourceCard from "../components/ResourceCard";
 import ResourceCardItem from "../components/ResourceCardItem";
 import { filterNewTasks, filterInProgressTasks, filterSubmittedTasks } from "../utils";
-import { HStack, ScrollView, View, Text } from "native-base";
+import { ScrollView, View, Text } from "native-base";
 import { useRecoilValue } from "recoil";
 import { taskAssessmentState } from "../recoil/task";
 
@@ -15,7 +15,7 @@ const TaskList = (tasks: Task[]): JSX.Element => (
 		{
 			tasks.length ?
 				tasks.map((t, i) => (
-					<HStack
+					<View
 						mb={5}
 						key={i}
 					>
@@ -27,7 +27,7 @@ const TaskList = (tasks: Task[]): JSX.Element => (
 								{ "N/A" }
 							</ResourceCardItem>
 						</ResourceCard>
-					</HStack>
+					</View>
 				)) :
 				<View
 					flex={1}
