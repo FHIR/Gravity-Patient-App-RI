@@ -2,7 +2,7 @@ import React, { ReactNode } from "react";
 import { HStack, Text } from "native-base";
 
 
-const ResourceCardItem = (props: { children: ReactNode, label: string, width?: string }): JSX.Element => (
+const ResourceCardItem = (props: { children: ReactNode, label: string, width?: string, truncate?: boolean }): JSX.Element => (
 	<HStack>
 		<Text
 			fontSize="sm"
@@ -16,6 +16,7 @@ const ResourceCardItem = (props: { children: ReactNode, label: string, width?: s
 			flex={1}
 			fontSize="sm"
 			color="#333"
+			isTruncated={props.truncate || false}
 		>
 			{ props.children }
 		</Text>

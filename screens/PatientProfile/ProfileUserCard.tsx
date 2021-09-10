@@ -24,7 +24,7 @@ const ProfileUserCard = (): JSX.Element => {
 				<Text
 					color="#7b7f87"
 					fontSize="sm"
-					mb="15px"
+					mb="5px"
 					mt="5px"
 				>
 					{ patientInfo.email }
