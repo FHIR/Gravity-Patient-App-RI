@@ -35,9 +35,9 @@ export const fetchFhirData = async (serverURI: string, token: string | null | un
 
 	const [patient, coverageBundle, taskWithOwnerBundle, taskWithFocusBundle] = await Promise.all([
 		client.read({ resourceType: "Patient", id: patientId }),
-		client.search({ resourceType: "Coverage", searchParams: { patient: patientId, _include: "Coverage:payor" }}),
-		client.search({ resourceType: "Task", searchParams: { patient: patientId, _include: "Task:owner" }}),
-		client.search({ resourceType: "Task", searchParams: { patient: patientId, _include: "Task:focus" }})
+		client.search({ resourceType: "Coverage", searchParams: { patient: patientId, _include: "Coverage:payor" } }),
+		client.search({ resourceType: "Task", searchParams: { patient: patientId, _include: "Task:owner" } }),
+		client.search({ resourceType: "Task", searchParams: { patient: patientId, _include: "Task:focus" } })
 	]);
 	const [coverage, payor] = splitInclude<Coverage[], Payor[]>(coverageBundle as Bundle);
 	const [task, owner] = splitInclude<Task[], Owner[]>(taskWithOwnerBundle as Bundle);

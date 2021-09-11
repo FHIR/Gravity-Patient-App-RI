@@ -4,6 +4,7 @@ import { View } from "native-base";
 import React from "react";
 import { Referral } from "../../recoil/task/referral";
 import moment from "moment";
+import { checkValue } from "../../utils";
 
 
 const ReferralListItem = ({ referral }: { referral: Referral }): JSX.Element => {
@@ -18,23 +19,23 @@ const ReferralListItem = ({ referral }: { referral: Referral }): JSX.Element => 
 
 	return (
 		<View mb={5}>
-			<ResourceCard title={name || "N/A"}>
+			<ResourceCard title={ checkValue(name) }>
 				{
 					isSubmitted
 						?
 						<ResourceCardItem label="Submit Date">
-							{ submitDate || "N/A" }
+							{ checkValue(submitDate) }
 						</ResourceCardItem>
 						:
 						<ResourceCardItem label="Occurrence">
-							{ occurrence || "N/A" }
+							{ checkValue(occurrence) }
 						</ResourceCardItem>
 				}
 				<ResourceCardItem label="Request">
-					{ request || "N/A" }
+					{ checkValue(request) }
 				</ResourceCardItem>
 				<ResourceCardItem label="Sent By">
-					{ sentBy || "N/A" }
+					{ checkValue(sentBy) }
 				</ResourceCardItem>
 			</ResourceCard>
 		</View>

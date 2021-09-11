@@ -5,6 +5,8 @@ import { patientInfoState } from "../recoil/patient";
 import UserCard from "../components/home/UserCard";
 import ResourceCard from "../components/ResourceCard";
 import ResourceCardItem from "../components/ResourceCardItem";
+import { checkValue } from "../utils";
+
 
 const PatientInfo = (): JSX.Element => {
 	const patientInfo = useRecoilValue(patientInfoState);
@@ -20,22 +22,22 @@ const PatientInfo = (): JSX.Element => {
 				</HStack>
 				<VStack space={5}>
 					<ResourceCard title="Primary Information">
-						<ResourceCardItem label="Patient ID" width={"135px"}>{ patientInfo.id }</ResourceCardItem>
-						<ResourceCardItem label="Date of Birthday" width={"135px"}>{ patientInfo.birthDate }</ResourceCardItem>
-						<ResourceCardItem label="Gender Identity" width={"135px"}>{ patientInfo.gender }</ResourceCardItem>
-						<ResourceCardItem label="Primary Language" width={"135px"}>{ patientInfo.language }</ResourceCardItem>
+						<ResourceCardItem label="Patient ID" width={"135px"}>{ checkValue(patientInfo.id) }</ResourceCardItem>
+						<ResourceCardItem label="Date of Birthday" width={"135px"}>{ checkValue(patientInfo.birthDate) }</ResourceCardItem>
+						<ResourceCardItem label="Gender Identity" width={"135px"}>{ checkValue(patientInfo.gender) }</ResourceCardItem>
+						<ResourceCardItem label="Primary Language" width={"135px"}>{ checkValue(patientInfo.language) }</ResourceCardItem>
 					</ResourceCard>
 					<ResourceCard title="Contact Information">
-						<ResourceCardItem label="Home Address" width={"135px"}>{ patientInfo.address }</ResourceCardItem>
-						<ResourceCardItem label="Phone Number" width={"135px"}>{ patientInfo.phone }</ResourceCardItem>
-						<ResourceCardItem label="Email Address" width={"135px"}>{ patientInfo.email }</ResourceCardItem>
-						<ResourceCardItem label="Employment Status" width={"135px"}>{ patientInfo.employmentStatus }</ResourceCardItem>
+						<ResourceCardItem label="Home Address" width={"135px"}>{ checkValue(patientInfo.address) }</ResourceCardItem>
+						<ResourceCardItem label="Phone Number" width={"135px"}>{ checkValue(patientInfo.phone) }</ResourceCardItem>
+						<ResourceCardItem label="Email Address" width={"135px"}>{ checkValue(patientInfo.email) }</ResourceCardItem>
+						<ResourceCardItem label="Employment Status" width={"135px"}>{ checkValue(patientInfo.employmentStatus) }</ResourceCardItem>
 					</ResourceCard>
 					<ResourceCard title="Other Information">
-						<ResourceCardItem label="Race" width={"135px"}>{ patientInfo.race }</ResourceCardItem>
-						<ResourceCardItem label="Ethnicity" width={"135px"}>{ patientInfo.ethnicity }</ResourceCardItem>
-						<ResourceCardItem label="Education Level" width={"135px"}>{ patientInfo.educationLevel }</ResourceCardItem>
-						<ResourceCardItem label="Marital Status" width={"135px"}>{ patientInfo.maritalStatus }</ResourceCardItem>
+						<ResourceCardItem label="Race" width={"135px"}>{ checkValue(patientInfo.race) }</ResourceCardItem>
+						<ResourceCardItem label="Ethnicity" width={"135px"}>{ checkValue(patientInfo.ethnicity) }</ResourceCardItem>
+						<ResourceCardItem label="Education Level" width={"135px"}>{ checkValue(patientInfo.educationLevel) }</ResourceCardItem>
+						<ResourceCardItem label="Marital Status" width={"135px"}>{ checkValue(patientInfo.maritalStatus) }</ResourceCardItem>
 					</ResourceCard>
 				</VStack>
 			</View>

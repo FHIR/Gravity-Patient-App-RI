@@ -4,6 +4,7 @@ import ResourceCard from "../components/ResourceCard";
 import ResourceCardItem from "../components/ResourceCardItem";
 import { useRecoilValue } from "recoil";
 import { ownerClinicalStaff } from "../recoil/owner";
+import { checkValue } from "../utils";
 
 
 const ClinicalStaff = (): JSX.Element => {
@@ -18,18 +19,18 @@ const ClinicalStaff = (): JSX.Element => {
 							mb={5}
 							key={i}
 						>
-							<ResourceCard title={c.name || "N/A"}>
+							<ResourceCard title={ checkValue(c.name) }>
 								<ResourceCardItem label="Organization">
-									{ c.organization || "N/A" }
+									{ checkValue(c.organization) }
 								</ResourceCardItem>
 								<ResourceCardItem label="Role">
-									{ c.role || "N/A" }
+									{ checkValue(c.role) }
 								</ResourceCardItem>
 								<ResourceCardItem label="Location">
-									{ c.location || "N/A" }
+									{ checkValue(c.location) }
 								</ResourceCardItem>
 								<ResourceCardItem label="Phone">
-									{ c.phone || "N/A" }
+									{ checkValue(c.phone) }
 								</ResourceCardItem>
 							</ResourceCard>
 						</View>

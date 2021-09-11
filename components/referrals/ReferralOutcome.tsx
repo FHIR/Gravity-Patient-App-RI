@@ -135,7 +135,7 @@ const ReferralOutcome = ({ referral }: { referral: Referral }): JSX.Element => {
 		if (isSubmitted) {
 			fetchObservation();
 		}
-	}, [isSubmitted])
+	}, [isSubmitted]);
 
 
 	useEffect(() => {
