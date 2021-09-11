@@ -19,10 +19,11 @@ import focusState from "../recoil/focus";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { RootStackParamList } from "../App";
 import { fetchFhirData } from "../utils/api";
+import moment from "moment";
 
 
 const Home = ({ navigation }: NativeStackScreenProps<RootStackParamList, "Home">): JSX.Element => {
-	const servers = useRecoilValue(serversState);
+	const [servers, setServers] = useRecoilState(serversState);
 	const [patients, setPatient] = useRecoilState(patientState);
 	const [coverages, setCoverage] = useRecoilState(coverageState);
 	const [payors, setPayor] = useRecoilState(payorState);
@@ -63,6 +64,13 @@ const Home = ({ navigation }: NativeStackScreenProps<RootStackParamList, "Home">
 				...focuses,
 				[serverId]: focus
 			});
+			setServers({
+				...servers,
+				[serverId]: {
+					...servers[serverId],
+					lastUpdated: moment.utc().format()
+				}
+			});
 		} catch (e) {
 			console.log(e);
 		} finally {
@@ -77,8 +85,9 @@ const Home = ({ navigation }: NativeStackScreenProps<RootStackParamList, "Home">
 	};
 
 	useEffect(() => {
+		//todo: hmmmm, think about fetching data on every home screen entrance, seems not right
 		fetchData();
-	}, [servers]);
+	}, []);
 
 	const handleSync = () => {
 		fetchData();

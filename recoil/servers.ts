@@ -11,7 +11,8 @@ export type Server = {
 		tokenUri: string,
 		clientId: string
 	},
-	session?: Session
+	session?: Session,
+	lastUpdated?: string
 }
 
 export type Servers = { [id: string]: Server }
