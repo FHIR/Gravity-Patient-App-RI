@@ -64,7 +64,7 @@ const LoginForm = (): JSX.Element => {
 				height="83px"
 				alignSelf="center"
 				alt="logo"
-				source={require("../assets/images/gravity-logo.jpg")}
+				source={require("../assets/images/gravity-logo.png")}
 			/>
 			<VStack space={3} pl={5} pr={5}>
 				<Heading
