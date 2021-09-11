@@ -2,7 +2,7 @@ import React from "react";
 import { Box, Text, IconButton, Icon } from "native-base";
 import { Path } from "react-native-svg";
 
-const SyncInfo = ():JSX.Element => (
+const SyncInfo = ({ onSync }: { onSync?: () => void }): JSX.Element => (
 	<Box
 		h="40px"
 		w="100%"
@@ -24,6 +24,7 @@ const SyncInfo = ():JSX.Element => (
 		<IconButton
 			variant="ghost"
 			p="0"
+			onPress={onSync}
 			icon={
 				<Icon
 					size={10}
