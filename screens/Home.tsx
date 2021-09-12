@@ -19,6 +19,7 @@ import focusState from "../recoil/focus";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { RootStackParamList } from "../App";
 import { fetchFhirData } from "../utils/api";
+import { questRespState } from "../recoil/questResp";
 
 const Home = ({ navigation }: NativeStackScreenProps<RootStackParamList, "Home">): JSX.Element => {
 	const servers = useRecoilValue(serversState);
@@ -28,6 +29,7 @@ const Home = ({ navigation }: NativeStackScreenProps<RootStackParamList, "Home">
 	const [owners, setOwner] = useRecoilState(ownerState);
 	const [tasks, setTask] = useRecoilState(taskState);
 	const [focuses, setFocus] = useRecoilState(focusState);
+	const [questResps, setQuestResps] = useRecoilState(questRespState);
 	const [isLoading, setIsLoading] = useState(false);
 
 	useEffect(() => {
@@ -36,7 +38,7 @@ const Home = ({ navigation }: NativeStackScreenProps<RootStackParamList, "Home">
 
 			setIsLoading(true);
 			server && server.session && fetchFhirData(server.fhirUri, server.session.access.token, server.session.patientId)
-				.then(({ patient, coverage, payor, owner, task, focus })  => {
+				.then(({ patient, coverage, payor, owner, task, focus, questResp })  => {
 					patient && setPatient({
 						...patients,
 						[serverId]: patient
@@ -61,6 +63,10 @@ const Home = ({ navigation }: NativeStackScreenProps<RootStackParamList, "Home">
 						...focuses,
 						[serverId]: focus
 					});
+					setQuestResps(old => ({
+						...old,
+						[serverId]: questResp
+					}))
 				})
 				.finally(() => setIsLoading(false));
 		});

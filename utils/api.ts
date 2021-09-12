@@ -12,8 +12,10 @@ import {
 	CareTeam,
 	HealthcareService,
 	ServiceRequest,
-	Questionnaire
+	Questionnaire,
+	QuestionnaireResponse
 } from "fhir/r4";
+import { filterMap } from ".";
 
 export type Payor = (Organization | Patient | RelatedPerson);
 export type Owner = (Practitioner | PractitionerRole | Organization | CareTeam | HealthcareService | Patient | Device | RelatedPerson);
@@ -24,7 +26,8 @@ export type fetchFhirType = {
 	task: Task[] | null,
 	payor: Payor[] | null,
 	owner: Owner[] | null,
-	focus: Focus[] | null
+	focus: Focus[] | null,
+	questResp: QuestionnaireResponse[]
 };
 
 export const fetchFhirData = async (serverURI: string, token: string | null, patientId: string): Promise<fetchFhirType> => {
@@ -40,6 +43,8 @@ export const fetchFhirData = async (serverURI: string, token: string | null, pat
 	const [task, owner] = splitInclude<Task[], Owner[]>(taskBundle);
 	taskBundle = await client.search({ resourceType: "Task", searchParams: { patient: patientId, _include: "Task:focus" } }) as Bundle;
 	const [_, focus] = splitInclude<Task[], Focus[]>(taskBundle);
+	const questRespBundle = await client.search({ resourceType: "QuestionnaireResponse" }) as Bundle;
+	const questResp = filterMap(questRespBundle.entry || [], entry => entry.resource ? entry.resource as QuestionnaireResponse : false);
 
 	return {
 		patient: patient.resourceType === "Patient" ? patient as Patient : null,
@@ -47,7 +52,8 @@ export const fetchFhirData = async (serverURI: string, token: string | null, pat
 		payor,
 		task,
 		owner,
-		focus
+		focus,
+		questResp
 	};
 };
 

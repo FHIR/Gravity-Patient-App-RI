@@ -4,14 +4,13 @@ import { Path } from "react-native-svg";
 import Card from "../Card";
 import { useRecoilValue } from "recoil";
 import { taskAssessmentState } from "../../recoil/task";
-import { filterNewTasks, filterInProgressTasks, filterSubmittedTasks } from "../../utils";
 
 
 const AssessmentsCard = (): JSX.Element => {
 	const assessments = useRecoilValue(taskAssessmentState);
-	const newTasks: number = filterNewTasks(assessments).length;
-	const inProgressTasks: number = filterInProgressTasks(assessments).length;
-	const submittedTasks: number = filterSubmittedTasks(assessments).length;
+	const newTasks: number = assessments.filter(asm => !asm.response).length;
+	const inProgressTasks: number = 0;
+	const submittedTasks: number = assessments.filter(ams => ams.response).length;
 
 	return (
 		<Card>

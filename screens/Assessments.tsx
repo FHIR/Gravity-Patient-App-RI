@@ -3,64 +3,74 @@ import { createMaterialTopTabNavigator } from "@react-navigation/material-top-ta
 import { Task } from "fhir/r4";
 import ResourceCard from "../components/ResourceCard";
 import ResourceCardItem from "../components/ResourceCardItem";
-import { filterNewTasks, filterInProgressTasks, filterSubmittedTasks } from "../utils";
-import { ScrollView, View, Text } from "native-base";
+import { ScrollView, View, Text, Pressable } from "native-base";
 import { useRecoilValue } from "recoil";
 import { taskAssessmentState } from "../recoil/task";
+import { useNavigation } from "@react-navigation/core";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { RootStackParamList } from "../App";
+import { Assessment } from "../recoil/task/assessment";
 
 const Tab = createMaterialTopTabNavigator();
 
-const TaskList = (tasks: Task[]): JSX.Element => (
-	<ScrollView p={5}>
-		{
-			tasks.length ?
-				tasks.map((t, i) => (
+const TaskList = (assessments: Assessment[]) => {
+	const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
+
+	return (
+		<ScrollView p={5}>
+			{
+				assessments.length ?
+					assessments.map((a, i) => (
+						<View
+							mb={5}
+							key={i}
+						>
+							<Pressable
+								onPress={() => navigation.navigate("Assessment", { assessmentId: a.id })}
+							>
+								<ResourceCard title={a.questionnaire.title || "untitled"}>
+									<ResourceCardItem label="Request Date">
+										{a.sentDate}
+									</ResourceCardItem>
+									<ResourceCardItem label="Sent by">
+										{a.requestorName || "N/A"}
+									</ResourceCardItem>
+								</ResourceCard>
+							</Pressable>
+						</View>
+					)) :
 					<View
-						mb={5}
-						key={i}
+						flex={1}
+						alignItems="center"
 					>
-						<ResourceCard title={t.code?.text || "N/A"}>
-							<ResourceCardItem label="Request Date">
-								{ "N/A" }
-							</ResourceCardItem>
-							<ResourceCardItem label="Sent by">
-								{ "N/A" }
-							</ResourceCardItem>
-						</ResourceCard>
+						<Text>No Data Yet</Text>
 					</View>
-				)) :
-				<View
-					flex={1}
-					alignItems="center"
-				>
-					<Text>No Data Yet</Text>
-				</View>
-		}
-	</ScrollView>
-);
+			}
+		</ScrollView>
+	);
+};
 
 const New = (): JSX.Element => {
 	const assessments = useRecoilValue(taskAssessmentState);
-	const newTasks = filterNewTasks(assessments);
+	const newAsms = assessments.filter(asm => !asm.response);
 
-	return TaskList(newTasks);
+	return TaskList(newAsms);
 };
 
 const InProgress = (): JSX.Element => {
 	const assessments = useRecoilValue(taskAssessmentState);
-	const inProgressTasks = filterInProgressTasks(assessments);
 
-	return TaskList(inProgressTasks);
+	return TaskList([]);
 };
 
 const Submitted = (): JSX.Element => {
 	const assessments = useRecoilValue(taskAssessmentState);
-	const submittedTasks = filterSubmittedTasks(assessments);
+	const submittedAsms = assessments.filter(asm => asm.response);
 
-	return TaskList(submittedTasks);
+	return TaskList(submittedAsms);
 };
 
-const Referrals = (): JSX.Element => (
+const Assessments = (): JSX.Element => (
 	<Tab.Navigator>
 		<Tab.Screen name="New" component={New} />
 		<Tab.Screen name="In Progress" component={InProgress} />
@@ -68,4 +78,4 @@ const Referrals = (): JSX.Element => (
 	</Tab.Navigator>
 );
 
-export default Referrals;
+export default Assessments;
