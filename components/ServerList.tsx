@@ -1,53 +1,35 @@
-import { NativeStackScreenProps } from "@react-navigation/native-stack";
-import { VStack } from "native-base";
+import { VStack, View } from "native-base";
 import React from "react";
-import { ScrollView, View, Text, TouchableWithoutFeedback } from "react-native";
+import { TouchableWithoutFeedback } from "react-native";
 import { useRecoilState } from "recoil";
-import { RootStackParamList } from "../App";
 import { Server, serversState } from "../recoil/servers";
-import Card from "./Card";
+import ResourceCard from "./ResourceCard";
+import ResourceCardItem from "./ResourceCardItem";
 
 
-const ServerList = ({ navigation }: NativeStackScreenProps<RootStackParamList, "ServerList">) => {
+const ServerList = ({ onPress }: { onPress: (id: string) => void }) => {
 	const [serversHash] = useRecoilState(serversState);
 	const servers = Object.values(serversHash);
 
 	return (
-		<ScrollView
-			contentContainerStyle={{
-				alignItems: "stretch",
-				padding: 20
-			}}
-		>
+		<View>
 			<VStack space={5}>
-				{servers.map(s => ServerCard(s, () => navigation.navigate("ServerView", { serverId: s.id })))}
+				{servers.map(s => ServerCard(s, () => onPress(s.id)))}
 			</VStack>
-		</ScrollView>
+		</View>
 	);
-}
+};
 
 const ServerCard = (server: Server, onPress: () => void) => (
 	<TouchableWithoutFeedback key={server.id} onPress={onPress}>
-		<Card>
-			<>
-				<Text
-					style={{ fontSize: 18, color: "#464953", fontWeight: "500" }}
-				>
-					{server.title}
-				</Text>
-				<View
-					style={{
-						flexDirection: "row"
-					}}
-				>
-					<Text style={{ width: 95 }}>
-						Server URI:
-					</Text>
-					<Text numberOfLines={1} style={{ flex: 1 }}>{server.fhirUri}</Text>
-				</View>
-			</>
-		</Card>
+		<VStack mt="20px">
+			<ResourceCard title={server.title.toString()}>
+				<ResourceCardItem label="Org Name" width={"100px"}>{ server.title }</ResourceCardItem>
+				<ResourceCardItem label="Server URI" width={"100px"} truncate>{ server.fhirUri }</ResourceCardItem>
+				<ResourceCardItem label="Last Sync" width={"100px"}> N/A </ResourceCardItem>
+			</ResourceCard>
+		</VStack>
 	</TouchableWithoutFeedback>
-)
+);
 
 export default ServerList;

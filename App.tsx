@@ -23,6 +23,7 @@ import ServerList from "./components/ServerList";
 import PatientInfo from "./screens/PatientInfo";
 import PatientProfile from "./screens/PatientProfile";
 import ServerView from "./screens/ServerView";
+import AddServer from "./screens/AddServer";
 import ReferralView from "./screens/ReferralView";
 
 
@@ -55,6 +56,7 @@ export type RootStackParamList = {
 	Referrals: undefined,
 	Assessments: undefined,
 	ServerView: { serverId: string },
+	AddServer: undefined
 	ReferralView: { referralId: string | undefined }
 };
 const Stack = createNativeStackNavigator<RootStackParamList>();
@@ -146,6 +148,8 @@ const MainContainer = () => {
 						<Stack.Screen name="PatientProfile" component={PatientProfile} options={{ title: "Patient Profile" }} />
 						<Stack.Screen name="Auth" component={Auth} options={{ headerShown: false }} />
 						<Stack.Screen name="ServerView" component={ServerView} options={{ title: "" }} />
+						<Stack.Screen name="AddServer" component={AddServer} options={{ title: "New Server" }} />
+
 						<Stack.Screen name="ServerList" component={ServerList} />
 						<Stack.Screen name="Hub" component={Hub} />
 						<Stack.Screen name="Referrals" component={Referrals} />

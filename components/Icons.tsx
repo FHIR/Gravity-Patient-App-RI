@@ -92,3 +92,18 @@ export const ClusterWithArrows = ({ size=60, color=Colors.active }: IconProps) =
 		/>
 	</Svg>
 )
+
+export const Error = ({size = 60, color = "#F56C6C"}: IconProps) => (
+	<Svg
+		width={size}
+		height={size}
+		fill="none"
+	>
+		<Path
+			fillRule="evenodd"
+			clipRule="evenodd"
+			d="M29.997 10.143c-10.966 0-19.855 8.89-19.855 19.855 0 10.966 8.89 19.856 19.855 19.856 10.966 0 19.856-8.89 19.856-19.856 0-10.966-8.89-19.855-19.856-19.855zM7.142 29.998c0-12.623 10.232-22.855 22.855-22.855 12.623 0 22.856 10.232 22.856 22.855 0 12.623-10.233 22.856-22.856 22.856-12.623 0-22.855-10.233-22.855-22.856zm21.445 4.53V18.997h3v15.531h-3zm0 2.59v2.589h3v-2.59h-3z"
+			fill={color}
+		/>
+	</Svg>
+)
