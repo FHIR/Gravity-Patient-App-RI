@@ -39,10 +39,10 @@ const patientInfoState = selector<PatientInfo>({
 		const address = patientInfoState?.address ? `${patientInfoState.address[0].line} , ${patientInfoState.address[0].city}, ${patientInfoState.address[0].state}, ${patientInfoState.address[0].postalCode}` : undefined;
 		const language = patientInfoState?.communication?.[0].language?.coding?.[0].display;
 		const maritalStatus =  patientInfoState?.maritalStatus?.coding?.[0].display;
-		const race = patientInfoState?.extension?.find(extension => extension?.url === EXTENSION.RACE)?.valueCode;
-		const ethnicity = patientInfoState?.extension?.find(extension => extension?.url === EXTENSION.ETHNICITY)?.valueCode;
-		const educationLevel = patientInfoState?.extension?.find(extension => extension?.url === EXTENSION.EDUCATION_LEVEL)?.valueCode;
-		const employmentStatus = patientInfoState?.extension?.find(extension => extension?.url === EXTENSION.EMPLOYMENT_STATUS)?.valueCode;
+		const race = patientInfoState?.extension?.find(extension => extension?.url === EXTENSION.RACE)?.extension?.[0].valueCoding?.display;
+		const ethnicity = patientInfoState?.extension?.find(extension => extension?.url === EXTENSION.ETHNICITY)?.extension?.[0].valueCoding?.display;
+		const educationLevel = patientInfoState?.extension?.find(extension => extension?.url === EXTENSION.EDUCATION_LEVEL)?.extension?.[0].valueCoding?.display;
+		const employmentStatus = patientInfoState?.extension?.find(extension => extension?.url === EXTENSION.EMPLOYMENT_STATUS)?.extension?.[0].valueCoding?.display;
 		const photo = patientInfoState?.photo?.[0] ? `data:${patientInfoState.photo[0].contentType};base64,${patientInfoState.photo[0].data}` : undefined;
 
 		return {

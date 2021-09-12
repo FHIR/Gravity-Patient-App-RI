@@ -18,11 +18,13 @@ const ServerViewToken = ({server}: { server: Server }): JSX.Element => {
 	}
 
 	const now = useUnixTime();
-	const minutes = moment.duration(session.refresh?.expiresAt - now).minutes();
-	const hours = moment.duration(session.refresh?.expiresAt - now).hours();
-	const days = moment.duration(session.refresh?.expiresAt - now).days();
-	const month = moment.duration(session.refresh?.expiresAt - now).months();
+	const delta = session?.refresh?.expiresAt ? session?.refresh?.expiresAt - now : 0;
+	const minutes = moment.duration(delta).minutes();
+	const hours = moment.duration(delta).hours();
+	const days = moment.duration(delta).days();
+	const month = moment.duration(delta).months();
 
+	//todo: should we show 0 0 0 0 when we don't have expiresAt. I believe it should be n/a
 	return (
 		<View>
 			<Text color="#7B7F87" fontSize={14} mb={3} fontWeight={400}>Your access to the server will expire in:</Text>

@@ -27,6 +27,7 @@ const go = async () => {
 
 		// Create new patient
 		const p = (await cl.create({ resourceType: "Patient", body: PATIENT })) as Patient;
+		const cpOrg = await cl.create({ resourceType: "Organization", body: makeCPOrganization() }) as Organization;
 
 		// Create Coverage/Payor resources for insurance
 		const payorOrg = await cl.create({ resourceType: "Organization", body: makePayorOrganization() }) as Organization;
@@ -35,20 +36,20 @@ const go = async () => {
 		// Create referrals
 		for (let i = 0; i < refferalsN; i++) {
 			const sr = (await cl.create({ resourceType: "ServiceRequest", body: mkServiceRequest(p.id!) })) as ServiceRequest;
-			const t = (await cl.create({ resourceType: "Task", body: makeSRTask(p.id!, sr.id!, "Patient", p.id!) })) as Task;
+			const t = (await cl.create({ resourceType: "Task", body: makeSRTask(p.id!, sr.id!, "Patient", p.id!, cpOrg.id!, cpOrg.name!) })) as Task;
 		}
 
 		// Create task where owner is Organization
 		if (needOrganization) {
 			const sr = (await cl.create({ resourceType: "ServiceRequest", body: mkServiceRequest(p.id!) })) as ServiceRequest;
-			await cl.create({ resourceType: "Task", body: makeSRTask(p.id!, sr.id!, "Organization", payorOrg.id!) });
+			await cl.create({ resourceType: "Task", body: makeSRTask(p.id!, sr.id!, "Organization", payorOrg.id!, cpOrg.id!, cpOrg.name!) });
 		}
 
 		// Create task where owner is RelatedPerson
 		if (needCaregiver) {
 			const rp = await cl.create({ resourceType: "RelatedPerson", body: makeRelatedPerson(p.id!) }) as RelatedPerson;
 			const sr = (await cl.create({ resourceType: "ServiceRequest", body: mkServiceRequest(p.id!) })) as ServiceRequest;
-			await cl.create({ resourceType: "Task", body: makeSRTask(p.id!, sr.id!, "RelatedPerson", rp.id!) });
+			await cl.create({ resourceType: "Task", body: makeSRTask(p.id!, sr.id!, "RelatedPerson", rp.id!, cpOrg.id!, cpOrg.name!) });
 		}
 
 		// Create task where owner is Practitioner or PractitionerRole
@@ -56,7 +57,7 @@ const go = async () => {
 			const prac = await cl.create({ resourceType: "Practitioner", body: makePractitioner() }) as Practitioner;
 			const pr = await cl.create({ resourceType: "PractitionerRole", body: makePractitionerRole(payorOrg.id!, prac.id!) }) as PractitionerRole;
 			const sr = (await cl.create({ resourceType: "ServiceRequest", body: mkServiceRequest(p.id!) })) as ServiceRequest;
-			await cl.create({ resourceType: "Task", body: makeSRTask(p.id!, sr.id!, "PractitionerRole", pr.id!) });
+			await cl.create({ resourceType: "Task", body: makeSRTask(p.id!, sr.id!, "PractitionerRole", pr.id!, cpOrg.id!, cpOrg.name!) });
 		}
 
 		// Push HVS questionnaire
@@ -256,6 +257,10 @@ const makePayorOrganization = () => ({
 		{
 			"system": "email",
 			"value": "hq@HL7.org"
+		},
+		{
+			"system": "url",
+			"value": "https://www.blueshieldca.com"
 		}
 	],
 	"address": [
@@ -281,6 +286,27 @@ const makePayorOrganization = () => ({
 			]
 		}
 	],
+});
+
+const makeCPOrganization = () => ({
+	"resourceType": "Organization",
+	"text": {
+		"status": "generated",
+		"div": "<div xmlns=\"http://www.w3.org/1999/xhtml\">\n      \n      <p>Coordination Platform</p>\n    \n    </div>"
+	},
+	"name": "Coordination Platform",
+	"active": true,
+	"type": [
+		{
+			"coding": [
+				{
+					"system": "http://hl7.org/gravity/CodeSystem/sdohcc-temporary-organization-type-codes",
+					"code": "cp",
+					"display": "Coordination Platform"
+				}
+			]
+		}
+	]
 });
 
 const makeCoverage = (patientId: string, orgId: string) => ({
@@ -498,32 +524,38 @@ const mkServiceRequest = (patientId: string) => ({
 		"coding": [
 			{
 				"system": "http://snomed.info/sct",
-				"code": "710824005",
-				"display": "Assessment of health and social care needs"
+				"code": "710925007",
+				"display": "Provision of Food"
 			}
 		]
 	},
 	"subject": {
 		"reference": `Patient/${patientId}`
-	}
+	},
+	"occurrenceDateTime": new Date(Date.now() + 24 * 3600 * 1000).toISOString()
 });
 
-const makeSRTask = (patientId: string, serviceRequestId: string, ownerResourceType: "Patient" | "Organization" | "RelatedPerson" | "PractitionerRole", ownerId: string) => ({
+const makeSRTask = (patientId: string, serviceRequestId: string, ownerResourceType: "Patient" | "Organization" | "RelatedPerson" | "PractitionerRole", ownerId: string, requesterId: string, requesterDisplay: string) => ({
 	"resourceType": "Task",
 	"status": "ready",
 	"intent": "proposal",
 	"priority": "routine",
+	"authoredOn": new Date().toISOString(),
 	"for": {
 		"reference": `Patient/${patientId}`
 	},
 	"code": {
-		"text": "Acknowledge receiving of a service request"
+		"text": "Consultation with RDN"
 	},
 	"focus": {
 		"reference": `ServiceRequest/${serviceRequestId}`
 	},
 	"owner": {
 		"reference": `${ownerResourceType}/${ownerId}`,
+	},
+	requester: {
+		"reference": `Organization/${requesterId}`,
+		display: requesterDisplay
 	}
 });
 

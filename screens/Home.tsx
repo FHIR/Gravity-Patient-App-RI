@@ -36,11 +36,11 @@ const Home = ({ navigation }: NativeStackScreenProps<RootStackParamList, "Home">
 
 	const withAccessToken = useWithAccessToken();
 
-	const fetchServer = (serverId: string) => {
+	const fetchServer = async (serverId: string) => {
 		setIsLoading(true);
 
 		try {
-			withAccessToken(serverId, async (token, patientId, fhirUri) => {
+			await withAccessToken(serverId, async (token, patientId, fhirUri) => {
 				const { patient, coverage, payor, owner, task, focus } = await fetchFhirData(fhirUri, token, patientId);
 				patient && setPatient({
 					...patients,
@@ -83,7 +83,6 @@ const Home = ({ navigation }: NativeStackScreenProps<RootStackParamList, "Home">
 
 	const fetchData = async () => {
 		Object.keys(servers).forEach(serverId => {
-			const server = servers[serverId];
 			fetchServer(serverId);
 		});
 	};

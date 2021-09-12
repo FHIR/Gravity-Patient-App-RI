@@ -83,7 +83,7 @@ const TheServerView = ({ server }: { server: Server }) => {
 						/>
 					</FormControl>
 					<ServerViewSync />
-					<ServerViewToken />
+					<ServerViewToken server={server} />
 					{/*<SessionStatus server={server} />*/}
 				</VStack>
 			</Card>
@@ -94,10 +94,8 @@ const TheServerView = ({ server }: { server: Server }) => {
 					border={1}
 					borderColor="#7b7f87"
 					_pressed={{
-						backgroundColor: "#0069FF",
-						_text: {
-							color: "#fff"
-						}}}
+						backgroundColor: "#0069FF"
+					}}
 					w={"47%"}
 					_text={{ color:"#2d2d2d", fontSize: 14, fontWeight: 400 }}
 				>
@@ -111,10 +109,8 @@ const TheServerView = ({ server }: { server: Server }) => {
 					border={1}
 					borderColor="#7b7f87"
 					_pressed={{
-						backgroundColor: "#0069FF",
-						_text: {
-							color: "#fff"
-						}}}
+						backgroundColor: "#0069FF"
+					}}
 					_text={{ fontSize: 14, fontWeight: 400 }}
 				>
 					Save Changes

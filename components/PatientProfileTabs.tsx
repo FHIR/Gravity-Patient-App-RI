@@ -44,14 +44,14 @@ const FirstRoute = () => {
 						</Checkbox>
 					))}
 				</Checkbox.Group>
-				<VStack mt={3}>
-					<Box>
-						<Text fontSize="md">Selected Values: </Text>
-						<Text fontSize="md" bold>
-							{getSelectedGroupValue()}
-						</Text>
-					</Box>
-				</VStack>
+				{/*<VStack mt={3}>*/}
+				{/*	<Box>*/}
+				{/*		<Text fontSize="md">Selected Values: </Text>*/}
+				{/*		<Text fontSize="md" bold>*/}
+				{/*			{getSelectedGroupValue()}*/}
+				{/*		</Text>*/}
+				{/*	</Box>*/}
+				{/*</VStack>*/}
 			</Card>
 		</View>
 	);
