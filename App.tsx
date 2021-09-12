@@ -26,6 +26,7 @@ import ServerView from "./screens/ServerView";
 import AddServer from "./screens/AddServer";
 import ReferralView from "./screens/ReferralView";
 import Assessment from "./screens/Assessment";
+import { pendingServerImport, ImportServerRequest } from "./recoil/pendingServerImport";
 
 
 // todo: temporary recoil fix, should be fixed in expo sdk that support react-native 0.64+, probably sdk 43
@@ -65,74 +66,76 @@ const Stack = createNativeStackNavigator<RootStackParamList>();
 const navigationRef = createNavigationContainerRef<RootStackParamList>();
 
 
-type ParamsFromOutside = {
-	title: string,
-	fhirUri: string,
-	clientId: string
-}
 
 const logicaParams = {
 	title: "Logica",
 	fhirUri: "https://api.logicahealth.org/deezsandbox/data",
 	clientId: "2ecabb44-200b-4975-a8d1-dc2a6e4f90a7"
 };
-const linkingUrl = Linking.createURL("import-server", { queryParams: logicaParams });
+
+const importServerLinkingPath = "import-server";
+
+const linkingUrl = Linking.createURL(importServerLinkingPath, { queryParams: logicaParams });
 console.log("linking url:", linkingUrl);
 
 
 
 const MainContainer = () => {
+	const [pendingImport, setPendingImport] = useRecoilState(pendingServerImport);
+
 	useEffect(() => {
-		Linking.addEventListener("url", ({ url }) => {
-			const { path, queryParams } = Linking.parse(url);
-			console.log("got linked", { path, queryParams });
-			onImportServerInvokedFromOutside(queryParams as ParamsFromOutside);
-		});
+		Linking.addEventListener("url", ({ url }) => onGotLinked(url));
 	}, []);
 
 	useEffect(() => {
-		Linking.getInitialURL().then(url => {
-			if(url) {
-				const { path, queryParams } = Linking.parse(url);
-				console.log("got started by linking", { path, queryParams });
-			}
-		});
+		Linking.getInitialURL().then(url => url && onGotLinked(url));
 	}, []);
+
+	const onGotLinked = (url: string) => {
+		const { path, queryParams } = Linking.parse(url);
+		const { title, fhirUri, clientId } = queryParams;
+		if (path === importServerLinkingPath && typeof title === "string" && typeof fhirUri === "string" && typeof clientId === "string") {
+			setPendingImport({ title, fhirUri, clientId });
+		}
+	};
 
 	const [roleState] = useRecoilState(role);
 
 	const [servers, setServers] = useRecoilState(serversState);
 
-	const onImportServerInvokedFromOutside = (params: ParamsFromOutside) => {
+	useEffect(() => {
+		if (roleState && pendingImport) {
+			onImportServerInvokedFromOutside(pendingImport);
+		}
+	}, [roleState, pendingImport]);
+
+	const onImportServerInvokedFromOutside = async (params: ImportServerRequest) => {
 		const { title, fhirUri, clientId } = params;
 		const id = title;
-		discoverAuthEndpoints(fhirUri)
-			.then(({ authUri, tokenUri }) => {
-				const newServer: Server = {
-					id,
-					title,
-					fhirUri,
-					authConfig: {
-						authUri,
-						tokenUri,
-						clientId
-					},
-					session: undefined
-				};
-				setServers(oldServers => ({
-					...oldServers,
-					[id]: newServer
-				}));
-			})
-			.then(() => {
-				navigationRef.navigate("Auth", { serverId: id });
-			});
+		const { authUri, tokenUri } = await discoverAuthEndpoints(fhirUri);
+		const newServer: Server = {
+			id,
+			title,
+			fhirUri,
+			authConfig: {
+				authUri,
+				tokenUri,
+				clientId
+			},
+			session: undefined
+		};
+		setServers(oldServers => ({
+			...oldServers,
+			[id]: newServer
+		}));
+		setPendingImport(undefined);
+		navigationRef.navigate("Auth", { serverId: id });
 	};
 
 	return (
 		<NavigationContainer ref={navigationRef}>
 			<Stack.Navigator
-				initialRouteName="Hub"
+				initialRouteName="Home"
 				screenOptions={{
 					headerTitleAlign: "center"
 				}}
