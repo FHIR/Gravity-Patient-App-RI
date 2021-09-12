@@ -13,3 +13,6 @@ export const mapHash= <T, R>(obj: { [key: string]: T }, f: (t: T) => R): { [key:
 
 
 export const filterMap = <T, R>(arr: T[], f: (t: T) => false | R): R[] => arr.map(f).filter(x => x !== false) as R[];
+
+
+export const checkValue = (value: string | undefined): string => value || "N/A";
