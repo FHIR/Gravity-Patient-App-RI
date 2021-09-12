@@ -12,7 +12,7 @@ const ProfileUserCard = (): JSX.Element => {
 	const patientInfo = useRecoilValue(patientInfoState);
 
 	return (
-		<Card flex={1}>
+		<Card>
 			<VStack alignItems="center">
 				<Avatar
 					mb="20px"

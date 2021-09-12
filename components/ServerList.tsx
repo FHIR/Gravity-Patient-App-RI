@@ -5,6 +5,7 @@ import { useRecoilState } from "recoil";
 import { Server, serversState } from "../recoil/servers";
 import ResourceCard from "./ResourceCard";
 import ResourceCardItem from "./ResourceCardItem";
+import moment from "moment";
 
 
 const ServerList = ({ onPress }: { onPress: (id: string) => void }) => {
@@ -13,23 +14,27 @@ const ServerList = ({ onPress }: { onPress: (id: string) => void }) => {
 
 	return (
 		<View>
-			<VStack space={5}>
+			<VStack>
 				{servers.map(s => ServerCard(s, () => onPress(s.id)))}
 			</VStack>
 		</View>
 	);
 };
 
-const ServerCard = (server: Server, onPress: () => void) => (
-	<TouchableWithoutFeedback key={server.id} onPress={onPress}>
-		<VStack mt="20px">
-			<ResourceCard title={server.title.toString()}>
-				<ResourceCardItem label="Org Name" width={"100px"}>{ server.title }</ResourceCardItem>
-				<ResourceCardItem label="Server URI" width={"100px"} truncate>{ server.fhirUri }</ResourceCardItem>
-				<ResourceCardItem label="Last Sync" width={"100px"}> N/A </ResourceCardItem>
-			</ResourceCard>
-		</VStack>
-	</TouchableWithoutFeedback>
-);
+const ServerCard = (server: Server, onPress: () => void) => {
+	const lastSync = moment(server.lastUpdated).format("MMM DD, YYYY, hh:mm A");
+
+	return (
+		<TouchableWithoutFeedback key={server.id} onPress={onPress}>
+			<VStack mt="20px">
+				<ResourceCard title={server.title.toString()}>
+					<ResourceCardItem label="Org Name" width={"100px"}>{server.title}</ResourceCardItem>
+					<ResourceCardItem label="Server URI" width={"100px"} truncate>{server.fhirUri}</ResourceCardItem>
+					<ResourceCardItem label="Last Sync" width={"100px"}> { lastSync } </ResourceCardItem>
+				</ResourceCard>
+			</VStack>
+		</TouchableWithoutFeedback>
+	);
+}
 
 export default ServerList;
