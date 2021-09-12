@@ -4,6 +4,7 @@ import moment from "moment";
 
 type PatientInfo = {
 	name: string | undefined,
+	family: string | undefined
 	email: string | undefined,
 	phone: string | undefined,
 	id: string | undefined,
@@ -30,6 +31,7 @@ const patientInfoState = selector<PatientInfo>({
 	get: ({ get }) => {
 		const patientInfoState = Object.values(get(patientState))[0];
 		const name = patientInfoState?.name?.[0].given?.join(" ");
+		const family = patientInfoState?.name?.[0].family;
 		const email = patientInfoState?.telecom?.find(tele => tele?.system === "email")?.value;
 		const phone = patientInfoState?.telecom?.find(tele => tele?.system === "phone")?.value;
 		const id = patientInfoState?.id;
@@ -47,6 +49,7 @@ const patientInfoState = selector<PatientInfo>({
 
 		return {
 			name,
+			family,
 			email,
 			phone,
 			id,

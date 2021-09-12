@@ -728,22 +728,22 @@ const ReferralOutcome = ({ referral }: { referral: Referral }): JSX.Element => {
 				space={5}
 				justifyContent="space-between"
 			>
-				<Button
-					flex={1}
-					variant="outline"
-					onPress={() => console.log("save")}
-					colorScheme="dark"
-				>
-					Save Outcomes
-				</Button>
+				{/*<Button*/}
+				{/*	flex={1}*/}
+				{/*	variant="outline"*/}
+				{/*	onPress={() => console.log("save")}*/}
+				{/*	colorScheme="dark"*/}
+				{/*>*/}
+				{/*	Save Outcomes*/}
+				{/*</Button>*/}
 				<Button
 					flex={1}
 					onPress={() => handleSubmit()}
 					colorScheme="blue"
-					disabled={status === "in-progress"}
+					disabled={!status || status === "in-progress"}
 					isLoading={submitInProgress}
 				>
-					Submit Outcomes
+					Submit
 				</Button>
 			</HStack>
 		</View>

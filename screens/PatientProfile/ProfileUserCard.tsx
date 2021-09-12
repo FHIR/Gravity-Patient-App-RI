@@ -27,7 +27,7 @@ const ProfileUserCard = (): JSX.Element => {
 					color="#333"
 					fontSize="lg"
 				>
-					{ patientInfo.name }
+					{ patientInfo.name } { patientInfo.family }
 				</Text>
 				<Text
 					color="#7b7f87"
