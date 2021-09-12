@@ -124,7 +124,7 @@ const AssessmentScreen = ({ route, navigation }: NativeStackScreenProps<RootStac
 
 
 const UncompleteAssessment = ({ assessment: asm }: { assessment: Assessment }) => {
-	const withAccessToken = useWithAccessToken(asm.id[0]);
+	const withAccessToken = useWithAccessToken();
 	const questions = prepareQuestions((asm.questionnaire.item || []) as QuestionItem[]);
 
 	const [answers, setAnswers] = useState<{ [id: string]: string | undefined }>({});
@@ -159,7 +159,7 @@ const UncompleteAssessment = ({ assessment: asm }: { assessment: Assessment }) =
 
 	const onSubmit = () => {
 		setSendingResponse(true);
-		withAccessToken(async (token, patientId, fhirUri) => {
+		withAccessToken(asm.id[0], async (token, patientId, fhirUri) => {
 			const client = new Client({ baseUrl: fhirUri });
 			client.bearerToken = token;
 			const result = await client.create({

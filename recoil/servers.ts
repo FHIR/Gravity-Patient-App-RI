@@ -24,9 +24,9 @@ export const serversState = atom<Servers>({
 });
 
 
-export const useWithAccessToken = (serverId: string) => {
+export const useWithAccessToken = () => {
 	const [servers, setServers] = useRecoilState(serversState);
-	const withAccessToken = async (cb: (token: string, patientId: string, fhirUri: string) => void) => {
+	const withAccessToken = async (serverId: string, cb: (token: string, patientId: string, fhirUri: string) => void) => {
 		const server = servers[serverId];
 		const session = server?.session;
 		if (!server || !session) {

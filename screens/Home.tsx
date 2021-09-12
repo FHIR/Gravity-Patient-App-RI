@@ -9,7 +9,7 @@ import InsurancesCard from "../components/home/InsurancesCard";
 import ReferralsCard from "../components/home/ReferralsCard";
 import AssessmentsCard from "../components/home/AssessmentsCard";
 import { useRecoilState, useRecoilValue } from "recoil";
-import { Server, serversState } from "../recoil/servers";
+import { Server, serversState, useWithAccessToken } from "../recoil/servers";
 import patientState from "../recoil/patient";
 import coverageState from "../recoil/coverage";
 import payorState from "../recoil/payor";
@@ -34,44 +34,45 @@ const Home = ({ navigation }: NativeStackScreenProps<RootStackParamList, "Home">
 	const [questResps, setQuestResps] = useRecoilState(questRespState);
 	const [isLoading, setIsLoading] = useState(false);
 
-	const fetchServer = async (serverId: string, server: Server) => {
+	const withAccessToken = useWithAccessToken();
+
+	const fetchServer = (serverId: string) => {
 		setIsLoading(true);
 
 		try {
-			if (!server.session) {
-				return;
-			}
-			const { patient, coverage, payor, owner, task, focus } = await fetchFhirData(server.fhirUri, server.session.access.token, server.session.patientId);
-			patient && setPatient({
-				...patients,
-				[serverId]: patient
-			});
-			coverage && setCoverage({
-				...coverages,
-				[serverId]: coverage
-			});
-			payor && setPayor({
-				...payors,
-				[serverId]: payor
-			});
-			owner && setOwner({
-				...owners,
-				[serverId]: owner
-			});
-			task && setTask({
-				...tasks,
-				[serverId]: task
-			});
-			focus && setFocus({
-				...focuses,
-				[serverId]: focus
-			});
-			setServers({
-				...servers,
-				[serverId]: {
-					...servers[serverId],
-					lastUpdated: moment.utc().format()
-				}
+			withAccessToken(serverId, async (token, patientId, fhirUri) => {
+				const { patient, coverage, payor, owner, task, focus } = await fetchFhirData(fhirUri, token, patientId);
+				patient && setPatient({
+					...patients,
+					[serverId]: patient
+				});
+				coverage && setCoverage({
+					...coverages,
+					[serverId]: coverage
+				});
+				payor && setPayor({
+					...payors,
+					[serverId]: payor
+				});
+				owner && setOwner({
+					...owners,
+					[serverId]: owner
+				});
+				task && setTask({
+					...tasks,
+					[serverId]: task
+				});
+				focus && setFocus({
+					...focuses,
+					[serverId]: focus
+				});
+				setServers({
+					...servers,
+					[serverId]: {
+						...servers[serverId],
+						lastUpdated: moment.utc().format()
+					}
+				});
 			});
 		} catch (e) {
 			console.log(e);
@@ -83,41 +84,7 @@ const Home = ({ navigation }: NativeStackScreenProps<RootStackParamList, "Home">
 	const fetchData = async () => {
 		Object.keys(servers).forEach(serverId => {
 			const server = servers[serverId];
-
-			setIsLoading(true);
-			server && server.session && fetchFhirData(server.fhirUri, server.session.access.token, server.session.patientId)
-				.then(({ patient, coverage, payor, owner, task, focus, questResp })  => {
-					patient && setPatient({
-						...patients,
-						[serverId]: patient
-					});
-					coverage && setCoverage({
-						...coverages,
-						[serverId]: coverage
-					});
-					payor && setPayor({
-						...payors,
-						[serverId]: payor
-					});
-					owner && setOwner({
-						...owners,
-						[serverId]: owner
-					});
-					task && setTask({
-						...tasks,
-						[serverId]: task
-					});
-					focus && setFocus({
-						...focuses,
-						[serverId]: focus
-					});
-					setQuestResps(old => ({
-						...old,
-						[serverId]: questResp
-					}))
-				})
-				.finally(() => setIsLoading(false));
-			fetchServer(serverId, servers[serverId]);
+			fetchServer(serverId);
 		});
 	};
 

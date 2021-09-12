@@ -10,6 +10,7 @@ import ownerState from "../../recoil/owner";
 import patientState from "../../recoil/patient";
 import payorState from "../../recoil/payor";
 import taskState from "../../recoil/task";
+import { questRespState } from "../../recoil/questResp";
 
 const DeleteServerModalWindow = (props: { server: Server, isVisible: boolean, closeModal: (snowModal: boolean) => void} ) => {
 	const [currentServer, setCurrentServer] = useState();
@@ -20,6 +21,7 @@ const DeleteServerModalWindow = (props: { server: Server, isVisible: boolean, cl
 	const [patients, setPatientState] = useRecoilState(patientState);
 	const [payors, setPayorsState] = useRecoilState(payorState);
 	const [tasks, setTasksState] = useRecoilState(taskState);
+	const [questResps, setQuestResps] = useRecoilState(questRespState);
 	const navigation = useNavigation<RootStackParamList>();
 
 	useEffect(() => {
@@ -35,6 +37,7 @@ const DeleteServerModalWindow = (props: { server: Server, isVisible: boolean, cl
 		let { [serverToDeleteId]: patient, ...restPatients } = patients;
 		let { [serverToDeleteId]: payor, ...restPayors } = payors;
 		let { [serverToDeleteId]: task, ...restTasks } = tasks;
+		const { [serverToDeleteId]: qr, ...restQuestResps } = questResps;
 		setServers(restServers);
 		setCoverageState(restCoverages);
 		setFocusesState(restFocuses);
@@ -42,6 +45,7 @@ const DeleteServerModalWindow = (props: { server: Server, isVisible: boolean, cl
 		setPatientState(restPatients);
 		setPayorsState(restPayors);
 		setTasksState(restTasks);
+		setQuestResps(restQuestResps);
 		navigation.navigate("PatientProfile");
 	}
 
