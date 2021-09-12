@@ -10,7 +10,14 @@ const UserCard = ():JSX.Element => {
 	return (
 		<Card flex={1}>
 			<HStack alignItems="center">
-				<Avatar size="55px">User</Avatar>
+				<Avatar
+					size="55px"
+					source={{
+						uri: patientInfo.photo
+					}}
+				>
+					User
+				</Avatar>
 				<VStack ml={4}>
 					<Text
 						color="#333"

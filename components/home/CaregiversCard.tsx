@@ -4,6 +4,7 @@ import { Path } from "react-native-svg";
 import Card from "../Card";
 import { useRecoilValue } from "recoil";
 import { ownerCaregiverState } from "../../recoil/owner";
+import { checkValue } from "../../utils";
 
 
 const CaregiversCard = ():JSX.Element => {
@@ -46,7 +47,7 @@ const CaregiversCard = ():JSX.Element => {
 						<Text fontSize="md">{ primaryCaregiver.name }</Text>
 					</>
 					:
-					<Text fontSize="md">N/A</Text>
+					<Text fontSize="md">{ checkValue(undefined) }</Text>
 				}
 			</VStack>
 		</Card>

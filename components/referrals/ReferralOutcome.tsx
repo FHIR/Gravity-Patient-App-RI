@@ -1,4 +1,4 @@
-import { FormControl, HStack, Select, Text, TextArea, View, Button, Radio } from "native-base";
+import { FormControl, HStack, Select, Text, TextArea, View, Button, Radio, Input } from "native-base";
 import React, { useState, useEffect } from "react";
 import { Referral } from "../../recoil/task/referral";
 import Card from "../Card";
@@ -6,8 +6,9 @@ import { useRecoilState, useRecoilValue } from "recoil";
 import { serversState } from "../../recoil/servers";
 import Client from "fhir-kit-client";
 import patientState from "../../recoil/patient";
-import { Observation } from "fhir/r4";
+import { Bundle, Observation, ServiceRequest } from "fhir/r4";
 import taskState from "../../recoil/task";
+import { splitInclude } from "../../utils/api";
 
 const LOINC_CODES_MAP: { [code: string]: string } = {
 	"LA33-6": "Yes",
@@ -103,6 +104,7 @@ const ReferralOutcome = ({ referral }: { referral: Referral }): JSX.Element => {
 	const [successQ2, setSuccessQ2] = useState<string>("");
 	const [successQ3, setSuccessQ3] = useState<string>("");
 	const [failedQ1, setFailedQ1] = useState<string>("");
+	const [failedQ1Explain, setFailedQ1Explain] = useState<string>("");
 	const [failedQ2, setFailedQ2] = useState<string>("");
 	const [failedQ3, setFailedQ3] = useState<string>("");
 
@@ -111,8 +113,29 @@ const ReferralOutcome = ({ referral }: { referral: Referral }): JSX.Element => {
 	//todo: fix ts warning
 	const referralServer = servers[referral.serverId];
 	const [tasks, setTasks] = useRecoilState(taskState);
-
 	const isSubmitted = ["rejected", "cancelled", "on-hold", "failed", "completed", "entered-in-error"].includes(referral.status);
+	const [submitInProgress, setSubmitInProgress] = useState(false);
+	const [outcomeObservations, setOutcomeObservation] = useState<{ question: string | undefined, answer: string | undefined }[] | undefined>([]);
+
+	useEffect(() => {
+		const fetchObservation = async () => {
+			const client = new Client({ baseUrl: referralServer.fhirUri });
+			client.bearerToken = referralServer.session?.access.token;
+			const bundle = await client.search({ resourceType: "ServiceRequest", searchParams: { _id: referral.serviceRequest?.id, _revinclude: "Observation:based-on" } }) as Bundle;
+			const [_, observation] = splitInclude<ServiceRequest[], Observation[]>(bundle);
+
+			const outcomeObservation = observation?.map((r): { question: string | undefined, answer: string | undefined } => ({
+				question: r.code.coding?.[0].display,
+				answer: r.valueCodeableConcept?.coding?.[0].display
+			}));
+
+			setOutcomeObservation(outcomeObservation);
+		};
+
+		if (isSubmitted) {
+			fetchObservation();
+		}
+	}, [isSubmitted]);
 
 
 	useEffect(() => {
@@ -121,6 +144,7 @@ const ReferralOutcome = ({ referral }: { referral: Referral }): JSX.Element => {
 
 	const handleSubmit = async () => {
 		try {
+			setSubmitInProgress(true);
 			const client = new Client({ baseUrl: referralServer.fhirUri });
 			client.bearerToken = referralServer.session?.access.token;
 			const output = [];
@@ -217,7 +241,7 @@ const ReferralOutcome = ({ referral }: { referral: Referral }): JSX.Element => {
 							},
 							answer: {
 								code: failedQ1,
-								display: LOINC_CODES_MAP[failedQ1]
+								display: failedQ1 === "LA997-7" ? failedQ1Explain : LOINC_CODES_MAP[failedQ1]
 							}
 						})
 					});
@@ -290,6 +314,8 @@ const ReferralOutcome = ({ referral }: { referral: Referral }): JSX.Element => {
 			});
 		} catch (e) {
 			console.log(e);
+		} finally {
+			setSubmitInProgress(false);
 		}
 	};
 
@@ -305,9 +331,58 @@ const ReferralOutcome = ({ referral }: { referral: Referral }): JSX.Element => {
 					>
 						Outcome
 					</Text>
-					<View>
-						<Text>Outcomes in readonly mode...</Text>
+					<View mb={4}>
+						<Text
+							color="#7B7F87"
+							fontSize="sm"
+						>
+							Status:
+						</Text>
+						<Text
+							color="#333333"
+							fontSize="sm"
+							textTransform="capitalize"
+						>
+							{ referral.status }
+						</Text>
 					</View>
+					{
+						outcomeObservations?.map((o, i) => (
+							<View
+								mb={4}
+								key={i}
+							>
+								<Text
+									color="#7B7F87"
+									fontSize="sm"
+								>
+									{ o.question }
+								</Text>
+								<Text
+									color="#333333"
+									fontSize="sm"
+								>
+									{ o.answer }
+								</Text>
+							</View>
+						))
+					}
+					{ referral.output?.[0].valueCodeableConcept?.text &&
+						<View mb={4}>
+							<Text
+								color="#7B7F87"
+								fontSize="sm"
+							>
+								Comment:
+							</Text>
+							<Text
+								color="#333333"
+								fontSize="sm"
+							>
+								{ referral.output?.[0].valueCodeableConcept?.text }
+							</Text>
+						</View>
+					}
 				</Card>
 			</View>
 		);
@@ -477,6 +552,9 @@ const ReferralOutcome = ({ referral }: { referral: Referral }): JSX.Element => {
 							value="LA991-1"
 							size="md"
 							mb="10px"
+							_text={{
+								flexShrink: 1
+							}}
 						>
 							No longer needed
 						</Radio>
@@ -484,6 +562,9 @@ const ReferralOutcome = ({ referral }: { referral: Referral }): JSX.Element => {
 							value="LA992-2"
 							size="md"
 							mb="10px"
+							_text={{
+								flexShrink: 1
+							}}
 						>
 							Unwilling to use this type of service
 						</Radio>
@@ -491,6 +572,9 @@ const ReferralOutcome = ({ referral }: { referral: Referral }): JSX.Element => {
 							value="LA993-3"
 							size="md"
 							mb="10px"
+							_text={{
+								flexShrink: 1
+							}}
 						>
 							Unable to schedule appointment
 						</Radio>
@@ -498,6 +582,9 @@ const ReferralOutcome = ({ referral }: { referral: Referral }): JSX.Element => {
 							value="LA994-4"
 							size="md"
 							mb="10px"
+							_text={{
+								flexShrink: 1
+							}}
 						>
 							Unable to arrange transportation
 						</Radio>
@@ -505,6 +592,9 @@ const ReferralOutcome = ({ referral }: { referral: Referral }): JSX.Element => {
 							value="LA995-5"
 							size="md"
 							mb="10px"
+							_text={{
+								flexShrink: 1
+							}}
 						>
 							Do not feel safe using the organization
 						</Radio>
@@ -513,7 +603,7 @@ const ReferralOutcome = ({ referral }: { referral: Referral }): JSX.Element => {
 							size="md"
 							mb="10px"
 							_text={{
-
+								flexShrink: 1
 							}}
 						>
 							Receive negative feedback on this organization
@@ -522,8 +612,23 @@ const ReferralOutcome = ({ referral }: { referral: Referral }): JSX.Element => {
 							value="LA997-7"
 							size="md"
 							mb="10px"
+							_text={{
+								flexShrink: 1
+							}}
 						>
-							Explain please
+							Explain
+							<Input
+								w="70%"
+								ml="10px"
+								size="sm"
+								px="10px"
+								py="5px"
+								value={failedQ1Explain}
+								onChangeText={val => setFailedQ1Explain(val)}
+								placeholder="Explain please"
+								_focus={{ borderColor: "#0069ff" }}
+								_hover={{ borderColor: "#0069ff" }}
+							/>
 						</Radio>
 					</Radio.Group>
 				</FormControl> }
@@ -636,6 +741,7 @@ const ReferralOutcome = ({ referral }: { referral: Referral }): JSX.Element => {
 					onPress={() => handleSubmit()}
 					colorScheme="blue"
 					disabled={status === "in-progress"}
+					isLoading={submitInProgress}
 				>
 					Submit Outcomes
 				</Button>

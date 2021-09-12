@@ -4,6 +4,7 @@ import { HStack, Icon, Text, VStack } from "native-base";
 import { Path } from "react-native-svg";
 import { useRecoilValue } from "recoil";
 import { payorInsuranceState } from "../../recoil/payor";
+import { checkValue } from "../../utils";
 
 
 const InsurancesCard = ():JSX.Element => {
@@ -46,7 +47,7 @@ const InsurancesCard = ():JSX.Element => {
 						<Text fontSize="md">{ primaryInsurance.name }</Text>
 					</>
 					:
-					<Text fontSize="md">N/A</Text>
+					<Text fontSize="md">{ checkValue(undefined) }</Text>
 				}
 			</VStack>
 		</Card>

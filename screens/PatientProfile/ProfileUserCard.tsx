@@ -14,7 +14,15 @@ const ProfileUserCard = (): JSX.Element => {
 	return (
 		<Card flex={1}>
 			<VStack alignItems="center">
-				<Avatar mb="20px" size="100px">User</Avatar>
+				<Avatar
+					mb="20px"
+					size="100px"
+					source={{
+						uri: patientInfo.photo
+					}}
+				>
+					User
+				</Avatar>
 				<Text
 					color="#333"
 					fontSize="lg"
