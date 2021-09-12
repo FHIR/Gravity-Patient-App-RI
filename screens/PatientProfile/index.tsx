@@ -1,21 +1,22 @@
 import React, {useEffect, useState} from "react";
-import {HStack, View, ScrollView, Modal, Button, Icon} from "native-base";
+import {HStack, VStack, View, ScrollView, Modal, Button, Icon} from "native-base";
 import ProfileUserCard from "./ProfileUserCard";
 import { useNavigation } from "@react-navigation/native";
 import { Path } from "react-native-svg";
-import { useRecoilState } from "recoil";
-import role from "../../recoil/roleState";
+import PatientProfileTabs from "../../components/PatientProfileTabs";
+import LogoutModalWindow from "../PatientProfile/LogoutModalWindow";
 
 const PatientProfile = (): JSX.Element => {
 	const navigation = useNavigation();
-	const [showModal, setShowModal] = useState(false);
-	const [roleState, setRoleState] = useRecoilState(role);
+	const [showModal, setShowModal] = useState(false)
 
 	useEffect(() => {
 		navigation.setOptions({ headerRight: () => (
 			<Button
-				variant="link"
-				p={0}
+				bg="#fff"
+				w="35px"
+				p="10px"
+				variant="unstyled"
 				onPress={ () => setShowModal(!showModal) }
 			>
 				<Icon
@@ -34,74 +35,19 @@ const PatientProfile = (): JSX.Element => {
 
 	return (
 		<ScrollView
-			pt={2}
-			pb={2}
+			flex={1}
+			bg={"#F8F9FB"}
 		>
-			<View p={5}>
-				<HStack pb={5}>
+			<VStack flex={1} space={5} p={5}>
+				<View>
 					<ProfileUserCard />
-				</HStack>
-			</View>
-			<Modal isOpen={showModal} onClose={ () => setShowModal(!showModal) }>
-				<Modal.Content
-					mb="auto"
-					mt="20"
-					maxWidth={"100%"}
-				>
-					<Modal.Header
-						_text={{
-							fontSize: "2xl",
-							fontWeight: "500",
-						}}
-						>
-						Log Out
-					</Modal.Header>
-					<Modal.Body>
-						Are you sure you want log out from the account?
-					</Modal.Body>
-					<Modal.Footer
-						pr={7}
-					>
-						<HStack
-							space={5}
-							flex={1}
-						>
-							<View flex={1}>
-								<Button
-									bg="white"
-									border={1}
-									borderColor="#E7E7E7"
-									_text={{
-										color: "#333333",
-										fontWeight: "400",
-										fontSize: "sm",
-									}}
-									onPress={() => {
-										setShowModal(!showModal)
-									}}
-								>
-									Close
-								</Button>
-							</View>
-							<View flex={1}>
-								<Button
-									onPress={() => setRoleState(null)}
-									bg={"#FF4D4D"}
-									_text={{
-										color: "white",
-										fontWeight: "400",
-										fontSize: "sm"
-									}}
-								>
-									Log out
-								</Button>
-							</View>
-						</HStack>
-					</Modal.Footer>
-				</Modal.Content>
-			</Modal>
+				</View>
+				<View flex={1}>
+					<PatientProfileTabs />
+				</View>
+			</VStack>
+			<LogoutModalWindow isVisible={showModal} closeModal={ () => setShowModal(!showModal) } />
 		</ScrollView>
-
 	);
 };
 
