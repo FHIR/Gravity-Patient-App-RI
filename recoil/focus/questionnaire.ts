@@ -1,12 +1,12 @@
 import focusState from "./atom";
 import { selector } from "recoil";
+import { mapHash } from "../../utils";
+import { Questionnaire } from "fhir/r4";
 
 const focusQuestionnaireState = selector({
 	key: "focusQuestionnaireState",
 	get: ({ get }) => {
-		const focuses = Object.values(get(focusState)).flatMap(v => v);
-
-		return focuses.filter(r => r.resourceType === "Questionnaire");
+		return mapHash(get(focusState), focus => focus.filter(r => r.resourceType === "Questionnaire") as Questionnaire[]);
 	}
 });
 

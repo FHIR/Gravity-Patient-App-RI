@@ -532,6 +532,12 @@ const makeQTask = (patientId: string, questionnaireId: string) => ({
 	"status": "ready",
 	"intent": "proposal",
 	"priority": "routine",
+	"authoredOn": new Date().toISOString(),
+	"restriction": {
+		"period": {
+			"end": new Date(Date.now() + 24 * 3600 * 1000).toISOString()
+		}
+	},
 	"for": {
 		"reference": `Patient/${patientId}`
 	},

@@ -25,6 +25,7 @@ import PatientProfile from "./screens/PatientProfile";
 import ServerView from "./screens/ServerView";
 import AddServer from "./screens/AddServer";
 import ReferralView from "./screens/ReferralView";
+import Assessment from "./screens/Assessment";
 
 
 // todo: temporary recoil fix, should be fixed in expo sdk that support react-native 0.64+, probably sdk 43
@@ -55,6 +56,7 @@ export type RootStackParamList = {
 	PatientProfile: undefined,
 	Referrals: undefined,
 	Assessments: undefined,
+	Assessment: { assessmentId: [string, string] },
 	ServerView: { serverId: string },
 	AddServer: undefined
 	ReferralView: { referralId: string | undefined }
@@ -155,6 +157,7 @@ const MainContainer = () => {
 						<Stack.Screen name="Referrals" component={Referrals} />
 						<Stack.Screen name="ReferralView" component={ReferralView} />
 						<Stack.Screen name="Assessments" component={Assessments} />
+						<Stack.Screen name="Assessment" component={Assessment} />
 					</>
 				)}
 			</Stack.Navigator>

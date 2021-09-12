@@ -12,8 +12,11 @@ import {
 	CareTeam,
 	HealthcareService,
 	ServiceRequest,
-	Questionnaire
+	Questionnaire,
+	QuestionnaireResponse
 } from "fhir/r4";
+import { SearchBar } from "react-native-screens";
+import { filterMap } from ".";
 
 export type Payor = (Organization | Patient | RelatedPerson);
 export type Owner = (Practitioner | PractitionerRole | Organization | CareTeam | HealthcareService | Patient | Device | RelatedPerson);
@@ -24,7 +27,8 @@ export type fetchFhirType = {
 	task: Task[] | null,
 	payor: Payor[] | null,
 	owner: Owner[] | null,
-	focus: Focus[] | null
+	focus: Focus[] | null,
+	questResp: QuestionnaireResponse[]
 };
 
 export const fetchFhirData = async (serverURI: string, token: string | null | undefined, patientId: string): Promise<fetchFhirType> => {
@@ -33,15 +37,17 @@ export const fetchFhirData = async (serverURI: string, token: string | null | un
 		client.bearerToken = token;
 	}
 
-	const [patient, coverageBundle, taskWithOwnerBundle, taskWithFocusBundle] = await Promise.all([
+	const [patient, coverageBundle, taskWithOwnerBundle, taskWithFocusBundle, questRespBundle] = await Promise.all([
 		client.read({ resourceType: "Patient", id: patientId }),
 		client.search({ resourceType: "Coverage", searchParams: { patient: patientId, _include: "Coverage:payor" } }),
 		client.search({ resourceType: "Task", searchParams: { patient: patientId, _include: "Task:owner" } }),
-		client.search({ resourceType: "Task", searchParams: { patient: patientId, _include: "Task:focus" } })
+		client.search({ resourceType: "Task", searchParams: { patient: patientId, _include: "Task:focus" } }),
+		client.search({ resourceType: "QuestionnaireResponse" })
 	]);
 	const [coverage, payor] = splitInclude<Coverage[], Payor[]>(coverageBundle as Bundle);
 	const [task, owner] = splitInclude<Task[], Owner[]>(taskWithOwnerBundle as Bundle);
 	const [_, focus] = splitInclude<Task[], Focus[]>(taskWithFocusBundle as Bundle);
+	const [questResp] = splitInclude<QuestionnaireResponse[], unknown>(questRespBundle as Bundle);
 
 	return {
 		patient: patient.resourceType === "Patient" ? patient as Patient : null,
@@ -49,7 +55,8 @@ export const fetchFhirData = async (serverURI: string, token: string | null | un
 		payor,
 		task,
 		owner,
-		focus
+		focus,
+		questResp: questResp || []
 	};
 };
 
