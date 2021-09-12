@@ -15,7 +15,8 @@ type PatientInfo = {
 	race: string | undefined,
 	ethnicity: string | undefined,
 	educationLevel: string | undefined,
-	employmentStatus: string | undefined
+	employmentStatus: string | undefined,
+	photo: string | undefined
 };
 const EXTENSION = {
 	RACE: "http://hl7.org/fhir/us/core/StructureDefinition/us-core-race",
@@ -42,6 +43,7 @@ const patientInfoState = selector<PatientInfo>({
 		const ethnicity = patientInfoState?.extension?.find(extension => extension?.url === EXTENSION.ETHNICITY)?.valueCode;
 		const educationLevel = patientInfoState?.extension?.find(extension => extension?.url === EXTENSION.EDUCATION_LEVEL)?.valueCode;
 		const employmentStatus = patientInfoState?.extension?.find(extension => extension?.url === EXTENSION.EMPLOYMENT_STATUS)?.valueCode;
+		const photo = patientInfoState?.photo?.[0] ? `data:${patientInfoState.photo[0].contentType};base64,${patientInfoState.photo[0].data}` : undefined;
 
 		return {
 			name,
@@ -56,7 +58,8 @@ const patientInfoState = selector<PatientInfo>({
 			race,
 			ethnicity,
 			educationLevel,
-			employmentStatus
+			employmentStatus,
+			photo
 		};
 	}
 });
