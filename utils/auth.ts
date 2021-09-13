@@ -1,3 +1,5 @@
+import jwtDecode, { JwtPayload } from "jwt-decode";
+
 export const discoverAuthEndpoints = (fhirUri: string) =>
 	fetch(`${fhirUri}/.well-known/smart-configuration`)
 		.then(resp => resp.json())
@@ -100,6 +102,16 @@ const processTokenResponse = ({ access_token, expires_in, refresh_token, patient
 	},
 	refresh: refresh_token ? {
 		token: refresh_token,
-		expiresAt: undefined
+		expiresAt: tryExtractExpTime(refresh_token)
 	} : undefined
 });
+
+
+const tryExtractExpTime = (token: string): number | undefined => {
+	try {
+		const { exp } = jwtDecode<JwtPayload>(token);
+		return exp && exp * 1000;
+	} catch {
+		return undefined;
+	}
+};
