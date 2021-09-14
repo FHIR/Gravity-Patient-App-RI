@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { View, Text, TouchableWithoutFeedback, Button, ActivityIndicator } from "react-native";
 import { AuthRequestConfig, DiscoveryDocument, makeRedirectUri, useAuthRequest } from "expo-auth-session";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
@@ -8,6 +8,7 @@ import { Server, serversState } from "../recoil/servers";
 import { exchangeAuthCode } from "../utils/auth";
 import { timeout } from "../utils";
 import { ClusterWithArrows, Success, Error } from "../components/Icons";
+import * as WebBrowser from "expo-web-browser";
 
 
 const useProxy = true;
@@ -135,9 +136,11 @@ const ServerAuth = ({ server, onDone, goBack }: { server: Server, onDone: (s: Se
 						right: 20
 					}}>
 						<Button
-							title={clicks < 7 ? "Authorize With The Server" : "Initiate unstuck sequence"}
-							onPress={go(clicks)}
+							// title={clicks < 7 ? "Authorize With The Server" : "Initiate unstuck sequence"}
+							title="Authorize With The Server"
+							onPress={go(0)}
 						/>
+						<Text></Text>
 						{ phase === "error" ? <Button
 							title="Cancel"
 							onPress={goBack}
@@ -152,6 +155,12 @@ const ServerAuth = ({ server, onDone, goBack }: { server: Server, onDone: (s: Se
 
 const InvisibleClickCounter = ({ children }: { children: (n: number) => JSX.Element }) => {
 	const [clickN, setClickN] = useState(0);
+	useEffect(() => {
+		if (clickN >= 7) {
+			setClickN(0);
+			WebBrowser.openBrowserAsync("https://auth.logicahealth.org/logout");
+		}
+	}, [clickN]);
 	return (
 		<TouchableWithoutFeedback
 			onPress={() => setClickN(n => n+1)}

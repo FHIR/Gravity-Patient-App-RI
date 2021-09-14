@@ -32,19 +32,21 @@ export const useWithAccessToken = () => {
 		if (!server || !session) {
 			return;
 		}
-		if (!session.access.expiresAt || session.access.expiresAt > Date.now()) {
-			return cb(session.access.token, session.patientId, server.fhirUri);
+		try {
+			await cb(session.access.token, session.patientId, server.fhirUri);
+		} catch (err: any) {
+			const { refresh } = session;
+			if (typeof err === "object" && err?.response?.status === 401 && refresh) {
+				const newSession = await refreshAccessToken({ refreshToken: refresh.token, ...server.authConfig })
+				setServers(old => ({
+					...old,
+					[serverId]: { ...server, session: newSession }
+				}));
+				cb(newSession.access.token, session.patientId, server.fhirUri);
+			} else {
+				throw err;
+			}
 		}
-		const { refresh } = session;
-		if (refresh) {
-			const newSession = await refreshAccessToken({ refreshToken: refresh.token, ...server.authConfig })
-			setServers(old => ({
-				...old,
-				[serverId]: { ...server, session: newSession }
-			}));
-			return cb(newSession.access.token, session.patientId, server.fhirUri);
-		}
-		cb(session.access.token, session.patientId, server.fhirUri);
 	}
 	return withAccessToken;
 };
