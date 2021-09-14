@@ -65,7 +65,7 @@ const go = async () => {
 
 		// Create assessments
 		for (let i = 0; i < assessmentsN; i++) {
-			await cl.create({ resourceType: "Task", body: makeQTask(p.id!, HVS.id) });
+			await cl.create({ resourceType: "Task", body: makeQTask(p.id!, HVS.id, cpOrg.id!, cpOrg.name!) });
 		}
 
 	} catch(err) {
@@ -570,7 +570,7 @@ const makeSRTask = (patientId: string, serviceRequestId: string, ownerResourceTy
 	}
 });
 
-const makeQTask = (patientId: string, questionnaireId: string) => ({
+const makeQTask = (patientId: string, questionnaireId: string, requesterId: string, requesterDisplay: string) => ({
 	"resourceType": "Task",
 	"status": "ready",
 	"intent": "proposal",
@@ -592,6 +592,10 @@ const makeQTask = (patientId: string, questionnaireId: string) => ({
 	},
 	"owner": {
 		"reference": `Patient/${patientId}`,
+	},
+	requester: {
+		"reference": `Organization/${requesterId}`,
+		display: requesterDisplay
 	}
 });
 

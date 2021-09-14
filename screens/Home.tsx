@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { HStack, ScrollView, View, Text, Pressable, Spinner } from "native-base";
+import { HStack, ScrollView, View, Text, Pressable, Spinner, Button } from "native-base";
 import SyncInfo from "../components/home/SyncInfo";
 import UserCard from "../components/home/UserCard";
 import ClinicalStaffCard from "../components/home/ClinicalStaffCard";
@@ -104,6 +104,16 @@ const Home = ({ navigation }: NativeStackScreenProps<RootStackParamList, "Home">
 		return (
 			<View flex={1} alignItems="center" justifyContent="center">
 				<Text>No Data Yet</Text>
+				<Button
+					bg="#0069FF"
+					mt="5"
+					_text={{
+						color: "white",
+					}}
+					onPress={() => navigation.navigate("AddServer")}
+				>
+					Add New Server
+				</Button>
 			</View>
 		);
 	}

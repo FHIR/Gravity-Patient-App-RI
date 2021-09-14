@@ -1,6 +1,5 @@
 import React from "react";
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
-import { Task } from "fhir/r4";
 import ResourceCard from "../components/ResourceCard";
 import ResourceCardItem from "../components/ResourceCardItem";
 import { ScrollView, View, Text, Pressable } from "native-base";
@@ -32,8 +31,8 @@ const TaskList = (assessments: Assessment[]) => {
 									<ResourceCardItem label="Request Date">
 										{a.sentDate}
 									</ResourceCardItem>
-									<ResourceCardItem label="Sent by">
-										{a.requestorName || "N/A"}
+									<ResourceCardItem label="Sent By">
+										{a.requesterName || "N/A"}
 									</ResourceCardItem>
 								</ResourceCard>
 							</Pressable>

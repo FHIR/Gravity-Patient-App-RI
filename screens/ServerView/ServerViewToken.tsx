@@ -55,7 +55,7 @@ const ServerViewToken = ({server}: { server: Server }): JSX.Element => {
 					<Text fontSize={20} fontWeight="400">{ minutes ? minutes : 0}</Text>
 					<Text fontSize={10} fontWeight="400" color="#7B7F87">Minutes</Text>
 				</Box>
-				<Button bg="#0069FF">Renew</Button>
+				{/*<Button bg="#0069FF">Renew</Button>*/}
 			</HStack>
 		</View>
 	);

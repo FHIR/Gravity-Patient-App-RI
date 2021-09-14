@@ -25,10 +25,6 @@ const LOINC_CODES_MAP: { [code: string]: string } = {
 
 const makeOutputObservation = ({ patientId, serviceRequestId, question, answer }: { patientId: string | undefined, serviceRequestId: string | undefined, question: { code: string, display: string }, answer: { code: string, display: string } }): Observation => ({
 	"resourceType": "Observation",
-	"text": {
-		"status": "generated",
-		"div": "<div xmlns=\"http://www.w3.org/1999/xhtml\"><p><b>Generated Narrative</b></p><p></p><p><b>category</b>: <span title=\"Codes: {http://terminology.hl7.org/CodeSystem/observation-category social-history}\">Social History</span>, <span title=\"Codes: {http://hl7.org/fhir/us/sdoh-clinicalcare/CodeSystem/SDOHCC-CodeSystemTemporaryCodes transportation-insecurity}, {http://example.org/CodeSystem/other-code-system transportation-insecurity-financial}\">Transportation Insecurity</span></p><p><b>code</b>: <span title=\"Codes: {http://snomed.info/sct 160695008}\">Transport too expensive</span></p><p><b>subject</b>: <a href=\"Patient-pat-53234.html\">COLIN ABBAS. Generated Summary: Medical Record Number: 1032702 (USUAL); active; COLIN V. ABBAS , COLIN V. BAXTER ; Phone: 555-555-5555; gender: male; birthDate: 1987-02-20</a></p><p><b>effective</b>: May 10, 2021, 9:56:54 PM</p><p><b>value</b>: true</p></div>"
-	},
 	"meta": {
 		"profile": [
 			"http://hl7.org/fhir/us/sdoh-clinicalcare/StructureDefinition/SDOHCC-ObservationAssessment"

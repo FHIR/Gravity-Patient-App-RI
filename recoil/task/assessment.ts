@@ -16,7 +16,7 @@ export type Assessment = {
 	questionnaire: Questionnaire,
 	sentDate?: string,
 	dueDate?: string,
-	requestorName?: string,
+	requesterName: string | undefined,
 	response?: QuestionnaireResponse
 }
 
@@ -39,6 +39,7 @@ const taskAssessmentState = selector<Assessment[]>({
 				questionnaire: quest as Questionnaire,
 				sentDate: task.authoredOn ? moment(task.authoredOn).format("MMM DD, YYYY, hh:mm A") : undefined,
 				dueDate: task?.restriction?.period?.end ? moment(task.restriction?.period?.end).format("MMM DD, YYYY, hh:mm A") : undefined,
+				requesterName: task.requester?.display,
 				response
 			};
 		}))

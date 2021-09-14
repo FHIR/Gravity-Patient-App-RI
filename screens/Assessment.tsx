@@ -202,7 +202,7 @@ const UncompleteAssessment = ({ assessment: asm }: { assessment: Assessment }) =
 						{asm.sentDate || "N/A"}
 					</ResourceCardItem>
 					<ResourceCardItem label="Sent By">
-						{asm.requestorName || "N/A"}
+						{asm.requesterName || "N/A"}
 					</ResourceCardItem>
 					<ResourceCardItem label="Due Date">
 						{asm.dueDate || "N/A"}
@@ -287,7 +287,7 @@ const CompleteAssessment = ({ assessment: asm, response }: { assessment: Assessm
 						{asm.sentDate || "N/A"}
 					</ResourceCardItem>
 					<ResourceCardItem label="Sent By">
-						{asm.requestorName || "N/A"}
+						{asm.requesterName || "N/A"}
 					</ResourceCardItem>
 					<ResourceCardItem label="Submit Date">
 						{submitDate || "N/A"}
