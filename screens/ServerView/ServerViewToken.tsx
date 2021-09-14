@@ -24,7 +24,17 @@ const ServerViewToken = ({server}: { server: Server }): JSX.Element => {
 	const days = moment.duration(delta).days();
 	const month = moment.duration(delta).months();
 
-	//todo: should we show 0 0 0 0 when we don't have expiresAt. I believe it should be n/a
+	if (!session?.refresh?.expiresAt) {
+		return (
+			<View>
+				<Text color="#7B7F87" fontSize={14} mb={3} fontWeight={400}>Your access to the server will expire in:</Text>
+				<Box justifyContent="center">
+					<Text fontSize={20} fontWeight="400">Not Available</Text>
+				</Box>
+			</View>
+		);
+	}
+
 	return (
 		<View>
 			<Text color="#7B7F87" fontSize={14} mb={3} fontWeight={400}>Your access to the server will expire in:</Text>
@@ -48,7 +58,7 @@ const ServerViewToken = ({server}: { server: Server }): JSX.Element => {
 				<Button bg="#0069FF">Renew</Button>
 			</HStack>
 		</View>
-	)
-}
+	);
+};
 
 export default ServerViewToken;

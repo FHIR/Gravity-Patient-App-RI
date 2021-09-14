@@ -305,7 +305,8 @@ const ReferralOutcome = ({ referral }: { referral: Referral }): JSX.Element => {
 				body: {
 					...referral,
 					status,
-					output
+					output,
+					lastModified: new Date().toISOString()
 				}
 			});
 			setTasks({
