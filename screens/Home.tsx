@@ -41,7 +41,7 @@ const Home = ({ navigation }: NativeStackScreenProps<RootStackParamList, "Home">
 
 		try {
 			await withAccessToken(serverId, async (token, patientId, fhirUri) => {
-				const { patient, coverage, payor, owner, task, focus } = await fetchFhirData(fhirUri, token, patientId);
+				const { patient, coverage, payor, owner, task, focus, questResp } = await fetchFhirData(fhirUri, token, patientId);
 				patient && setPatient({
 					...patients,
 					[serverId]: patient
@@ -66,6 +66,10 @@ const Home = ({ navigation }: NativeStackScreenProps<RootStackParamList, "Home">
 					...focuses,
 					[serverId]: focus
 				});
+				setQuestResps(old => ({
+					...old,
+					[serverId]: questResp
+				}));
 				setServers({
 					...servers,
 					[serverId]: {
