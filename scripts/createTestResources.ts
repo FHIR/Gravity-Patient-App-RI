@@ -5,7 +5,7 @@ import { Bundle, Patient, ServiceRequest, Task, Organization, RelatedPerson, Pra
 const openFhirUrl: string = null;
 const patientFamily: string = "Racca";
 const patientGiven: string[] = ["Supers"];
-const patientGender: "male" | "female" | "other" | "unknown" = "male";
+const patientGender: "male" | "female" | "other" | "unknown" = "female";
 const refferalsN = 3;
 const assessmentsN = 3;
 const needOrganization = true;
@@ -315,11 +315,22 @@ const makeCoverage = (patientId: string, orgId: string) => ({
 	"beneficiary": {
 		"reference": `Patient/${patientId}`
 	},
+	"subscriber": {
+		"reference": `Patient/${patientId}`
+	},
+	"subscriberId": "AB9876",
 	"payor": [
 		{
 			"reference": `Organization/${orgId}`
 		}
-	]
+	],
+	"relationship": {
+		"coding": [
+			{
+				"code": "self"
+			}
+		]
+	}
 });
 
 const makeRelatedPerson = (patientId: string) => ({

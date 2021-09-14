@@ -260,7 +260,7 @@ const ReferralOutcome = ({ referral }: { referral: Referral }): JSX.Element => {
 							serviceRequestId: referral.serviceRequest?.id,
 							question: {
 								code: "99982-2",
-								display: "Do you want to reschedule the service?"
+								display: "Did the service meet your needs?"
 							},
 							answer: {
 								code: failedQ2,
@@ -330,7 +330,7 @@ const ReferralOutcome = ({ referral }: { referral: Referral }): JSX.Element => {
 						fontWeight="medium"
 						mb={5}
 					>
-						Outcome
+						Status / Outcome
 					</Text>
 					<View mb={4}>
 						<Text
@@ -398,7 +398,7 @@ const ReferralOutcome = ({ referral }: { referral: Referral }): JSX.Element => {
 					fontWeight="medium"
 					mb={5}
 				>
-					Outcome
+					Status / Outcome
 				</Text>
 
 				<FormControl mb={5}>
@@ -430,14 +430,14 @@ const ReferralOutcome = ({ referral }: { referral: Referral }): JSX.Element => {
 							fontSize="sm"
 							color="#7b7f87"
 						>
-							Was service available at convenient times?
+							Did the service meet your needs?
 						</Text>
 					</FormControl.Label>
 					<Radio.Group
 						flexDirection="row"
 						colorScheme="blue"
 						name="99999-1"
-						accessibilityLabel="Was service available at convenient times?"
+						accessibilityLabel="Did the service meet your needs?"
 						value={successQ1}
 						onChange={val => setSuccessQ1(val)}
 					>

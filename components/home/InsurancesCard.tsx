@@ -3,12 +3,12 @@ import Card from "../Card";
 import { HStack, Icon, Text, VStack } from "native-base";
 import { Path } from "react-native-svg";
 import { useRecoilValue } from "recoil";
-import { payorInsuranceState } from "../../recoil/payor";
+import { coverageInsuranceState } from "../../recoil/coverage";
 import { checkValue } from "../../utils";
 
 
 const InsurancesCard = ():JSX.Element => {
-	const [primaryInsurance] = useRecoilValue(payorInsuranceState);
+	const [primaryInsurance] = useRecoilValue(coverageInsuranceState);
 
 	return (
 		<Card flex={1}>
