@@ -7,6 +7,8 @@ Open Expo Go app and scan QR code to launch the app:
 * [Android](https://play.google.com/store/apps/details?id=host.exp.exponent)
 * [iOS](https://itunes.com/apps/exponent)
 
+*Note for iOS users* Due to iOS restriction settings you cannot always open published expo app, please follow the link [https://docs.expo.dev/workflow/publishing/#on-ios-you-cant-share-your-published](https://docs.expo.dev/workflow/publishing/#on-ios-you-cant-share-your-published)
+
 User credentials for app login:
 * Patient / password
 * Caregiver / password
@@ -22,7 +24,8 @@ This will start local version of expo with its own QR code to scan from Expo Go 
 
 ## Prepare Sandbox Data
 In order to have correct test data you could use `/scripts/createTestResource.ts` and set `openFhirUrl` to your open fhir sandbox url.  
-`npm run create-test-data` will generate few test resources and Racca Supers patient. Choose it in Patient Picker.
+`npm run create-test-data` will generate few test resources and Racca Supers patient. Choose it in Patient Picker.   
+*Note* it will cascade remove all previously generated data.
 
 To authenticate correctly your sandbox should have proper redirectURI `https://auth.expo.io/@andriy.moskalov/Gravity-Patient-App-RI` and scopes `patient/*.* launch/patient offline_access`
 
