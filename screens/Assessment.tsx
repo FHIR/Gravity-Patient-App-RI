@@ -109,7 +109,7 @@ const AssessmentScreen = ({ route, navigation }: NativeStackScreenProps<RootStac
 	const assessments = useRecoilValue(taskAssessmentState);
 	const assessment = assessments.find(({ id: [sid, aid] }) => sid === serverId && aid === id);
 
-	const title = assessment?.questionnaire?.title || "untitled assessment";
+	const title = assessment?.task?.code?.text || "untitled assessment";
 	useEffect(() => {
 		navigation.setOptions({ title });
 	}, [title]);

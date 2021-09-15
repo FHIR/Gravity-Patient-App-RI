@@ -27,7 +27,7 @@ const TaskList = (assessments: Assessment[]) => {
 							<Pressable
 								onPress={() => navigation.navigate("Assessment", { assessmentId: a.id })}
 							>
-								<ResourceCard title={a.questionnaire.title || "untitled"}>
+								<ResourceCard title={a.task.code?.text || "untitled"}>
 									<ResourceCardItem label="Request Date">
 										{a.sentDate}
 									</ResourceCardItem>

@@ -105,7 +105,6 @@ const ReferralOutcome = ({ referral }: { referral: Referral }): JSX.Element => {
 	const [failedQ3, setFailedQ3] = useState<string>("");
 
 	const servers = useRecoilValue(serversState);
-	const [primaryPatient] = Object.values(useRecoilValue(patientState));
 	//todo: fix ts warning
 	const referralServer = servers[referral.serverId];
 	const [tasks, setTasks] = useRecoilState(taskState);
@@ -158,7 +157,7 @@ const ReferralOutcome = ({ referral }: { referral: Referral }): JSX.Element => {
 					const observation = await client.create({
 						resourceType: "Observation",
 						body: makeOutputObservation({
-							patientId: primaryPatient.id,
+							patientId: referral.owner?.reference?.split("/")[1],
 							serviceRequestId: referral.serviceRequest?.id,
 							question: {
 								code: "99999-1",
@@ -181,7 +180,7 @@ const ReferralOutcome = ({ referral }: { referral: Referral }): JSX.Element => {
 					const observation = await client.create({
 						resourceType: "Observation",
 						body: makeOutputObservation({
-							patientId: primaryPatient.id,
+							patientId: referral.owner?.reference?.split("/")[1],
 							serviceRequestId: referral.serviceRequest?.id,
 							question: {
 								code: "99997-3",
@@ -204,7 +203,7 @@ const ReferralOutcome = ({ referral }: { referral: Referral }): JSX.Element => {
 					const observation = await client.create({
 						resourceType: "Observation",
 						body: makeOutputObservation({
-							patientId: primaryPatient.id,
+							patientId: referral.owner?.reference?.split("/")[1],
 							serviceRequestId: referral.serviceRequest?.id,
 							question: {
 								code: "99996-4",
@@ -229,7 +228,7 @@ const ReferralOutcome = ({ referral }: { referral: Referral }): JSX.Element => {
 					const observation = await client.create({
 						resourceType: "Observation",
 						body: makeOutputObservation({
-							patientId: primaryPatient.id,
+							patientId: referral.owner?.reference?.split("/")[1],
 							serviceRequestId: referral.serviceRequest?.id,
 							question: {
 								code: "99981-1",
@@ -252,7 +251,7 @@ const ReferralOutcome = ({ referral }: { referral: Referral }): JSX.Element => {
 					const observation = await client.create({
 						resourceType: "Observation",
 						body: makeOutputObservation({
-							patientId: primaryPatient.id,
+							patientId: referral.owner?.reference?.split("/")[1],
 							serviceRequestId: referral.serviceRequest?.id,
 							question: {
 								code: "99982-2",
@@ -275,7 +274,7 @@ const ReferralOutcome = ({ referral }: { referral: Referral }): JSX.Element => {
 					const observation = await client.create({
 						resourceType: "Observation",
 						body: makeOutputObservation({
-							patientId: primaryPatient.id,
+							patientId: referral.owner?.reference?.split("/")[1],
 							serviceRequestId: referral.serviceRequest?.id,
 							question: {
 								code: "99983-3",

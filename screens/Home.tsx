@@ -42,41 +42,41 @@ const Home = ({ navigation }: NativeStackScreenProps<RootStackParamList, "Home">
 		try {
 			await withAccessToken(serverId, async (token, patientId, fhirUri) => {
 				const { patient, coverage, payor, owner, task, focus, questResp } = await fetchFhirData(fhirUri, token, patientId);
-				patient && setPatient({
-					...patients,
+				patient && setPatient(oldState => ({
+					...oldState,
 					[serverId]: patient
-				});
-				coverage && setCoverage({
-					...coverages,
+				}));
+				coverage && setCoverage(oldState => ({
+					...oldState,
 					[serverId]: coverage
-				});
-				payor && setPayor({
-					...payors,
+				}));
+				payor && setPayor(oldState => ({
+					...oldState,
 					[serverId]: payor
-				});
-				owner && setOwner({
-					...owners,
+				}));
+				owner && setOwner(oldState => ({
+					...oldState,
 					[serverId]: owner
-				});
-				task && setTask({
-					...tasks,
+				}));
+				task && setTask(oldState => ({
+					...oldState,
 					[serverId]: task
-				});
-				focus && setFocus({
-					...focuses,
+				}));
+				focus && setFocus(oldState => ({
+					...oldState,
 					[serverId]: focus
-				});
-				setQuestResps(old => ({
+				}));
+				questResp && setQuestResps(old => ({
 					...old,
 					[serverId]: questResp
 				}));
-				setServers({
-					...servers,
+				setServers(oldState => ({
+					...oldState,
 					[serverId]: {
 						...servers[serverId],
 						lastUpdated: moment.utc().format()
 					}
-				});
+				}));
 			});
 		} catch (e) {
 			console.log(e);
