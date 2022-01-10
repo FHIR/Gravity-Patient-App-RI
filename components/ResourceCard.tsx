@@ -14,10 +14,10 @@ const ResourceCard = (props: { children: ReactNode, title: string, badge?: strin
 				color="#464953"
 				fontWeight="medium"
 			>
-				{ props.title }
+				{ props.title || "" }
 			</Text>
 
-			{ props.badge &&
+			{ props.badge ?
 				<Badge
 					rounded="md"
 					backgroundColor="#E9F0FF"
@@ -31,7 +31,8 @@ const ResourceCard = (props: { children: ReactNode, title: string, badge?: strin
 					>
 						{ props.badge }
 					</Text>
-				</Badge>
+				</Badge> :
+				<Text/>
 			}
 		</HStack>
 
