@@ -1,24 +1,10 @@
 import { selector } from "recoil";
 import ownedByPatient from "./ownedByPatient";
-import { focusServiceRequestState } from "../focus";
-import { ServiceRequest, Task } from "fhir/r4";
+import { Task } from "fhir/r4";
 
-export type Referral = Task & { serviceRequest: ServiceRequest | undefined }
-
-const taskReferralState = selector<Referral[]>({
+const taskReferralState = selector<Task[]>({
 	key: "taskReferralState",
-	get: ({ get }) => {
-		const taskOwnedByPatient = get(ownedByPatient);
-		const serviceRequests = get(focusServiceRequestState);
-		const referrals = taskOwnedByPatient.filter(r => r.focus?.reference?.includes("ServiceRequest"));
-
-		return referrals.map(r => {
-			const serviceRequestId = r.focus?.reference?.split("/")[1] || "";
-			const serviceRequest = serviceRequests.find(sr => sr.id === serviceRequestId);
-
-			return { ...r, serviceRequest };
-		});
-	}
+	get: ({ get }) => get(ownedByPatient).filter(r => r.input?.some(item => item.type?.coding?.[0]?.code === "questionnaire-category" && item.valueCodeableConcept?.coding?.[0].code === "feedback-questionnaire"))
 });
 
 export default taskReferralState;

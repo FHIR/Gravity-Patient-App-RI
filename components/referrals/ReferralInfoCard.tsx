@@ -2,22 +2,36 @@ import ResourceCard from "../ResourceCard";
 import ResourceCardItem from "../ResourceCardItem";
 import { View } from "native-base";
 import React from "react";
-import { Referral } from "../../recoil/task/referral";
 import moment from "moment";
+import { Task } from "fhir/r4";
 import { checkValue } from "../../utils";
+import taskState from "../../recoil/task";
+import { focusServiceRequestState } from "../../recoil/focus";
+import { useRecoilValue } from "recoil";
 
+export const getServiceRequestData = (referral: Task) => {
+	const tasks = Object.entries(useRecoilValue(taskState)).flatMap(v => v[1].map(t => ({ ...t, serverId: v[0] })));
+	const taskId = referral.partOf?.[0].reference?.split("/")[1];
+	const task = tasks.find(task => task.id === taskId);
+	const serviceRequestId = task?.focus?.reference?.split("/")[1] || "";
+	const serviceRequest = useRecoilValue(focusServiceRequestState)?.find(sr => sr.id === serviceRequestId);
 
-const ReferralInfoCard = ({ referral }: { referral: Referral }): JSX.Element => {
+	const occurrence = serviceRequest?.occurrenceDateTime ? moment(serviceRequest.occurrenceDateTime).format("MMM DD, YYYY, hh:mm A") : undefined;
+	const requestDisplay = serviceRequest?.code?.coding?.[0].display;
+	const requestCode = serviceRequest?.code?.coding?.[0].code;
+	const requestCategory = serviceRequest?.category?.[0].coding?.[0].display;
+
+	return { occurrence, requestDisplay, requestCode, requestCategory };
+};
+
+const ReferralInfoCard = ({ referral }: { referral: Task }): JSX.Element => {
 	const sentDate = referral.authoredOn ? moment(referral.authoredOn).format("MMM DD, YYYY, hh:mm A") : undefined;
-	const occurrence = referral.serviceRequest?.occurrenceDateTime ? moment(referral.serviceRequest.occurrenceDateTime).format("MMM DD, YYYY, hh:mm A") : undefined;
-	const requestDisplay = referral.serviceRequest?.code?.coding?.[0].display;
-	const requestCode = referral.serviceRequest?.code?.coding?.[0].code;
+	const { occurrence, requestDisplay, requestCode, requestCategory } = getServiceRequestData(referral);
 	const request = `${requestDisplay} (${requestCode})`;
-	const requestCategory = referral.serviceRequest?.category?.[0].coding?.[0].display;
 	const sentBy = referral.requester?.display;
 	const submitDate = referral.lastModified ? moment(referral.lastModified).format("MMM DD, YYYY, hh:mm A") : undefined;
 	const { status } = referral;
-	const isSubmitted = ["rejected", "cancelled", "on-hold", "failed", "completed", "entered-in-error"].includes(referral.status);
+	const isSubmitted = ["rejected", "cancelled", "on-hold", "failed", "completed", "entered-in-error"].includes(status);
 
 	return (
 		<View mb={5}>

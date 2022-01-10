@@ -6,7 +6,7 @@ import Referrals from "./screens/Referrals";
 import Assessments from "./screens/Assessments";
 import Auth from "./screens/Auth";
 import { useRecoilState } from "recoil";
-import {Button, LogBox, View} from "react-native";
+import { Button, LogBox, View } from "react-native";
 import { Server, serversState } from "./recoil/servers";
 import { discoverAuthEndpoints } from "./utils/auth";
 import { Icon, NativeBaseProvider, Link } from "native-base";
@@ -69,8 +69,8 @@ const navigationRef = createNavigationContainerRef<RootStackParamList>();
 
 const logicaParams = {
 	title: "Logica",
-	fhirUri: "https://api.logicahealth.org/deezsandbox/data",
-	clientId: "2ecabb44-200b-4975-a8d1-dc2a6e4f90a7"
+	fhirUri: "https://api.logicahealth.org/GravitySandboxNew/data",
+	clientId: "e501d8e5-d742-462b-bf27-669e385ec243"
 };
 
 const importServerLinkingPath = "import-server";
@@ -144,7 +144,7 @@ const MainContainer = () => {
 					<Stack.Screen options={{ headerShown: false }} name="LoginForm" component={LoginForm} />
 				) : (
 					<>
-						<Stack.Screen name="Home" component={Home} options={{ title: "Patient Dashboard", }} />
+						<Stack.Screen name="Home" component={Home} options={{ title: "Patient Dashboard" }} />
 						<Stack.Screen name="ClinicalStaff" component={ClinicalStaff} options={{ title: "Clinical Staff" }} />
 						<Stack.Screen name="Caregivers" component={Caregivers} />
 						<Stack.Screen name="Organizations" component={Organizations} />

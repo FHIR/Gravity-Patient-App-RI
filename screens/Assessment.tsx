@@ -1,6 +1,6 @@
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import Client from "fhir-kit-client";
-import { Questionnaire, QuestionnaireResponse, Task, TaskOutput } from "fhir/r4";
+import { QuestionnaireResponse, Task, TaskOutput } from "fhir/r4";
 import moment from "moment";
 import { Button, Divider, FormControl, HStack, ScrollView, Select, Text, VStack } from "native-base";
 import React, { useEffect, useState } from "react";
@@ -14,8 +14,6 @@ import { taskAssessmentState } from "../recoil/task";
 import { Assessment } from "../recoil/task/assessment";
 import taskState from "../recoil/task/atom";
 import { filterMap } from "../utils";
-
-
 
 type Question = {
 	linkId: string,
@@ -69,7 +67,7 @@ const createQuestionnaireResponse = (questionnaireId: string, patientId: string,
 	author:  `Patient/${patientId}`,
 	status: "completed",
 	item: answers
-})
+});
 
 
 const prepareQuestions = (item: QuestionItem[]): Question[] =>
@@ -93,7 +91,7 @@ const prepareAnswers = (item: AnswerItem[]): Answer[] =>
 	filterMap(item, ({ text, answer }) => {
 		const [answerText] = filterMap(answer || [], ans => ans.valueCoding?.display);
 		if (!text || !answerText) {
-			return false
+			return false;
 		}
 		return {
 			question: text,
@@ -109,7 +107,7 @@ const AssessmentScreen = ({ route, navigation }: NativeStackScreenProps<RootStac
 	const assessments = useRecoilValue(taskAssessmentState);
 	const assessment = assessments.find(({ id: [sid, aid] }) => sid === serverId && aid === id);
 
-	const title = assessment?.task?.code?.text || "untitled assessment";
+	const title = assessment?.task?.code?.description || "untitled assessment";
 	useEffect(() => {
 		navigation.setOptions({ title });
 	}, [title]);
@@ -128,14 +126,23 @@ const UncompleteAssessment = ({ assessment: asm }: { assessment: Assessment }) =
 	const questions = prepareQuestions((asm.questionnaire.item || []) as QuestionItem[]);
 
 	const [answers, setAnswers] = useState<{ [id: string]: string | undefined }>({});
+	const [atRisk, setAtRisk] = useState<boolean | "">("");
 	const setAnswer = (id: string, resp: string | undefined) => {
 		setAnswers(old => ({ ...old, [id]: resp }));
 	};
 
+	useEffect(() => {
+		setAtRisk(answers?.["/88122-7"] === "LA28397-0" || answers?.["/88122-7"] === "LA6729-3" || answers?.["/88123-5"] === "LA28397-0" || answers?.["/88123-5"] === "LA6729-3");
+	}, [answers]);
+
+	useEffect(() => {
+		atRisk ? setAnswers(old => ({ ...old, ["/88124-3"]: "LA19952-3" })) : setAnswers(old => ({ ...old, ["/88124-3"]: "LA19983-8" }));
+	}, [atRisk]);
+
 	const valid = questions.every(({ linkId, required }) => !required || answers[linkId] !== undefined);
 
 	const prepareAnswers = (): AnswerItem[] => filterMap(questions, ({ linkId, options, text }) => {
-		const answeredCode = answers[linkId]
+		const answeredCode = answers[linkId];
 		const answerCoding = answeredCode ? options.find(({ code }) => code === answeredCode) : undefined;
 		if (!answerCoding) {
 			return false;
@@ -149,7 +156,7 @@ const UncompleteAssessment = ({ assessment: asm }: { assessment: Assessment }) =
 					system: "http://loinc.org"
 				}
 			}]
-		}
+		};
 	});
 
 	const [sendingResponse, setSendingResponse] = useState(false);
@@ -182,11 +189,15 @@ const UncompleteAssessment = ({ assessment: asm }: { assessment: Assessment }) =
 					reference: `QuestionnaireResponse/${result.id}`
 				}
 			};
-			const newTask = await client.update({ resourceType: "Task", id: asm.task.id!, body: {
-				...asm.task,
-				status: "completed",
-				output: [output]
-			}}) as Task;
+			const newTask = await client.update({
+				resourceType: "Task",
+				id: asm.task.id!,
+				body: {
+					...asm.task,
+					status: "completed",
+					output: [output]
+				}
+			}) as Task;
 			setTasks(old => ({
 				...old,
 				[asm.id[0]]: old[asm.id[0]]?.map(task => task.id === newTask.id ? newTask : task) || []
@@ -243,6 +254,7 @@ const UncompleteAssessment = ({ assessment: asm }: { assessment: Assessment }) =
 										accessibilityLabel="Choose response"
 										placeholder="Choose response"
 										placeholderTextColor="#828282"
+										isDisabled={q.linkId === "/88124-3" }
 									>
 										{q.options.map(({ display, code }) => <Select.Item key={code} label={display} value={code} />)}
 									</Select>
@@ -271,8 +283,8 @@ const UncompleteAssessment = ({ assessment: asm }: { assessment: Assessment }) =
 				</HStack>
 			</VStack>
 		</ScrollView>
-	)
-}
+	);
+};
 
 const CompleteAssessment = ({ assessment: asm, response }: { assessment: Assessment, response: QuestionnaireResponse }) => {
 	const submitDate = response.authored ? moment(response.authored).format("MMM DD, YYYY, hh:mm A") : undefined;
@@ -330,6 +342,6 @@ const CompleteAssessment = ({ assessment: asm, response }: { assessment: Assessm
 				</ResourceCard>
 			</VStack>
 		</ScrollView>
-	)
-}
+	);
+};
 export default AssessmentScreen;

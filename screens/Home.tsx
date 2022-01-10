@@ -8,14 +8,15 @@ import OrganizationsCard from "../components/home/OrganizationsCard";
 import InsurancesCard from "../components/home/InsurancesCard";
 import ReferralsCard from "../components/home/ReferralsCard";
 import AssessmentsCard from "../components/home/AssessmentsCard";
-import { useRecoilState, useRecoilValue } from "recoil";
-import { Server, serversState, useWithAccessToken } from "../recoil/servers";
+import { useRecoilState } from "recoil";
+import { serversState, useWithAccessToken } from "../recoil/servers";
 import patientState from "../recoil/patient";
 import coverageState from "../recoil/coverage";
 import payorState from "../recoil/payor";
 import ownerState from "../recoil/owner";
 import taskState from "../recoil/task";
 import focusState from "../recoil/focus";
+import questState from "../recoil/quest";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { RootStackParamList } from "../App";
 import { fetchFhirData } from "../utils/api";
@@ -32,6 +33,7 @@ const Home = ({ navigation }: NativeStackScreenProps<RootStackParamList, "Home">
 	const [tasks, setTask] = useRecoilState(taskState);
 	const [focuses, setFocus] = useRecoilState(focusState);
 	const [questResps, setQuestResps] = useRecoilState(questRespState);
+	const [quests, setQuests] = useRecoilState(questState);
 	const [isLoading, setIsLoading] = useState(false);
 
 	const withAccessToken = useWithAccessToken();
@@ -41,7 +43,7 @@ const Home = ({ navigation }: NativeStackScreenProps<RootStackParamList, "Home">
 
 		try {
 			await withAccessToken(serverId, async (token, patientId, fhirUri) => {
-				const { patient, coverage, payor, owner, task, focus, questResp } = await fetchFhirData(fhirUri, token, patientId);
+				const { patient, coverage, payor, owner, task, focus, questResp, quest } = await fetchFhirData(fhirUri, token, patientId);
 				patient && setPatient(oldState => ({
 					...oldState,
 					[serverId]: patient
@@ -69,6 +71,10 @@ const Home = ({ navigation }: NativeStackScreenProps<RootStackParamList, "Home">
 				questResp && setQuestResps(old => ({
 					...old,
 					[serverId]: questResp
+				}));
+				quest && setQuests(old => ({
+					...old,
+					[serverId]: quest
 				}));
 				setServers(oldState => ({
 					...oldState,

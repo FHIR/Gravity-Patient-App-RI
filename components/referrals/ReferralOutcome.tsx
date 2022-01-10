@@ -1,14 +1,13 @@
 import { FormControl, HStack, Select, Text, TextArea, View, Button, Radio, Input } from "native-base";
 import React, { useState, useEffect } from "react";
-import { Referral } from "../../recoil/task/referral";
 import Card from "../Card";
-import { useRecoilState, useRecoilValue } from "recoil";
-import { serversState } from "../../recoil/servers";
+import { useRecoilState } from "recoil";
+import { useWithAccessToken } from "../../recoil/servers";
 import Client from "fhir-kit-client";
-import patientState from "../../recoil/patient";
-import { Bundle, Observation, ServiceRequest } from "fhir/r4";
+import { QuestionnaireResponse, Task, TaskOutput, Annotation } from "fhir/r4";
 import taskState from "../../recoil/task";
-import { splitInclude } from "../../utils/api";
+import { questRespState } from "../../recoil/questResp";
+import { filterMap } from "../../utils/";
 
 const LOINC_CODES_MAP: { [code: string]: string } = {
 	"LA33-6": "Yes",
@@ -23,77 +22,34 @@ const LOINC_CODES_MAP: { [code: string]: string } = {
 	"LA997-7": "Explain please"
 };
 
-const makeOutputObservation = ({ patientId, serviceRequestId, question, answer }: { patientId: string | undefined, serviceRequestId: string | undefined, question: { code: string, display: string }, answer: { code: string, display: string } }): Observation => ({
-	"resourceType": "Observation",
-	"meta": {
-		"profile": [
-			"http://hl7.org/fhir/us/sdoh-clinicalcare/StructureDefinition/SDOHCC-ObservationAssessment"
-		]
-	},
-	"status": "final",
-	"category": [
-		{
-			"coding": [
-				{
-					"system": "http://terminology.hl7.org/CodeSystem/observation-PatientReportedOutcomes",
-					"code": "Patient-feedback",
-					"display": "Patient Feedback"
-				}
-			]
-		},
-		{
-			"coding": [
-				{
-					"system": "http://hl7.org/fhir/us/sdoh-clinicalcare/CodeSystem/SDOHCC-CodeSystemTemporaryCodes",
-					"code": "food-insecurity",
-					"display": "food Insecurity"
-				}
-			]
+type AnswerItem = {
+	linkId: string,
+	text?: string,
+	answer?: {
+		valueCoding?: {
+			system?: string,
+			code: string,
+			display: string
 		}
-	],
-	"code": {
-		"coding": [
-			{
-				"system": "http://loinc.org",
-				"code": question.code,
-				"display": question.display
-			}
-		]
+	}[]
+}
+
+const createQuestionnaireResponse = (patientId: string, patientName: string,  answers: AnswerItem[]) => ({
+	resourceType: "QuestionnaireResponse",
+	"status" : "completed",
+	"subject" : {
+		"reference": `Patient/${patientId}`,
+		"display": patientName
 	},
-	"subject": {
-		"reference": `Patient/${patientId}`
+	"authored" : new Date().toISOString(),
+	"source" : {
+		"reference": `Patient/${patientId}`,
+		"display": patientName
 	},
-	"basedOn": [
-		{
-			"reference": `ServiceRequest/${serviceRequestId}`
-		}
-	],
-	"valueCodeableConcept": {
-		"coding": [
-			{
-				"system": "http://loinc.org",
-				"code": answer.code,
-				"display": answer.display
-			}
-		],
-		"text": answer.display
-	}
+	item: answers
 });
 
-const makeOutput = (value: any) => ({
-	"type": {
-		"coding": [
-			{
-				"system": "http://hl7.org/fhir/us/sdoh-clinicalcare/CodeSystem/sdohcc-temporary-codes",
-				"code": "resulting-activity",
-				"display": "Resulting Activity"
-			}
-		]
-	},
-	...value
-});
-
-const ReferralOutcome = ({ referral }: { referral: Referral }): JSX.Element => {
+const ReferralOutcome = ({ referral }: { referral: Task }): JSX.Element => {
 	const [status, setStatus] = useState<string>("");
 	const [comment, setComment] = useState<string>("");
 	const [successQ1, setSuccessQ1] = useState<string>("");
@@ -104,27 +60,26 @@ const ReferralOutcome = ({ referral }: { referral: Referral }): JSX.Element => {
 	const [failedQ2, setFailedQ2] = useState<string>("");
 	const [failedQ3, setFailedQ3] = useState<string>("");
 
-	const servers = useRecoilValue(serversState);
-	//todo: fix ts warning
-	const referralServer = servers[referral.serverId];
+	const withAccessToken = useWithAccessToken();
+
 	const [tasks, setTasks] = useRecoilState(taskState);
+	const [questResps, setQuestResps] = useRecoilState(questRespState);
 	const isSubmitted = ["rejected", "cancelled", "on-hold", "failed", "completed", "entered-in-error"].includes(referral.status);
 	const [submitInProgress, setSubmitInProgress] = useState(false);
-	const [outcomeObservations, setOutcomeObservation] = useState<{ question: string | undefined, answer: string | undefined }[] | undefined>([]);
+	const [response, setResponse] = useState<{ question: string | undefined, answer: string | undefined }[] | undefined>(undefined);
 
 	useEffect(() => {
 		const fetchObservation = async () => {
-			const client = new Client({ baseUrl: referralServer.fhirUri });
-			client.bearerToken = referralServer.session?.access.token;
-			const bundle = await client.search({ resourceType: "ServiceRequest", searchParams: { _id: referral.serviceRequest?.id, _revinclude: "Observation:based-on" } }) as Bundle;
-			const [_, observation] = splitInclude<ServiceRequest[], Observation[]>(bundle);
+			const [responseId] = filterMap(referral.output || [], out => out.valueReference?.reference?.match(/^QuestionnaireResponse\/(?<id>.+)/)?.groups?.id);
+			const response = responseId ? questResps[referral.serverId]?.find(resp => resp.id === responseId) : undefined;
 
-			const outcomeObservation = observation?.map((r): { question: string | undefined, answer: string | undefined } => ({
-				question: r.code.coding?.[0].display,
-				answer: r.valueCodeableConcept?.coding?.[0].display
+			const questAnswer = response?.item?.map(item => ({
+				question: item.text,
+				answer: item.answer?.[0].valueCoding?.code
 			}));
 
-			setOutcomeObservation(outcomeObservation);
+
+			setResponse(questAnswer);
 		};
 
 		if (isSubmitted) {
@@ -140,173 +95,167 @@ const ReferralOutcome = ({ referral }: { referral: Referral }): JSX.Element => {
 	const handleSubmit = async () => {
 		try {
 			setSubmitInProgress(true);
-			const client = new Client({ baseUrl: referralServer.fhirUri });
-			client.bearerToken = referralServer.session?.access.token;
-			const output = [];
 
+			const answerItems: AnswerItem[] = [];
+			let commentItem: Annotation | undefined = undefined;
 			if (comment) {
-				output.push(makeOutput({
-					"valueCodeableConcept": {
-						"text": comment
+				commentItem = {
+					"text": comment,
+					"time": new Date().toISOString(),
+					"authorReference": {
+						"display": referral.for?.display,
+						"reference": `Patient/${referral.for?.reference?.split("/")[1]}`
 					}
-				}));
+				};
 			}
 
 			if (status === "completed") {
 				if (successQ1) {
-					const observation = await client.create({
-						resourceType: "Observation",
-						body: makeOutputObservation({
-							patientId: referral.owner?.reference?.split("/")[1],
-							serviceRequestId: referral.serviceRequest?.id,
-							question: {
-								code: "99999-1",
-								display: "Was service available at convenient times?"
-							},
-							answer: {
-								code: successQ1,
-								display: LOINC_CODES_MAP[successQ1]
+					answerItems.push({
+						"linkId": "/88122-7",
+						"text": "Was service available at convenient times?",
+						"answer": [
+							{
+								"valueCoding": {
+									"system": "http://loinc.org",
+									"code": LOINC_CODES_MAP[successQ1],
+									"display": successQ1
+								}
 							}
-						})
+						]
 					});
-					output.push(makeOutput({
-						"valueReference": {
-							"reference": `Observation/${observation.id}`
-						}
-					}));
 				}
 
 				if (successQ2) {
-					const observation = await client.create({
-						resourceType: "Observation",
-						body: makeOutputObservation({
-							patientId: referral.owner?.reference?.split("/")[1],
-							serviceRequestId: referral.serviceRequest?.id,
-							question: {
-								code: "99997-3",
-								display: "Did the available food meet your immediate needs?"
-							},
-							answer: {
-								code: successQ2,
-								display: LOINC_CODES_MAP[successQ2]
+					answerItems.push({
+						"linkId": "/88124-3",
+						"text": "Did the available food meet your immediate needs?",
+						"answer": [
+							{
+								"valueCoding": {
+									"system": "http://loinc.org",
+									"code": LOINC_CODES_MAP[successQ2],
+									"display": successQ2
+								}
 							}
-						})
+						]
 					});
-					output.push(makeOutput({
-						"valueReference": {
-							"reference": `Observation/${observation.id}`
-						}
-					}));
 				}
 
 				if (successQ3) {
-					const observation = await client.create({
-						resourceType: "Observation",
-						body: makeOutputObservation({
-							patientId: referral.owner?.reference?.split("/")[1],
-							serviceRequestId: referral.serviceRequest?.id,
-							question: {
-								code: "99996-4",
-								display: "Was the available food ethnically appropriate?"
-							},
-							answer: {
-								code: successQ3,
-								display: LOINC_CODES_MAP[successQ3]
+					answerItems.push({
+						"linkId": "/88124-3",
+						"text": "Was the available food ethnically appropriate?",
+						"answer": [
+							{
+								"valueCoding": {
+									"system": "http://loinc.org",
+									"code": LOINC_CODES_MAP[successQ3],
+									"display": successQ3
+								}
 							}
-						})
+						]
 					});
-					output.push(makeOutput({
-						"valueReference": {
-							"reference": `Observation/${observation.id}`
-						}
-					}));
 				}
 			}
 
 			if (status === "failed" || status === "cancelled") {
 				if (failedQ1) {
-					const observation = await client.create({
-						resourceType: "Observation",
-						body: makeOutputObservation({
-							patientId: referral.owner?.reference?.split("/")[1],
-							serviceRequestId: referral.serviceRequest?.id,
-							question: {
-								code: "99981-1",
-								display: "Why did you cancel / not use the service?"
-							},
-							answer: {
-								code: failedQ1,
-								display: failedQ1 === "LA997-7" ? failedQ1Explain : LOINC_CODES_MAP[failedQ1]
+					answerItems.push({
+						"linkId": "/88124-3",
+						"text": "Why did you cancel / not use the service?",
+						"answer": [
+							{
+								"valueCoding": {
+									"system": "http://loinc.org",
+									"code": LOINC_CODES_MAP[failedQ1],
+									"display": failedQ1
+								}
 							}
-						})
+						]
 					});
-					output.push(makeOutput({
-						"valueReference": {
-							"reference": `Observation/${observation.id}`
-						}
-					}));
 				}
 
 				if (failedQ2) {
-					const observation = await client.create({
-						resourceType: "Observation",
-						body: makeOutputObservation({
-							patientId: referral.owner?.reference?.split("/")[1],
-							serviceRequestId: referral.serviceRequest?.id,
-							question: {
-								code: "99982-2",
-								display: "Did the service meet your needs?"
-							},
-							answer: {
-								code: failedQ2,
-								display: LOINC_CODES_MAP[failedQ2]
+					answerItems.push({
+						"linkId": "/88124-3",
+						"text": "Did the service meet your needs?",
+						"answer": [
+							{
+								"valueCoding": {
+									"system": "http://loinc.org",
+									"code": LOINC_CODES_MAP[failedQ2],
+									"display": failedQ2
+								}
 							}
-						})
+						]
 					});
-					output.push(makeOutput({
-						"valueReference": {
-							"reference": `Observation/${observation.id}`
-						}
-					}));
 				}
 
-				if (failedQ2) {
-					const observation = await client.create({
-						resourceType: "Observation",
-						body: makeOutputObservation({
-							patientId: referral.owner?.reference?.split("/")[1],
-							serviceRequestId: referral.serviceRequest?.id,
-							question: {
-								code: "99983-3",
-								display: "With the same organization?"
-							},
-							answer: {
-								code: failedQ3,
-								display: LOINC_CODES_MAP[failedQ3]
+				if (failedQ3) {
+					answerItems.push({
+						"linkId": "/88124-3",
+						"text": "Would you use the service again?",
+						"answer": [
+							{
+								"valueCoding": {
+									"system": "http://loinc.org",
+									"code": LOINC_CODES_MAP[failedQ3],
+									"display": failedQ3
+								}
 							}
-						})
+						]
 					});
-					output.push(makeOutput({
-						"valueReference": {
-							"reference": `Observation/${observation.id}`
-						}
-					}));
 				}
 			}
 
-			const newTask = await client.update({
-				resourceType: "Task",
-				id: referral.id as string,
-				body: {
+			withAccessToken(referral.serverId, async (token, patientId, fhirUri) => {
+				const client = new Client( { baseUrl: fhirUri });
+				client.bearerToken = token;
+				const result = await client.create({
+					resourceType: "QuestionnaireResponse",
+					body: createQuestionnaireResponse(patientId, referral.for?.display, answerItems)
+				}) as QuestionnaireResponse;
+
+				setQuestResps(old => ({
+					...old,
+					[referral.serverId]: [...(old[referral.serverId] || []), result]
+				}));
+
+				const output: TaskOutput = {
+					type: {
+						coding: [{
+							"system": "http://hl7.org/fhir/uv/sdc/CodeSystem/temp",
+							"code": "questionnaire-response",
+							"display": "Questionnaire Response"
+						}]
+					},
+					valueReference: {
+						reference: `QuestionnaireResponse/${result.id}`
+					}
+				};
+
+				const prepareNewTask = !commentItem ?{
+					...referral,
+					status,
+					output
+				} : {
 					...referral,
 					status,
 					output,
-					lastModified: new Date().toISOString()
-				}
-			});
-			setTasks({
-				...tasks,
-				[referral.serverId]: tasks[referral.serverId].map(t => t.id === newTask.id ? newTask : t)
+					note: referral.note ? [...referral.note, commentItem] : [commentItem]
+				};
+
+				const newTask = await client.update({
+					resourceType: "Task",
+					id: referral.id as string,
+					body: prepareNewTask
+				}) as Task;
+
+				setTasks(old => ({
+					...old,
+					[referral.serverId]: tasks[referral.serverId].map(t => t.id === newTask.id ? newTask : t)
+				}));
 			});
 		} catch (e) {
 			console.log(e);
@@ -343,7 +292,7 @@ const ReferralOutcome = ({ referral }: { referral: Referral }): JSX.Element => {
 						</Text>
 					</View>
 					{
-						outcomeObservations?.map((o, i) => (
+						response?.map((item, i) => (
 							<View
 								mb={4}
 								key={i}
@@ -352,18 +301,18 @@ const ReferralOutcome = ({ referral }: { referral: Referral }): JSX.Element => {
 									color="#7B7F87"
 									fontSize="sm"
 								>
-									{ o.question }
+									{ item.question }
 								</Text>
 								<Text
 									color="#333333"
 									fontSize="sm"
 								>
-									{ o.answer }
+									{ item.answer }
 								</Text>
 							</View>
 						))
 					}
-					{ referral.output?.[0].valueCodeableConcept?.text &&
+					{ referral.note?.length &&
 						<View mb={4}>
 							<Text
 								color="#7B7F87"
@@ -371,12 +320,15 @@ const ReferralOutcome = ({ referral }: { referral: Referral }): JSX.Element => {
 							>
 								Comment:
 							</Text>
-							<Text
-								color="#333333"
-								fontSize="sm"
-							>
-								{ referral.output?.[0].valueCodeableConcept?.text }
-							</Text>
+							{ referral.note?.map((comment, i) => (
+								<Text
+									key={i}
+									color="#333333"
+									fontSize="sm"
+								>
+									{comment.text}
+								</Text>
+							)) }
 						</View>
 					}
 				</Card>
