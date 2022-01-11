@@ -131,6 +131,11 @@ const UncompleteAssessment = ({ assessment: asm }: { assessment: Assessment }) =
 	const questions = prepareQuestions((asm.questionnaire.item || []) as QuestionItem[]);
 	const [answers, setAnswers] = useState<{ [id: string]: string | undefined }>({});
 	const [atRisk, setAtRisk] = useState<boolean | "">("");
+	const executionPeriod = asm.task?.executionPeriod;
+	const dueDate = !executionPeriod ? undefined : (executionPeriod?.start ?
+		`from ${moment(executionPeriod?.end).format("MMM DD, YYYY")} to ${moment(executionPeriod?.end).format("MMM DD, YYYY")}` :
+		moment(executionPeriod?.end).format("MMM DD, YYYY"));
+
 	const setAnswer = (id: string, resp: string | undefined) => {
 		setAnswers(old => ({ ...old, [id]: resp }));
 	};
@@ -220,7 +225,7 @@ const UncompleteAssessment = ({ assessment: asm }: { assessment: Assessment }) =
 						{asm.requesterName || "N/A"}
 					</ResourceCardItem>
 					<ResourceCardItem label="Due Date">
-						{asm.dueDate || "N/A"}
+						{dueDate || "N/A"}
 					</ResourceCardItem>
 					<ResourceCardItem label="Organization">
 						{asm.serverTitle}
