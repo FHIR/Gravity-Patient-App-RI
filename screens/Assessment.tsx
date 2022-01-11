@@ -59,12 +59,17 @@ type QuestionItem = {
 }
 
 
-const createQuestionnaireResponse = (questionnaireId: string, patientId: string, answers: AnswerItem[]) => ({
+const createQuestionnaireResponse = (questionnaireURL: string, patientId: string, answers: AnswerItem[]) => ({
 	resourceType: "QuestionnaireResponse",
-	questionnaire: `Questionnaire/${questionnaireId}`,
+	questionnaire: questionnaireURL,
 	authored: new Date().toISOString(),
-	subject: `Patient/${patientId}`,
-	author:  `Patient/${patientId}`,
+	subject: {
+		"reference": `Patient/${patientId}`
+	},
+	source: {
+		"reference": `Patient/${patientId}`
+	},
+	author: `Patient/${patientId}`,
 	status: "completed",
 	item: answers
 });
@@ -107,7 +112,7 @@ const AssessmentScreen = ({ route, navigation }: NativeStackScreenProps<RootStac
 	const assessments = useRecoilValue(taskAssessmentState);
 	const assessment = assessments.find(({ id: [sid, aid] }) => sid === serverId && aid === id);
 
-	const title = assessment?.task?.code?.description || "untitled assessment";
+	const title = assessment?.task?.description || "untitled assessment";
 	useEffect(() => {
 		navigation.setOptions({ title });
 	}, [title]);
@@ -124,7 +129,6 @@ const AssessmentScreen = ({ route, navigation }: NativeStackScreenProps<RootStac
 const UncompleteAssessment = ({ assessment: asm }: { assessment: Assessment }) => {
 	const withAccessToken = useWithAccessToken();
 	const questions = prepareQuestions((asm.questionnaire.item || []) as QuestionItem[]);
-
 	const [answers, setAnswers] = useState<{ [id: string]: string | undefined }>({});
 	const [atRisk, setAtRisk] = useState<boolean | "">("");
 	const setAnswer = (id: string, resp: string | undefined) => {
@@ -171,18 +175,18 @@ const UncompleteAssessment = ({ assessment: asm }: { assessment: Assessment }) =
 			client.bearerToken = token;
 			const result = await client.create({
 				resourceType: "QuestionnaireResponse",
-				body: createQuestionnaireResponse(asm.questionnaire.id!, patientId, prepareAnswers())
+				body: createQuestionnaireResponse(asm.questionnaire?.url, patientId, prepareAnswers())
 			}) as QuestionnaireResponse;
 			setQuestResps(old => ({
 				...old,
 				[asm.id[0]]: [...(old[asm.id[0]] || []), result]
 			}));
-			const output: TaskOutput = {
+			const output: TaskOutput =  {
 				type: {
 					coding: [{
-						system: "http://hl7.org/fhir/us/sdoh-clinicalcare/CodeSystem/sdohcc-temporary-codes",
-						code: "resulting-activity",
-						display: "Resulting Activity"
+						system: "http://hl7.org/fhir/uv/sdc/CodeSystem/temp",
+						code: "questionnaire-response",
+						display: "Questionnaire Response"
 					}]
 				},
 				valueReference: {
@@ -208,7 +212,7 @@ const UncompleteAssessment = ({ assessment: asm }: { assessment: Assessment }) =
 	return (
 		<ScrollView>
 			<VStack p={5} space={5}>
-				<ResourceCard title="Info" badge="In Progress">
+				<ResourceCard title="Info" badge={ asm.task.status === "cancelled" ? "cancelled" : "new"}>
 					<ResourceCardItem label="Request Date">
 						{asm.sentDate || "N/A"}
 					</ResourceCardItem>
@@ -223,64 +227,66 @@ const UncompleteAssessment = ({ assessment: asm }: { assessment: Assessment }) =
 					</ResourceCardItem>
 				</ResourceCard>
 
-				<ResourceCard title="Question - Answer Pairs">
-					<VStack space={5} divider={<Divider />}>
-						{questions.map(q => (
-							<VStack key={q.linkId} space={4}>
-								<VStack space={2}>
-									<Text
-										fontSize="sm"
-										color="#7b7f87"
-									>
-										Question
-									</Text>
-									<Text>
-										{q.text}
-									</Text>
-								</VStack>
-
-								<FormControl>
-									<FormControl.Label>
+				{ asm.task.status !== "cancelled" ?
+					<ResourceCard title="Question - Answer Pairs">
+						<VStack space={5} divider={<Divider />}>
+							{questions.map(q => (
+								<VStack key={q.linkId} space={4}>
+									<VStack space={2}>
 										<Text
 											fontSize="sm"
 											color="#7b7f87"
 										>
-											Response:
+										Question
 										</Text>
-									</FormControl.Label>
-									<Select
-										selectedValue={answers[q.linkId]}
-										onValueChange={resp => setAnswer(q.linkId, resp)}
-										accessibilityLabel="Choose response"
-										placeholder="Choose response"
-										placeholderTextColor="#828282"
-										isDisabled={q.linkId === "/88124-3" }
-									>
-										{q.options.map(({ display, code }) => <Select.Item key={code} label={display} value={code} />)}
-									</Select>
-								</FormControl>
-							</VStack>
-						))}
-					</VStack>
-				</ResourceCard>
-				<HStack space={4}>
-					{/* <Button
+										<Text>
+											{q.text}
+										</Text>
+									</VStack>
+
+									<FormControl>
+										<FormControl.Label>
+											<Text
+												fontSize="sm"
+												color="#7b7f87"
+											>
+											Response:
+											</Text>
+										</FormControl.Label>
+										<Select
+											selectedValue={answers[q.linkId]}
+											onValueChange={resp => setAnswer(q.linkId, resp)}
+											accessibilityLabel="Choose response"
+											placeholder="Choose response"
+											placeholderTextColor="#828282"
+											isDisabled={q.linkId === "/88124-3" }
+										>
+											{q.options.map(({ display, code }) => <Select.Item key={code} label={display} value={code} />)}
+										</Select>
+									</FormControl>
+								</VStack>
+							))}
+						</VStack>
+					</ResourceCard> : <></> }
+				{asm.task.status !== "cancelled" ?
+					<HStack space={4}>
+						{/* <Button
 						flex={1}
 						variant="outline"
 						colorScheme="dark"
 					>
 						Save
 					</Button> */}
-					<Button
-						flex={1}
-						colorScheme="blue"
-						disabled={!valid}
-						onPress={onSubmit}
-						isLoading={sendingResponse}
-					>
-						Submit
-					</Button>
-				</HStack>
+						<Button
+							flex={1}
+							colorScheme="blue"
+							disabled={!valid}
+							onPress={onSubmit}
+							isLoading={sendingResponse}
+						>
+							Submit
+						</Button>
+					</HStack> : <></>}
 			</VStack>
 		</ScrollView>
 	);
@@ -294,7 +300,7 @@ const CompleteAssessment = ({ assessment: asm, response }: { assessment: Assessm
 	return (
 		<ScrollView>
 			<VStack p={5} space={5}>
-				<ResourceCard title="Info" badge="Submitted">
+				<ResourceCard title="Info" badge={asm.task.status === "cancelled" ? "cancelled" : "Submitted"}>
 					<ResourceCardItem label="Request Date">
 						{asm.sentDate || "N/A"}
 					</ResourceCardItem>

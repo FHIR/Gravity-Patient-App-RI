@@ -30,7 +30,8 @@ type AnswerItem = {
 			system?: string,
 			code: string,
 			display: string
-		}
+		},
+		valueString?: string
 	}[]
 }
 
@@ -75,7 +76,7 @@ const ReferralOutcome = ({ referral }: { referral: Task }): JSX.Element => {
 
 			const questAnswer = response?.item?.map(item => ({
 				question: item.text,
-				answer: item.answer?.[0].valueCoding?.code
+				answer: item.answer?.[0].valueCoding?.display ||  item.answer?.[0].valueString
 			}));
 
 
@@ -118,8 +119,8 @@ const ReferralOutcome = ({ referral }: { referral: Task }): JSX.Element => {
 							{
 								"valueCoding": {
 									"system": "http://loinc.org",
-									"code": LOINC_CODES_MAP[successQ1],
-									"display": successQ1
+									"code": successQ1,
+									"display": LOINC_CODES_MAP[successQ1]
 								}
 							}
 						]
@@ -134,8 +135,8 @@ const ReferralOutcome = ({ referral }: { referral: Task }): JSX.Element => {
 							{
 								"valueCoding": {
 									"system": "http://loinc.org",
-									"code": LOINC_CODES_MAP[successQ2],
-									"display": successQ2
+									"code": successQ2,
+									"display": LOINC_CODES_MAP[successQ2]
 								}
 							}
 						]
@@ -150,8 +151,8 @@ const ReferralOutcome = ({ referral }: { referral: Task }): JSX.Element => {
 							{
 								"valueCoding": {
 									"system": "http://loinc.org",
-									"code": LOINC_CODES_MAP[successQ3],
-									"display": successQ3
+									"code": successQ3,
+									"display": LOINC_CODES_MAP[successQ3]
 								}
 							}
 						]
@@ -160,7 +161,17 @@ const ReferralOutcome = ({ referral }: { referral: Task }): JSX.Element => {
 			}
 
 			if (status === "failed" || status === "cancelled") {
-				if (failedQ1) {
+				if (failedQ1Explain) {
+					answerItems.push({
+						"linkId": "/88124-3",
+						"text": "Why did you cancel / not use the service?",
+						"answer": [
+							{
+								"valueString": failedQ1Explain
+							}
+						]
+					});
+				} else if (failedQ1) {
 					answerItems.push({
 						"linkId": "/88124-3",
 						"text": "Why did you cancel / not use the service?",
@@ -168,8 +179,8 @@ const ReferralOutcome = ({ referral }: { referral: Task }): JSX.Element => {
 							{
 								"valueCoding": {
 									"system": "http://loinc.org",
-									"code": LOINC_CODES_MAP[failedQ1],
-									"display": failedQ1
+									"code": failedQ1,
+									"display": LOINC_CODES_MAP[failedQ1]
 								}
 							}
 						]
@@ -184,8 +195,8 @@ const ReferralOutcome = ({ referral }: { referral: Task }): JSX.Element => {
 							{
 								"valueCoding": {
 									"system": "http://loinc.org",
-									"code": LOINC_CODES_MAP[failedQ2],
-									"display": failedQ2
+									"code": failedQ2,
+									"display": LOINC_CODES_MAP[failedQ2]
 								}
 							}
 						]
@@ -200,8 +211,8 @@ const ReferralOutcome = ({ referral }: { referral: Task }): JSX.Element => {
 							{
 								"valueCoding": {
 									"system": "http://loinc.org",
-									"code": LOINC_CODES_MAP[failedQ3],
-									"display": failedQ3
+									"code": failedQ3,
+									"display": LOINC_CODES_MAP[failedQ3]
 								}
 							}
 						]
@@ -688,7 +699,7 @@ const ReferralOutcome = ({ referral }: { referral: Task }): JSX.Element => {
 					flex={1}
 					onPress={() => handleSubmit()}
 					colorScheme="blue"
-					disabled={!status || status === "in-progress"}
+					disabled={!status}
 					isLoading={submitInProgress}
 				>
 					Submit
