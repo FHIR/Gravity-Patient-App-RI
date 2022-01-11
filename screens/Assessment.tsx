@@ -225,6 +225,10 @@ const UncompleteAssessment = ({ assessment: asm }: { assessment: Assessment }) =
 					<ResourceCardItem label="Organization">
 						{asm.serverTitle}
 					</ResourceCardItem>
+					{asm.task.status === "cancelled" ?
+						<ResourceCardItem label="Cancelled Reason">
+							{asm.task.statusReason?.text || "N/A" }
+						</ResourceCardItem> : <></>}
 				</ResourceCard>
 
 				{ asm.task.status !== "cancelled" ?
