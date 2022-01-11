@@ -8,6 +8,7 @@ import { QuestionnaireResponse, Task, TaskOutput, Annotation } from "fhir/r4";
 import taskState from "../../recoil/task";
 import { questRespState } from "../../recoil/questResp";
 import { filterMap } from "../../utils/";
+import ResourceCardItem from "components/ResourceCardItem";
 
 const LOINC_CODES_MAP: { [code: string]: string } = {
 	"LA33-6": "Yes",
@@ -314,6 +315,23 @@ const ReferralOutcome = ({ referral }: { referral: Task }): JSX.Element => {
 							{ referral.status }
 						</Text>
 					</View>
+					{referral.status === "cancelled" ?
+						<View mb={4}>
+							<Text
+								color="#7B7F87"
+								fontSize="sm"
+							>
+								Reason:
+							</Text>
+							<Text
+								color="#333333"
+								fontSize="sm"
+								textTransform="capitalize"
+							>
+								{referral.statusReason?.text}
+							</Text>
+						</View> : <></>
+					}
 					{
 						response?.map((item, i) => (
 							<View
