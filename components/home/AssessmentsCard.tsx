@@ -8,9 +8,9 @@ import { taskAssessmentState } from "../../recoil/task";
 
 const AssessmentsCard = (): JSX.Element => {
 	const assessments = useRecoilValue(taskAssessmentState);
-	const newTasks: number = assessments.filter(asm => !asm.response).length;
+	const newTasks: number = assessments.filter(asm => !asm.response && asm.task.status !== "cancelled").length;
 	const inProgressTasks: number = 0;
-	const submittedTasks: number = assessments.filter(ams => ams.response).length;
+	const submittedTasks: number = assessments.filter(ams => ams.response || ams.task.status === "cancelled").length;
 
 	return (
 		<Card>

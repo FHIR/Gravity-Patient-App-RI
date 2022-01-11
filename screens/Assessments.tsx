@@ -51,7 +51,7 @@ const TaskList = (assessments: Assessment[]) => {
 
 const New = (): JSX.Element => {
 	const assessments = useRecoilValue(taskAssessmentState);
-	const newAsms = assessments.filter(asm => !asm.response);
+	const newAsms = assessments.filter(asm => !asm.response && asm.task.status !== "cancelled");
 
 	return TaskList(newAsms);
 };
@@ -64,7 +64,7 @@ const InProgress = (): JSX.Element => {
 
 const Submitted = (): JSX.Element => {
 	const assessments = useRecoilValue(taskAssessmentState);
-	const submittedAsms = assessments.filter(asm => asm.response);
+	const submittedAsms = assessments.filter(asm => asm.response || asm.task.status === "cancelled");
 
 	return TaskList(submittedAsms);
 };
