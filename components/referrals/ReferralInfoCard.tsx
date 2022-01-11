@@ -1,6 +1,6 @@
 import ResourceCard from "../ResourceCard";
 import ResourceCardItem from "../ResourceCardItem";
-import { View } from "native-base";
+import {Text, View} from "native-base";
 import React from "react";
 import moment from "moment";
 import { Task } from "fhir/r4";
@@ -62,6 +62,19 @@ const ReferralInfoCard = ({ referral }: { referral: Task }): JSX.Element => {
 				<ResourceCardItem label="Sent By">
 					{ checkValue(sentBy) }
 				</ResourceCardItem>
+				{ (referral.status === "ready" || referral.status === "in-progress") && referral.note?.length &&
+					<ResourceCardItem label="Comment">
+						{ referral.note?.map((comment, i) => (
+							<Text
+								key={i}
+								color="#333333"
+								fontSize="sm"
+							>
+								{comment.text}
+							</Text>
+						)) }
+					</ResourceCardItem>
+				}
 			</ResourceCard>
 		</View>
 	);

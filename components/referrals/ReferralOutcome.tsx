@@ -221,47 +221,59 @@ const ReferralOutcome = ({ referral }: { referral: Task }): JSX.Element => {
 			}
 
 			withAccessToken(referral.serverId, async (token, patientId, fhirUri) => {
+				let output: TaskOutput | undefined = undefined;
 				const client = new Client( { baseUrl: fhirUri });
 				client.bearerToken = token;
-				const result = await client.create({
-					resourceType: "QuestionnaireResponse",
-					body: createQuestionnaireResponse(patientId, referral.for?.display, answerItems)
-				}) as QuestionnaireResponse;
 
-				setQuestResps(old => ({
-					...old,
-					[referral.serverId]: [...(old[referral.serverId] || []), result]
-				}));
+				if (answerItems) {
+					const result = await client.create({
+						resourceType: "QuestionnaireResponse",
+						body: createQuestionnaireResponse(patientId, referral.for?.display, answerItems)
+					}) as QuestionnaireResponse;
 
-				const output: TaskOutput = {
-					type: {
-						coding: [{
-							"system": "http://hl7.org/fhir/uv/sdc/CodeSystem/temp",
-							"code": "questionnaire-response",
-							"display": "Questionnaire Response"
-						}]
-					},
-					valueReference: {
-						reference: `QuestionnaireResponse/${result.id}`
-					}
-				};
+					setQuestResps(old => ({
+						...old,
+						[referral.serverId]: [...(old[referral.serverId] || []), result]
+					}));
+					output = {
+						type: {
+							coding: [{
+								"system": "http://hl7.org/fhir/uv/sdc/CodeSystem/temp",
+								"code": "questionnaire-response",
+								"display": "Questionnaire Response"
+							}]
+						},
+						valueReference: {
+							reference: `QuestionnaireResponse/${result.id}`
+						}
+					};
+				}
 
-				const prepareNewTask = !commentItem ?{
+				let prepareNewTask = {
 					...referral,
 					status,
 					output
-				} : {
-					...referral,
-					status,
-					output,
-					note: referral.note ? [...referral.note, commentItem] : [commentItem]
 				};
+
+				if (output) {
+					prepareNewTask = {
+						...referral,
+						status,
+						output
+					};
+				}
+
+				if (commentItem) {
+					prepareNewTask.note = referral.note ? [...referral.note, commentItem] : [commentItem];
+				}
 
 				const newTask = await client.update({
 					resourceType: "Task",
 					id: referral.id as string,
 					body: prepareNewTask
 				}) as Task;
+
+				setComment("");
 
 				setTasks(old => ({
 					...old,
