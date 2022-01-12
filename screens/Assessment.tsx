@@ -71,6 +71,9 @@ const createQuestionnaireResponse = (questionnaireURL: string, patientId: string
 	},
 	author: `Patient/${patientId}`,
 	status: "completed",
+	profile: [
+		"http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaireresponse%7C2.7"
+	],
 	item: answers
 });
 

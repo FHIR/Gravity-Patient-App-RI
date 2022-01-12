@@ -92,6 +92,13 @@ const ReferralOutcome = ({ referral }: { referral: Task }): JSX.Element => {
 
 	useEffect(() => {
 		setComment("");
+		setFailedQ1("");
+		setFailedQ2("");
+		setFailedQ3("");
+		setSuccessQ1("");
+		setSuccessQ2("");
+		setFailedQ3("");
+		setFailedQ1Explain("");
 	}, [status]);
 
 	const handleSubmit = async () => {
