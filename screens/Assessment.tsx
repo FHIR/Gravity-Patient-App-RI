@@ -61,6 +61,11 @@ type QuestionItem = {
 
 const createQuestionnaireResponse = (questionnaireURL: string, patientId: string, answers: AnswerItem[]) => ({
 	resourceType: "QuestionnaireResponse",
+	meta: {
+		profile: [
+			"http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaireresponse|2.7"
+		]
+	},
 	questionnaire: questionnaireURL,
 	authored: new Date().toISOString(),
 	subject: {
@@ -71,9 +76,6 @@ const createQuestionnaireResponse = (questionnaireURL: string, patientId: string
 	},
 	author: `Patient/${patientId}`,
 	status: "completed",
-	profile: [
-		"http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaireresponse%7C2.7"
-	],
 	item: answers
 });
 
