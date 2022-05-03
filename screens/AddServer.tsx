@@ -49,7 +49,7 @@ const AddServer = (): JSX.Element => {
 			})
 			.catch(() => {
 				setError(true);
-		});
+			});
 	};
 
 	return (
@@ -121,9 +121,9 @@ const AddServer = (): JSX.Element => {
 						backgroundColor: "#0069FF",
 						_text: {
 							color: "#fff"
-						}}}
+						} }}
 					_text={{ fontSize: 14, fontWeight: 400 }}
-					onPress={() => onImportServerInvokedFromOutside({title, fhirUri, clientId})}
+					onPress={() => onImportServerInvokedFromOutside({ title, fhirUri, clientId })}
 				>
 					Add Server
 				</Button>
