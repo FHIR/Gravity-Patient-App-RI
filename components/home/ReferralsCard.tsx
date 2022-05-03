@@ -4,14 +4,17 @@ import { Path } from "react-native-svg";
 import Card from "../Card";
 import { useRecoilValue } from "recoil";
 import { taskReferralState } from "../../recoil/task";
+import makeContactState  from "../../recoil/task/makeContact";
 import { filterNewTasks, filterInProgressTasks, filterSubmittedTasks } from "../../utils";
 
 
 const ReferralsCard = (): JSX.Element => {
 	const referrals = useRecoilValue(taskReferralState);
-	const newTasks: number = filterNewTasks(referrals).length;
-	const inProgressTasks: number = filterInProgressTasks(referrals).length;
-	const submittedTasks: number = filterSubmittedTasks(referrals).length;
+	const makeContact = useRecoilValue(makeContactState);
+	const allReferrals = [...referrals, ...makeContact];
+	const newTasks: number = filterNewTasks(allReferrals).length;
+	const inProgressTasks: number = filterInProgressTasks(allReferrals).length;
+	const submittedTasks: number = filterSubmittedTasks(allReferrals).length;
 
 	return (
 		<Card>

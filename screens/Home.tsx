@@ -22,6 +22,8 @@ import { RootStackParamList } from "../App";
 import { fetchFhirData } from "../utils/api";
 import { questRespState } from "../recoil/questResp";
 import moment from "moment";
+import healthcareServiceState from "../recoil/task/healthcareService";
+import locationsState from "../recoil/task/locations";
 
 
 const Home = ({ navigation }: NativeStackScreenProps<RootStackParamList, "Home">): JSX.Element => {
@@ -34,6 +36,8 @@ const Home = ({ navigation }: NativeStackScreenProps<RootStackParamList, "Home">
 	const [focuses, setFocus] = useRecoilState(focusState);
 	const [questResps, setQuestResps] = useRecoilState(questRespState);
 	const [quests, setQuests] = useRecoilState(questState);
+	const [healthcareServices, setHealthcareServices] = useRecoilState(healthcareServiceState);
+	const [locations, setLocations] = useRecoilState(locationsState);
 	const [isLoading, setIsLoading] = useState(false);
 
 	const withAccessToken = useWithAccessToken();
@@ -43,7 +47,7 @@ const Home = ({ navigation }: NativeStackScreenProps<RootStackParamList, "Home">
 
 		try {
 			await withAccessToken(serverId, async (token, patientId, fhirUri) => {
-				const { patient, coverage, payor, owner, task, focus, questResp, quest } = await fetchFhirData(fhirUri, token, patientId);
+				const { patient, coverage, payor, owner, task, focus, questResp, quest, healthcareService, location } = await fetchFhirData(fhirUri, token, patientId);
 				patient && setPatient(oldState => ({
 					...oldState,
 					[serverId]: patient
@@ -75,6 +79,14 @@ const Home = ({ navigation }: NativeStackScreenProps<RootStackParamList, "Home">
 				quest && setQuests(old => ({
 					...old,
 					[serverId]: quest
+				}));
+				setHealthcareServices(old => ({
+					...old,
+					[serverId]: healthcareService
+				}));
+				setLocations(old => ({
+					...old,
+					[serverId]: location
 				}));
 				setServers(oldState => ({
 					...oldState,

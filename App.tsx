@@ -27,6 +27,7 @@ import AddServer from "./screens/AddServer";
 import ReferralView from "./screens/ReferralView";
 import Assessment from "./screens/Assessment";
 import { pendingServerImport, ImportServerRequest } from "./recoil/pendingServerImport";
+import Locations from "./screens/Locations";
 
 
 // todo: temporary recoil fix, should be fixed in expo sdk that support react-native 0.64+, probably sdk 43
@@ -61,6 +62,7 @@ export type RootStackParamList = {
 	ServerView: { serverId: string },
 	AddServer: undefined
 	ReferralView: { referralId: string | undefined }
+	Locations: { serverId: string, healthcareServiceId: string }
 };
 const Stack = createNativeStackNavigator<RootStackParamList>();
 const navigationRef = createNavigationContainerRef<RootStackParamList>();
@@ -161,6 +163,7 @@ const MainContainer = () => {
 						<Stack.Screen name="ReferralView" component={ReferralView} />
 						<Stack.Screen name="Assessments" component={Assessments} />
 						<Stack.Screen name="Assessment" component={Assessment} />
+						<Stack.Screen name="Locations" component={Locations} />
 					</>
 				)}
 			</Stack.Navigator>
