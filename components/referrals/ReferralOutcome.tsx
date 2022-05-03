@@ -8,7 +8,6 @@ import { QuestionnaireResponse, Task, TaskOutput, Annotation } from "fhir/r4";
 import taskState from "../../recoil/task";
 import { questRespState } from "../../recoil/questResp";
 import { filterMap } from "../../utils/";
-import ResourceCardItem from "components/ResourceCardItem";
 
 const LOINC_CODES_MAP: { [code: string]: string } = {
 	"LA33-6": "Yes",
@@ -425,7 +424,7 @@ const ReferralOutcome = ({ referral }: { referral: Task }): JSX.Element => {
 							fontSize="sm"
 							color="#7b7f87"
 						>
-							Did the service meet your needs?
+							Was services available at convenient times?
 						</Text>
 					</FormControl.Label>
 					<Radio.Group
@@ -453,7 +452,7 @@ const ReferralOutcome = ({ referral }: { referral: Task }): JSX.Element => {
 					</Radio.Group>
 				</FormControl> }
 
-				{status === "completed" && successQ1 === "LA32-8" && <FormControl mb={5}>
+				{status === "completed" && <FormControl mb={5}>
 					<FormControl.Label>
 						<Text
 							fontSize="sm"
@@ -487,7 +486,7 @@ const ReferralOutcome = ({ referral }: { referral: Task }): JSX.Element => {
 					</Radio.Group>
 				</FormControl> }
 
-				{status === "completed" && successQ1 === "LA32-8" && <FormControl mb={5}>
+				{status === "completed" && <FormControl mb={5}>
 					<FormControl.Label>
 						<Text
 							fontSize="sm"

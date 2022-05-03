@@ -5,26 +5,30 @@ import { useRecoilValue } from "recoil";
 import { taskReferralState } from "../recoil/task";
 import ReferralList from "../components/referrals/ReferralList";
 import { Referral } from "../recoil/task/referral";
+import taskMakeContactState from "../recoil/task/makeContact";
 
 const Tab = createMaterialTopTabNavigator();
 
 const New = (): JSX.Element => {
 	const referrals = useRecoilValue(taskReferralState);
-	const newReferrals = filterNewTasks(referrals) as Referral[];
+	const makeContact = useRecoilValue(taskMakeContactState);
+	const newReferrals = filterNewTasks([...referrals, ...makeContact]) as Referral[];
 
 	return <ReferralList referrals={newReferrals} />;
 };
 
 const InProgress = (): JSX.Element => {
 	const referrals = useRecoilValue(taskReferralState);
-	const inProgressReferrals = filterInProgressTasks(referrals) as Referral[];
+	const makeContact = useRecoilValue(taskMakeContactState);
+	const inProgressReferrals = filterInProgressTasks([...referrals, ...makeContact]) as Referral[];
 
 	return <ReferralList referrals={inProgressReferrals} />;
 };
 
 const Submitted = (): JSX.Element => {
 	const referrals = useRecoilValue(taskReferralState);
-	const submittedReferrals = filterSubmittedTasks(referrals) as Referral[];
+	const makeContact = useRecoilValue(taskMakeContactState);
+	const submittedReferrals = filterSubmittedTasks([...referrals, ...makeContact]) as Referral[];
 
 	return <ReferralList referrals={submittedReferrals} />;
 };

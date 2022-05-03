@@ -1,25 +1,34 @@
 import React, { ReactNode } from "react";
-import { HStack, Text } from "native-base";
+import { HStack, Text, VStack } from "native-base";
 
 
-const ResourceCardItem = (props: { children: ReactNode, label: string, width?: string, truncate?: boolean }): JSX.Element => (
-	<HStack>
+const ResourceCardItem = ({ children, truncate, ...props }: { children: string | string[], label: string, width?: string, truncate?: boolean }): JSX.Element => (
+	<ResourceCardItemCustom {...props}>
+		<VStack flex={1}>
+			{(Array.isArray(children) ? children : [children]).map((child, ix) => (
+				<Text
+					key={ix}
+					fontSize="sm"
+					color="#333"
+					isTruncated={truncate || false}
+				>
+					{ child }
+				</Text>
+			))}
+		</VStack>
+	</ResourceCardItemCustom>
+);
+
+export const ResourceCardItemCustom = (props: { children: ReactNode, label: string, width?: string }): JSX.Element => (
+	<HStack mb="15px">
 		<Text
 			fontSize="sm"
 			color="#7B7F87"
-			mb="15px"
 			w={ props.width || "100px" }
 		>
 			{ props.label }:
 		</Text>
-		<Text
-			flex={1}
-			fontSize="sm"
-			color="#333"
-			isTruncated={props.truncate || false}
-		>
-			{ props.children }
-		</Text>
+		{ props.children }
 	</HStack>
 );
 

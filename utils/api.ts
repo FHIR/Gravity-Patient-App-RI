@@ -13,10 +13,9 @@ import {
 	HealthcareService,
 	ServiceRequest,
 	Questionnaire,
-	QuestionnaireResponse
+	QuestionnaireResponse,
+	Location
 } from "fhir/r4";
-import { SearchBar } from "react-native-screens";
-import { filterMap } from ".";
 
 export type Payor = (Organization | Patient | RelatedPerson);
 export type Owner = (Practitioner | PractitionerRole | Organization | CareTeam | HealthcareService | Patient | Device | RelatedPerson);
@@ -30,6 +29,8 @@ export type fetchFhirType = {
 	focus: Focus[] | null,
 	questResp: QuestionnaireResponse[],
 	quest: Questionnaire[]
+	healthcareService: HealthcareService[]
+	location: Location[]
 };
 
 export const fetchFhirData = async (serverURI: string, token: string | null | undefined, patientId: string): Promise<fetchFhirType> => {
@@ -38,19 +39,23 @@ export const fetchFhirData = async (serverURI: string, token: string | null | un
 		client.bearerToken = token;
 	}
 
-	const [patient, coverageBundle, taskWithOwnerBundle, taskWithFocusBundle, questRespBundle, questBundle] = await Promise.all([
+	const [patient, coverageBundle, taskWithOwnerBundle, taskWithFocusBundle, questRespBundle, questBundle, hcServiceBundle, locationBundle] = await Promise.all([
 		client.read({ resourceType: "Patient", id: patientId }),
 		client.search({ resourceType: "Coverage", searchParams: { patient: patientId, _include: "Coverage:payor" } }),
 		client.search({ resourceType: "Task", searchParams: { patient: patientId, _include: "Task:owner" } }),
 		client.search({ resourceType: "Task", searchParams: { patient: patientId, _include: "Task:focus" } }),
 		client.search({ resourceType: "QuestionnaireResponse" }),
-		client.search({ resourceType: "Questionnaire" })
+		client.search({ resourceType: "Questionnaire" }),
+		client.search({ resourceType: "HealthcareService" }),
+		client.search({ resourceType: "Location" }),
 	]);
 	const [coverage, payor] = splitInclude<Coverage[], Payor[]>(coverageBundle as Bundle);
 	const [task, owner] = splitInclude<Task[], Owner[]>(taskWithOwnerBundle as Bundle);
 	const [_, focus] = splitInclude<Task[], Focus[]>(taskWithFocusBundle as Bundle);
 	const [questResp] = splitInclude<QuestionnaireResponse[], unknown>(questRespBundle as Bundle);
 	const [quest] = splitInclude<Questionnaire[], unknown>(questBundle as Bundle);
+	const healthcareService: HealthcareService[] = (hcServiceBundle as Bundle).entry?.flatMap(x => x.resource ? [x.resource as HealthcareService] : []) || [];
+	const location: Location[] = (locationBundle as Bundle).entry?.flatMap(x => x.resource ? [x.resource as Location] : []) || [];
 
 	return {
 		patient: patient.resourceType === "Patient" ? patient as Patient : null,
@@ -60,7 +65,9 @@ export const fetchFhirData = async (serverURI: string, token: string | null | un
 		owner,
 		focus,
 		questResp: questResp || [],
-		quest: quest || []
+		quest: quest || [],
+		healthcareService,
+		location,
 	};
 };
 
