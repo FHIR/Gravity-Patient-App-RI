@@ -2,14 +2,24 @@
 Reference implementation for Gravity exchange workflow described at [https://build.fhir.org/ig/HL7/fhir-sdoh-clinicalcare/exchange_workflow.html#direct-referral-light](https://build.fhir.org/ig/HL7/fhir-sdoh-clinicalcare/exchange_workflow.html#direct-referral-light)
 
 ## Published Expo App
-Link to published expo app [https://expo.dev/@khlukanets/Gravity-Patient-App-RI](https://expo.dev/@khlukanets/Gravity-Patient-App-RI)
-Open Expo Go app and scan QR code to launch the app:
-* [Android](https://play.google.com/store/apps/details?id=host.exp.exponent)
-* [iOS](https://itunes.com/apps/exponent)
+#### Install the Expo Go App not from the AppStore/PlayStore, but download and install a previous version:
+
+Android: [https://d1ahtucjixef4r.cloudfront.net/Exponent-2.23.2.apk](https://d1ahtucjixef4r.cloudfront.net/Exponent-2.23.2.apk)
+
+iOS: [https://dpq5q02fu5f55.cloudfront.net/Exponent-2.23.2.tar.gz](https://dpq5q02fu5f55.cloudfront.net/Exponent-2.23.2.tar.gz)
+
+#### Link to published expo app:
+
+iOS: [exp://exp.host/@khlukanets/Gravity-Patient-App-RI/--/import-server?title=Logica&fhirUri=https%3A%2F%2Fapi.logicahealth.org%2FGravitySandboxNew%2Fdata&clientId=e501d8e5-d742-462b-bf27-669e385ec243](exp://exp.host/@khlukanets/Gravity-Patient-App-RI/--/import-server?title=Logica&fhirUri=https%3A%2F%2Fapi.logicahealth.org%2FGravitySandboxNew%2Fdata&clientId=e501d8e5-d742-462b-bf27-669e385ec243)
+
+Android: [exp://exp.host/@f8473d26/Gravity-Patient-App-RI/--/import-server?title=Logica&fhirUri=https%3A%2F%2Fapi.logicahealth.org%2FGravitySandboxNew%2Fdata&clientId=e501d8e5-d742-462b-bf27-669e385ec243](exp://exp.host/@f8473d26/Gravity-Patient-App-RI/--/import-server?title=Logica&fhirUri=https%3A%2F%2Fapi.logicahealth.org%2FGravitySandboxNew%2Fdata&clientId=e501d8e5-d742-462b-bf27-669e385ec243)
+
+#### Open Expo Go app and scan QR code to launch the app.
+
 
 *Note for iOS users* Due to iOS restriction settings you cannot always open published expo app, please follow the link [https://docs.expo.dev/workflow/publishing/#on-ios-you-cant-share-your-published](https://docs.expo.dev/workflow/publishing/#on-ios-you-cant-share-your-published)
 
-User credentials for app login:
+#### User credentials for app login:
 * Patient / password
 * Caregiver / password
 
