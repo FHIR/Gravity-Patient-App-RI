@@ -10,7 +10,7 @@ iOS: [https://dpq5q02fu5f55.cloudfront.net/Exponent-2.23.2.tar.gz](https://dpq5q
 
 #### Link to published expo app:
 
-iOS: [https://expo.dev/@khlukanets/Gravity-Patient-App-RI/--/import-server?title=Logica&fhirUri=https%3A%2F%2Fapi.logicahealth.org%2FGravitySandboxNew%2Fdata&clientId=e501d8e5-d742-462b-bf27-669e385ec243](https://expo.dev/@khlukanets/Gravity-Patient-App-RI/--/import-server?title=Logica&fhirUri=https%3A%2F%2Fapi.logicahealth.org%2FGravitySandboxNew%2Fdata&clientId=e501d8e5-d742-462b-bf27-669e385ec243)
+iOS: [exp://exp.host/@khlukanets/Gravity-Patient-App-RI/--/import-server?title=Logica&fhirUri=https%3A%2F%2Fapi.logicahealth.org%2FGravitySandboxNew%2Fdata&clientId=e501d8e5-d742-462b-bf27-669e385ec243](exp://exp.host/@khlukanets/Gravity-Patient-App-RI/--/import-server?title=Logica&fhirUri=https%3A%2F%2Fapi.logicahealth.org%2FGravitySandboxNew%2Fdata&clientId=e501d8e5-d742-462b-bf27-669e385ec243)
 
 Android: [exp://exp.host/@f8473d26/Gravity-Patient-App-RI/--/import-server?title=Logica&fhirUri=https%3A%2F%2Fapi.logicahealth.org%2FGravitySandboxNew%2Fdata&clientId=e501d8e5-d742-462b-bf27-669e385ec243](exp://exp.host/@f8473d26/Gravity-Patient-App-RI/--/import-server?title=Logica&fhirUri=https%3A%2F%2Fapi.logicahealth.org%2FGravitySandboxNew%2Fdata&clientId=e501d8e5-d742-462b-bf27-669e385ec243)
 
